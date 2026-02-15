@@ -54,7 +54,7 @@
       const time = new Date(msg.created_at).toLocaleTimeString()
       div.textContent = `[${time}] ${msg.username}: ${msg.content}`
       messagesDiv.appendChild(div)
-      messagesDiv.scrollTop = messagesDiv.scrollHeight // Scroll to bottom
+      messagesDiv.scrollTop = messagesDiv.scrollHeight
     }
 
     // Load existing messages
@@ -73,11 +73,11 @@
 
     loadMessages()
 
-    // Real-time listener
-    supabase
+    // Real-time listener - optimize by using the minimal event listener
+    const chatChannel = supabase
       .channel('public:simplychat_messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'simplychat_messages' }, payload => {
-        // Add the new message immediately to the chat
+        // Directly add the new message to the DOM
         addMessage(payload.new)
       })
       .subscribe()
