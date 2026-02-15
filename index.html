@@ -32,6 +32,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+    // Replace with your Supabase project details
     const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
     const supabase = createClient(supabaseUrl, supabaseKey)
@@ -53,16 +54,21 @@
       const time = new Date(msg.created_at).toLocaleTimeString()
       div.textContent = `[${time}] ${msg.username}: ${msg.content}`
       messagesDiv.appendChild(div)
-      messagesDiv.scrollTop = messagesDiv.scrollHeight
+      messagesDiv.scrollTop = messagesDiv.scrollHeight // Scroll to bottom
     }
 
     // Load existing messages
     async function loadMessages() {
-      const { data: messages } = await supabase
+      const { data: messages, error } = await supabase
         .from('simplychat_messages')
         .select('*')
         .order('created_at', { ascending: true })
-      messages.forEach(addMessage)
+      
+      if (error) {
+        console.error('Error loading messages:', error)
+      } else {
+        messages.forEach(addMessage)
+      }
     }
 
     loadMessages()
@@ -71,6 +77,7 @@
     supabase
       .channel('public:simplychat_messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'simplychat_messages' }, payload => {
+        // Add the new message immediately to the chat
         addMessage(payload.new)
       })
       .subscribe()
@@ -84,9 +91,14 @@
         alert('Your message exceeds 1000 characters')
         return
       }
-      await supabase.from('simplychat_messages').insert([{ username, content }])
-      messageInput.value = ''
-      charCount.textContent = '0 / 1000'
+      const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
+
+      if (error) {
+        console.error('Error inserting message:', error)
+      } else {
+        messageInput.value = ''
+        charCount.textContent = '0 / 1000'
+      }
     })
 
     // press Enter to send (inactive)
