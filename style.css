@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'Unik5x520262';
+  src: url('Unik5x520262.woff2') format('woff2'),
+       url('Unik5x520262.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+html, body {
+  font-family: 'Unik5x520262', monospace;
+  font-size: 20px;   /* multiple of 5 */
+  line-height: 1;
+}
