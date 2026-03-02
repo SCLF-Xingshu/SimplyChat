@@ -19,81 +19,95 @@
   </div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    // Replace with your Supabase project details
-    const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
-    const supabase = createClient(supabaseUrl, supabaseKey)
+// Replace with your Supabase project details
+const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const messagesDiv = document.getElementById('messages')
-    const usernameInput = document.getElementById('username')
-    const messageInput = document.getElementById('message')
-    const charCount = document.getElementById('char-count')
-    const sendBtn = document.getElementById('send')
+const messagesDiv = document.getElementById('messages')
+const usernameInput = document.getElementById('username')
+const messageInput = document.getElementById('message')
+const charCount = document.getElementById('char-count')
+const sendBtn = document.getElementById('send')
 
-    // Live character counter
-    messageInput.addEventListener('input', () => {
-      charCount.textContent = `${messageInput.value.length} / 1000`
-    })
+// Live character counter
+messageInput.addEventListener('input', () => {
+  charCount.textContent = `${messageInput.value.length} / 1000`
+})
 
-    // Add a message to chat
-    function addMessage(msg) {
-      const div = document.createElement('div')
-      const time = new Date(msg.created_at).toLocaleTimeString()
-      div.textContent = `[${time}] ${msg.username}: ${msg.content}`
-      messagesDiv.appendChild(div)
-      messagesDiv.scrollTop = messagesDiv.scrollHeight
-    }
+// Add a message to chat with [ DD.MM.YYYY - HH:MM - TZ ] timestamp
+function addMessage(msg) {
+  const div = document.createElement('div')
 
-    // Load existing messages
-    async function loadMessages() {
-      const { data: messages, error } = await supabase
-        .from('simplychat_messages')
-        .select('*')
-        .order('created_at', { ascending: true })
-      
-      if (error) {
-        console.error('Error loading messages:', error)
-      } else {
-        messages.forEach(addMessage)
-      }
-    }
+  const date = new Date(msg.created_at)
 
-    loadMessages()
+  // Format date
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
 
-    // Real-time listener - optimize by using the minimal event listener
-    const chatChannel = supabase
-      .channel('public:simplychat_messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'simplychat_messages' }, payload => {
-        // Directly add the new message to the DOM
-        addMessage(payload.new)
-      })
-      .subscribe()
+  // Format time
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
 
-    // Send a message
-    sendBtn.addEventListener('click', async () => {
-      const username = usernameInput.value.trim() || 'Anonymous'
-      const content = messageInput.value.trim()
-      if (!content) return
-      if (content.length > 1000) {
-        alert('Your message exceeds 1000 characters')
-        return
-      }
-      const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
+  // Timezone abbreviation (short)
+  const tzParts = date.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')
+  const tz = tzParts[tzParts.length - 1] || ''
 
-      if (error) {
-        console.error('Error inserting message:', error)
-      } else {
-        messageInput.value = ''
-        charCount.textContent = '0 / 1000'
-      }
-    })
+  div.textContent = `[ ${day}.${month}.${year} - ${hours}:${minutes} - ${tz} ] ${msg.username}: ${msg.content}`
+  messagesDiv.appendChild(div)
+  messagesDiv.scrollTop = messagesDiv.scrollHeight
+}
 
-    // press Enter to send (inactive)
-    // messageInput.addEventListener('keydown', (e) => {
-    //  if (e.key === 'Enter') sendBtn.click()
-    // })
-  </script>
+// Load existing messages
+async function loadMessages() {
+  const { data: messages, error } = await supabase
+    .from('simplychat_messages')
+    .select('*')
+    .order('created_at', { ascending: true })
+  
+  if (error) {
+    console.error('Error loading messages:', error)
+  } else {
+    messages.forEach(addMessage)
+  }
+}
+
+loadMessages()
+
+// Real-time listener
+const chatChannel = supabase
+  .channel('public:simplychat_messages')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'simplychat_messages' }, payload => {
+    addMessage(payload.new)
+  })
+  .subscribe()
+
+// Send a message
+sendBtn.addEventListener('click', async () => {
+  const username = usernameInput.value.trim() || 'Anonymous'
+  const content = messageInput.value.trim()
+  if (!content) return
+  if (content.length > 1000) {
+    alert('Your message exceeds 1000 characters')
+    return
+  }
+  const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
+
+  if (error) {
+    console.error('Error inserting message:', error)
+  } else {
+    messageInput.value = ''
+    charCount.textContent = '0 / 1000'
+  }
+})
+
+// Optional: press Enter to send
+// messageInput.addEventListener('keydown', (e) => {
+//   if (e.key === 'Enter') sendBtn.click()
+// })
+</script>
 </body>
 </html>
