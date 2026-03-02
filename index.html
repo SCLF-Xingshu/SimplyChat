@@ -50,7 +50,7 @@ function addMessage(msg) {
   const tz = tzParts[tzParts.length - 1] || ''
 
   // Use two lines
-  div.innerHTML = `[${day}/${month}/${year}-${hours}:${minutes}-${tz}]<br>${msg.username}: ${msg.content}`
+  div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${msg.content}`
   
   messagesDiv.appendChild(div)
   messagesDiv.scrollTop = messagesDiv.scrollHeight
