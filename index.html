@@ -21,7 +21,6 @@
   <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-// Replace with your Supabase project details
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
 const supabase = createClient(supabaseUrl, supabaseKey)
@@ -42,21 +41,17 @@ function addMessage(msg) {
   const div = document.createElement('div')
 
   const date = new Date(msg.created_at)
-
-  // Format date
   const day = String(date.getDate()).padStart(2, '0')
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const year = date.getFullYear()
-
-  // Format time
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
-
-  // Timezone abbreviation (short)
   const tzParts = date.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')
   const tz = tzParts[tzParts.length - 1] || ''
 
-  div.textContent = `[ ${day}.${month}.${year} - ${hours}:${minutes} - ${tz} ] ${msg.username}: ${msg.content}`
+  // Use two lines
+  div.innerHTML = `[${day}/${month}/${year}-${hours}:${minutes}-${tz}]<br>${msg.username}: ${msg.content}`
+  
   messagesDiv.appendChild(div)
   messagesDiv.scrollTop = messagesDiv.scrollHeight
 }
