@@ -31,6 +31,9 @@ const usernameInput = document.getElementById('username')
 const messageInput = document.getElementById('message')
 const charCount = document.getElementById('char-count')
 const sendBtn = document.getElementById('send')
+const githubLoginBtn = document.getElementById('github-login')
+
+let currentUser = null // 🔹 moved up (important)
 
 // Live character counter
 messageInput.addEventListener('input', () => {
@@ -83,13 +86,21 @@ const chatChannel = supabase
 
 // Send a message
 sendBtn.addEventListener('click', async () => {
-  const username = usernameInput.value.trim() || 'Anonymous'
+  let username = 'Anonymous'
+
+  if (currentUser) {
+    username = `[GH] ${currentUser.user_metadata.user_name}`
+  } else {
+    username = usernameInput.value.trim() || 'Anonymous'
+  }
+
   const content = messageInput.value.trim()
   if (!content) return
   if (content.length > 1000) {
     alert('Your message exceeds 1000 characters')
     return
   }
+
   const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
 
   if (error) {
@@ -99,13 +110,37 @@ sendBtn.addEventListener('click', async () => {
     charCount.textContent = '0 / 1000'
   }
 })
-    const githubLoginBtn = document.getElementById('github-login')
 
-    // Login with GitHub
-  githubLoginBtn.addEventListener('click', async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github'
+// Login with GitHub
+githubLoginBtn.addEventListener('click', async () => {
+  await supabase.auth.signInWithOAuth({
+    provider: 'github'
   })
+})
+
+// Detect user on page load
+async function checkUser() {
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (session) {
+    currentUser = session.user
+    
+    const githubUsername = currentUser.user_metadata.user_name
+    usernameInput.value = `[GH] ${githubUsername}`
+    usernameInput.disabled = true
+  }
+}
+
+checkUser()
+
+// Listen for auth changes (important after OAuth redirect)
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    currentUser = session.user
+    const githubUsername = currentUser.user_metadata.user_name
+    usernameInput.value = `[GH] ${githubUsername}`
+    usernameInput.disabled = true
+  }
 })
 
 // Optional: press Enter to send
