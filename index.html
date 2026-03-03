@@ -99,6 +99,14 @@ sendBtn.addEventListener('click', async () => {
     charCount.textContent = '0 / 1000'
   }
 })
+    const githubLoginBtn = document.getElementById('github-login')
+
+    // Login with GitHub
+  githubLoginBtn.addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github'
+  })
+})
 
 // Optional: press Enter to send
 // messageInput.addEventListener('keydown', (e) => {
