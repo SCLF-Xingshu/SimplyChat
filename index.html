@@ -54,6 +54,7 @@ function addMessage(msg) {
   const tzParts = date.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')
   const tz = tzParts[tzParts.length - 1] || ''
   
+  // Two-line format: timestamp first, then username + message
   div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${msg.content}`
   
   messagesDiv.appendChild(div)
@@ -112,12 +113,20 @@ sendBtn.addEventListener('click', async () => {
 
 // GitHub login
 githubLoginBtn.addEventListener('click', async () => {
-  await supabase.auth.signInWithOAuth({ provider: 'github' })
+  // Redirects to Supabase callback URL, then back to GitHub Pages
+  await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo: 'https://sclf-xingshu.github.io/SimplyChat/' }
+  })
 })
 
 // Check user session after redirect
 async function checkUser() {
-  const { data: { session } } = await supabase.auth.getSession()
+  // Get session from URL hash if user just logged in
+  const { data: { session }, error } = await supabase.auth.getSessionFromUrl({ storeSession: true })
+  if (error) {
+    console.error('Error getting session from URL:', error)
+  }
 
   currentUser = session?.user || null
 
@@ -127,7 +136,7 @@ async function checkUser() {
     usernameInput.disabled = true
   }
 
-  // Clean URL if hash exists
+  // Remove hash from URL to clean it
   if (window.location.hash) {
     history.replaceState(null, '', window.location.pathname)
   }
@@ -135,7 +144,7 @@ async function checkUser() {
 
 checkUser()
 
-// Listen for auth changes
+// Listen for auth state changes
 supabase.auth.onAuthStateChange((_event, session) => {
   if (session) {
     currentUser = session.user
