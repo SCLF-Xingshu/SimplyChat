@@ -19,13 +19,15 @@
     <div id="char-count">0 / 1000</div>
   </div>
 
-  <script type="module">
+<script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+// Supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+// DOM elements
 const messagesDiv = document.getElementById('messages')
 const usernameInput = document.getElementById('username')
 const messageInput = document.getElementById('message')
@@ -33,27 +35,25 @@ const charCount = document.getElementById('char-count')
 const sendBtn = document.getElementById('send')
 const githubLoginBtn = document.getElementById('github-login')
 
-let currentUser = null // 🔹 moved up (important)
+let currentUser = null
 
-// Live character counter
-messageInput.addEventListener('input', () => {
+// Character counter
+messageInput.addEventListener('input', () => { 
   charCount.textContent = `${messageInput.value.length} / 1000`
 })
 
-// Add a message to chat with [ DD.MM.YYYY - HH:MM - TZ ] timestamp
+// Add message
 function addMessage(msg) {
   const div = document.createElement('div')
-
   const date = new Date(msg.created_at)
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2,'0')
+  const month = String(date.getMonth() + 1).padStart(2,'0')
   const year = date.getFullYear()
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2,'0')
+  const minutes = String(date.getMinutes()).padStart(2,'0')
   const tzParts = date.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')
   const tz = tzParts[tzParts.length - 1] || ''
-
-  // Use two lines
+  
   div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${msg.content}`
   
   messagesDiv.appendChild(div)
@@ -84,16 +84,16 @@ const chatChannel = supabase
   })
   .subscribe()
 
-// Send a message
+// Send message
 sendBtn.addEventListener('click', async () => {
   let username = 'Anonymous'
 
-  if (currentUser) {
-    username = `[GH] ${currentUser.user_metadata.user_name}`
+  if (currentUser) { 
+    username = `[GH] ${currentUser.user_metadata.user_name}` 
   } else {
     username = usernameInput.value.trim() || 'Anonymous'
   }
-
+  
   const content = messageInput.value.trim()
   if (!content) return
   if (content.length > 1000) {
@@ -102,7 +102,6 @@ sendBtn.addEventListener('click', async () => {
   }
 
   const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
-
   if (error) {
     console.error('Error inserting message:', error)
   } else {
@@ -111,29 +110,32 @@ sendBtn.addEventListener('click', async () => {
   }
 })
 
-// Login with GitHub
+// GitHub login
 githubLoginBtn.addEventListener('click', async () => {
-  await supabase.auth.signInWithOAuth({
-    provider: 'github'
-  })
+  await supabase.auth.signInWithOAuth({ provider: 'github' })
 })
 
-// Detect user on page load
+// Check user session after redirect
 async function checkUser() {
   const { data: { session } } = await supabase.auth.getSession()
-  
-  if (session) {
-    currentUser = session.user
-    
+
+  currentUser = session?.user || null
+
+  if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
     usernameInput.value = `[GH] ${githubUsername}`
     usernameInput.disabled = true
+  }
+
+  // Clean URL if hash exists
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname)
   }
 }
 
 checkUser()
 
-// Listen for auth changes (important after OAuth redirect)
+// Listen for auth changes
 supabase.auth.onAuthStateChange((_event, session) => {
   if (session) {
     currentUser = session.user
