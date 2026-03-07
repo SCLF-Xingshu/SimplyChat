@@ -1,3 +1,7 @@
+* {
+  border-radius: 0 !important;
+}
+
 /* Font */
 @font-face {
   font-family: 'Unik5x520262';
