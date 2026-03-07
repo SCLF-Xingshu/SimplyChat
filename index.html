@@ -60,6 +60,7 @@ function addMessage(msg) {
   // Two-line format: timestamp first, then username + message
   const parsedMarkdown = marked.parse(msg.content) 
   const safeHTML = DOMPurify.sanitize(parsedMarkdown)  
+  const cleaned = safeHTML.replace(/^<p>|<\/p>$/g, '')
   div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${safeHTML}`
   
   messagesDiv.appendChild(div)
