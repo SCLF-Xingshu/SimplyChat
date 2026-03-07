@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SimplyChat.</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 </head>
 <body>
   <div id="chat-container">
@@ -56,7 +58,9 @@ function addMessage(msg) {
   const tz = tzParts[tzParts.length - 1] || ''
   
   // Two-line format: timestamp first, then username + message
-  div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${msg.content}`
+  const parsedMarkdown = marked.parse(msg.content) 
+  const safeHTML = DOMPurify.sanitize(parsedMarkdown)  
+  div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${safeHTML}`
   
   messagesDiv.appendChild(div)
   messagesDiv.scrollTop = messagesDiv.scrollHeight
