@@ -58,10 +58,16 @@ function addMessage(msg) {
   const tz = tzParts[tzParts.length - 1] || ''
   
   // Two-line format: timestamp first, then username + message
-  const parsedMarkdown = marked.parse(msg.content) 
-  const safeHTML = DOMPurify.sanitize(parsedMarkdown)  
-  const cleaned = safeHTML.replace(/^<p>|<\/p>$/g, '')
-  div.innerHTML = `[${day}/${month}/${year} ${hours}:${minutes} ${tz}]<br>${msg.username}: ${safeHTML}`
+  // Parse Markdown safely
+  const parsedMarkdown = marked.parse(msg.content) // convert Markdown to HTML
+  const safeHTML = DOMPurify.sanitize(parsedMarkdown)  // sanitize HTML to prevent XSS
+  
+  // Remove extra paragraph spacing: separate header and content
+  // This prevents unwanted line jumps caused by <p> tags
+  div.innerHTML = `
+    <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${msg.username}:</div>
+    <div class="msg-content">${safeHTML}</div>
+  `
   
   messagesDiv.appendChild(div)
   messagesDiv.scrollTop = messagesDiv.scrollHeight
@@ -95,23 +101,27 @@ const chatChannel = supabase
 sendBtn.addEventListener('click', async () => {
   let username = 'Anonymous'
 
+  // If user logged in with GitHub, use GitHub username
   if (currentUser) { 
     username = `[GH] ${currentUser.user_metadata.user_name}` 
   } else {
+    // Otherwise, use input field or default to "Anonymous"
     username = usernameInput.value.trim() || 'Anonymous'
   }
   
   const content = messageInput.value.trim()
-  if (!content) return
+  if (!content) return // ignore empty messages
   if (content.length > 1000) {
     alert('Your message exceeds 1000 characters')
     return
   }
 
+  // Insert message into Supabase
   const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
   if (error) {
     console.error('Error inserting message:', error)
   } else {
+    // Clear input and reset character counter
     messageInput.value = ''
     charCount.textContent = '0 / 1000'
   }
@@ -138,6 +148,7 @@ async function checkUser() {
 
   if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
+    // Pre-fill username input with GitHub username and disable editing
     usernameInput.value = `[GH] ${githubUsername}`
     usernameInput.disabled = true
   }
@@ -155,6 +166,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
   if (session) {
     currentUser = session.user
     const githubUsername = currentUser.user_metadata.user_name
+    // Update username input on auth change
     usernameInput.value = `[GH] ${githubUsername}`
     usernameInput.disabled = true
   }
