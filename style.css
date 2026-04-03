@@ -14,7 +14,7 @@
 
 /* Global Styles */
 body {
-  font-family: 'Unik5x520262', monospace;
+  font-family: monospace; /*font-family: 'Unik5x520262', monospace;*/
   font-size: 20px; /* multiple of 5 */
   line-height: 1;
   padding: 20px;
