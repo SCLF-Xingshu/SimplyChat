@@ -81,3 +81,8 @@ input[type="text"] {
   color: #666;
   margin-top: 2px;
 }
+
+.msg-header, .msg-content {
+  margin: 0;
+  line-height: 1;
+}
