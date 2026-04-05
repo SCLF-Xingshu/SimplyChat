@@ -44,9 +44,9 @@ h1 {
   margin-bottom: 10px;
 }
 
-#messages div {
+/* #messages div {
   margin-bottom: 8px;
-}
+}*/
 
 #input-container {
   display: flex;
