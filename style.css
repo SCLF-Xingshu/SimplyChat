@@ -90,3 +90,32 @@ input[type="text"] {
 .message {
   margin-bottom: 8px;
 }
+
+/* blog styles */
+
+#blog-container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.blog-post {
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.blog-post:last-child {
+  border-bottom: none;
+}
+
+.blog-post h2 {
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.post-date {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  margin-bottom: 8px;
+}
