@@ -58,7 +58,7 @@ input[type="text"] {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  font-family: 'Unik5x520262', monospace;
+  font-family: monospace;
 }
 
 #send {
@@ -68,7 +68,7 @@ input[type="text"] {
   background: #007bff;
   color: #fff;
   cursor: pointer;
-  font-family: 'Unik5x520262', monospace;
+  font-family: monospace;
 }
 
 #send:hover {
