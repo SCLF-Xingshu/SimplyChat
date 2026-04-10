@@ -1,5 +1,6 @@
 * {
   border-radius: 0 !important;
+  font-family: monospace !important;
 }
 
 /* Font */
@@ -101,7 +102,6 @@ input[type="text"] {
 
 .blog-post {
   padding: 15px 0;
-  border-bottom: 1px solid #ccc;
 }
 
 .blog-post:last-child {
