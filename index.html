@@ -31,8 +31,9 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // RoomId setup  
-const roomId = window.location.pathname.split('/').pop() || 'global'
-
+const parts = window.location.pathname.split('/')
+const roomId = (parts[2] === 'chat' && parts[3]) ? parts[3] : 'global'
+  
 // DOM elements
 const messagesDiv = document.getElementById('messages')
 const usernameInput = document.getElementById('username')
