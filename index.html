@@ -80,6 +80,7 @@ async function loadMessages() {
   const { data: messages, error } = await supabase
     .from('simplychat_messages')
     .select('*')
+    .eq('room_id', roomId)
     .order('created_at', { ascending: true })
   
   if (error) {
