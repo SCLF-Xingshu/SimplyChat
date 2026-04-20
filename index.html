@@ -49,6 +49,14 @@ if (redirect) {
   window.history.replaceState({}, '', redirect)
 }
 
+const parts = window.location.pathname.split('/')
+let roomId
+if (parts[2] === 'chat' && parts[3]) {
+  roomId = parts[3]
+} else {
+  roomId = 'global'
+}
+
 // DOM elements
 const messagesDiv = document.getElementById('messages')
 const usernameInput = document.getElementById('username')
