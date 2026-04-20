@@ -27,7 +27,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
-const supabaseKey = 'YOUR_ANON_KEY'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 
@@ -185,7 +185,7 @@ githubLoginBtn.addEventListener('click', async () => {
 // Check user session after redirect
 async function checkUser() {
   // Get session from URL hash if user just logged in
-  const { data: { session }, error } = await supabase.auth.getSessionFromUrl({ storeSession: true })
+  const { data: { session }, error } = await supabase.auth.getSession()
   if (error) {
     console.error('Error getting session from URL:', error)
   }
