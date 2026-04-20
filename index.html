@@ -41,6 +41,14 @@ if (roomId === 'global') {
   document.title = 'SimplyChat / ' + roomId
 }
 
+// Redirects
+const redirect = sessionStorage.getItem('redirect')
+
+if (redirect) {
+  sessionStorage.removeItem('redirect')
+  window.history.replaceState({}, '', redirect)
+}
+
 // DOM elements
 const messagesDiv = document.getElementById('messages')
 const usernameInput = document.getElementById('username')
