@@ -33,7 +33,14 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 // RoomId setup  
 const parts = window.location.pathname.split('/')
 const roomId = (parts[2] === 'chat' && parts[3]) ? parts[3] : 'global'
-  
+
+// Dynamic title (using the RoomId)
+if (roomId === 'global') {
+  document.title = 'SimplyChat'
+} else {
+  document.title = 'SimplyChat / ' + roomId
+}
+
 // DOM elements
 const messagesDiv = document.getElementById('messages')
 const usernameInput = document.getElementById('username')
