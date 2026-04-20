@@ -27,12 +27,20 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
+const supabaseKey = 'YOUR_ANON_KEY'
 const supabase = createClient(supabaseUrl, supabaseKey)
+
 
 // RoomId setup  
 const parts = window.location.pathname.split('/')
-const roomId = (parts[2] === 'chat' && parts[3]) ? parts[3] : 'global'
+
+let roomId
+
+if (parts[2] === 'chat' && parts[3]) {
+  roomId = parts[3]
+} else {
+  roomId = 'global'
+}
 
 // Dynamic title (using the RoomId)
 if (roomId === 'global') {
@@ -49,13 +57,6 @@ if (redirect) {
   window.history.replaceState({}, '', redirect)
 }
 
-const parts = window.location.pathname.split('/')
-let roomId
-if (parts[2] === 'chat' && parts[3]) {
-  roomId = parts[3]
-} else {
-  roomId = 'global'
-}
 
 // DOM elements
 const messagesDiv = document.getElementById('messages')
@@ -101,11 +102,19 @@ function addMessage(msg) {
 
 // Load existing messages
 async function loadMessages() {
-  const { data: messages, error } = await supabase
+
+  let query = supabase
     .from('simplychat_messages')
     .select('*')
-    .eq('room_id', roomId)
     .order('created_at', { ascending: true })
+
+  if (roomId === 'global') {
+    query = query.eq('room_id', 'global')
+  } else {
+    query = query.eq('room_id', roomId)
+  }
+
+  const { data: messages, error } = await query
   
   if (error) {
     console.error('Error loading messages:', error)
@@ -128,7 +137,7 @@ const chatChannel = supabase
     addMessage(payload.new)
   })
   .subscribe()
-  
+
 // Send message
 sendBtn.addEventListener('click', async () => {
   let username = 'Anonymous'
@@ -149,7 +158,12 @@ sendBtn.addEventListener('click', async () => {
   }
 
   // Insert message into Supabase
-  const { error } = await supabase.from('simplychat_messages').insert([{ username, content }])
+  const { error } = await supabase.from('simplychat_messages').insert([{
+    username,
+    content,
+    room_id: roomId
+  }])
+
   if (error) {
     console.error('Error inserting message:', error)
   } else {
