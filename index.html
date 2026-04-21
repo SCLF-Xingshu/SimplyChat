@@ -30,7 +30,14 @@ const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+// Redirects
+const redirect = sessionStorage.getItem('redirect')
 
+if (redirect) {
+  sessionStorage.removeItem('redirect')
+  window.history.replaceState({}, '', redirect)
+}
+  
 // RoomId setup  
 const parts = window.location.pathname.split('/')
 
@@ -48,15 +55,6 @@ if (roomId === 'global') {
 } else {
   document.title = 'SimplyChat / ' + roomId
 }
-
-// Redirects
-const redirect = sessionStorage.getItem('redirect')
-
-if (redirect) {
-  sessionStorage.removeItem('redirect')
-  window.history.replaceState({}, '', redirect)
-}
-
 
 // DOM elements
 const messagesDiv = document.getElementById('messages')
