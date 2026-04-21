@@ -117,7 +117,16 @@ async function loadMessages() {
   if (error) {
     console.error('Error loading messages:', error)
   } else {
-    messages.forEach(addMessage)
+
+    if (!messages || messages.length === 0) {
+      const empty = document.createElement('div')
+      empty.classList.add('message')
+      empty.textContent = 'No messages yet. Be the first to send one.'
+      messagesDiv.appendChild(empty)
+    } else {
+      messages.forEach(addMessage)
+    }
+
   }
 }
 
