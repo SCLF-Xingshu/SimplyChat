@@ -44,7 +44,7 @@ const parts = window.location.pathname.split('/')
 let roomId
 
 if (parts[2] === 'chat' && parts[3]) {
-  roomId = parts[3]
+  roomId = parts[3].toLowerCase()
 } else {
   roomId = 'global'
 }
@@ -54,6 +54,11 @@ if (roomId === 'global') {
   document.title = 'SimplyChat / Online Chatrooms'
 } else {
   document.title = 'SimplyChat / ' + roomId
+}
+
+// URL cleaning
+if (parts[3] && parts[3] !== roomId) {
+  window.history.replaceState({}, '', `/SimplyChat/chat/${roomId}`)
 }
 
 // DOM elements
@@ -141,7 +146,7 @@ const chatChannel = supabase
     event: 'INSERT',
     schema: 'public',
     table: 'simplychat_messages',
-    filter: `room_id=eq.${roomId}`
+    filter: `room_id=eq.${roomId.toLowerCase()}`
   }, payload => {
     addMessage(payload.new)
   })
@@ -170,7 +175,7 @@ sendBtn.addEventListener('click', async () => {
   const { error } = await supabase.from('simplychat_messages').insert([{
     username,
     content,
-    room_id: roomId
+    room_id: roomId.toLowerCase()
   }])
 
   if (error) {
