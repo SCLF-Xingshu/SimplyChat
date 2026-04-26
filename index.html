@@ -37,7 +37,35 @@ if (redirect) {
   sessionStorage.removeItem('redirect')
   window.history.replaceState({}, '', redirect)
 }
-  
+
+// Build room list with message counts (for search & ranking)
+async function fetchRoomsIndex() {
+
+  const { data, error } = await supabase
+    .from('simplychat_messages')
+    .select('room_id')
+
+  if (error) {
+    console.error('Room fetch error:', error)
+    return []
+  }
+
+  const map = {}
+
+  data.forEach(row => {
+    const room = row.room_id.toLowerCase()
+
+    // count messages per room
+    map[room] = (map[room] || 0) + 1
+  })
+
+  // convert object → array
+  return Object.entries(map).map(([id, count]) => ({
+    id,
+    count
+  }))
+}
+
 // RoomId setup  
 const parts = window.location.pathname.split('/')
 
