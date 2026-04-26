@@ -95,7 +95,7 @@ input[type="text"] {
 /* blog styles */
 
 #blog-container {
-  max-width: 700px;
+  max-width: 600px;
   margin: 20px auto;
   padding: 0 15px;
 }
