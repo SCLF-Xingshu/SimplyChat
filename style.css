@@ -91,8 +91,8 @@ input[type="text"] {
 }
 
 .title-icon {
-  width: 1.4em;
-  height: 1.4em;
+  width: 2.8em; /*a multiple of 1.4em, since 1.4em is font height*/
+  height: 2.8em;
 }
 
 .msg-header {
