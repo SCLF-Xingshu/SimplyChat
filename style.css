@@ -83,6 +83,11 @@ input[type="text"] {
   margin-top: 2px;
 }
 
+.title-icon {
+  width: 1.4em;
+  height: 1.4em;
+}
+
 .msg-header {
   margin: 0;
   line-height: 1;
