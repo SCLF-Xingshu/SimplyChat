@@ -83,11 +83,16 @@ input[type="text"] {
   margin-top: 2px;
 }
 
-.msg-header, .msg-content {
+.msg-header {
   margin: 0;
   line-height: 1;
 }
-
+.msg-content {
+  margin: 0;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 .message {
   margin-bottom: 8px;
 }
