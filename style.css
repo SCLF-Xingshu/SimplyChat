@@ -83,6 +83,13 @@ input[type="text"] {
   margin-top: 2px;
 }
 
+#title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .title-icon {
   width: 1.4em;
   height: 1.4em;
