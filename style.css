@@ -102,9 +102,9 @@ input[type="text"] {
   left: 0;
   bottom: 2px;
   width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #00e4ff, #0017ff, #9e00ff);
-  border-radius: 2px;
+  height: 1em;
+  background: linear-gradient(90deg, #57f2ff, #5765ff, #be57ff);
+  border-radius: 4px;
   z-index: 1;
 }
 
