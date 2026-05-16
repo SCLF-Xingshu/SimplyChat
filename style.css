@@ -90,7 +90,7 @@ input[type="text"] {
   padding: 8px 15px;
   border-radius: 0px;
   border: none;
-  background: linear-gradient(90deg, #00e4ff, #0017ff, #9e00ff);
+  background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
   color: #fff;
   cursor: pointer;
   font-family: monospace;
@@ -107,7 +107,7 @@ input[type="text"] {
 }
 
 #send:hover {
-  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
+  background: linear-gradient(90deg, #00e4ff, #0017ff, #9e00ff);
 }
 
 #github-login:hover {
