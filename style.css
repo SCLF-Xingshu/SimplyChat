@@ -120,7 +120,7 @@ input[type="text"] {
   margin: 0;
 }
 
-#title-container h1::after {
+/*#title-container h1::after {
   content: "";
   position: absolute;
   left: 0;
@@ -130,7 +130,7 @@ input[type="text"] {
   background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
   border-radius: 0.3em;
   z-index: 1;
-}
+}*/
 
 #title-container h1 span {
   position: relative;
@@ -144,11 +144,11 @@ input[type="text"] {
 
 /*.title-part,*/
 .title-highlight {
-  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff) !important;
-  padding: 0 0.2em !important;
-  border-radius: 0.3em !important;
-  position: relative !important;
-  z-index: 2 !important;
+  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
+  padding: 0 0.2em;
+  border-radius: 0.3em;
+  position: relative;
+  z-index: 2;
 }
 
 .msg-header {
