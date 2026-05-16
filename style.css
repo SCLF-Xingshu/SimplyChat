@@ -142,14 +142,14 @@ input[type="text"] {
   height: 2.8em;
 }
 
-/*.title-part,
+/*.title-part,*/
 .title-highlight {
-  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
-  padding: 0 0.2em;
-  border-radius: 0.3em;
-  position: relative;
-  z-index: 2;
-}*/
+  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff) !important;
+  padding: 0 0.2em !important;
+  border-radius: 0.3em !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
 
 .msg-header {
   margin: 0;
