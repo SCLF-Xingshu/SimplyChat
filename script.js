@@ -284,56 +284,67 @@ supabase.auth.onAuthStateChange((_event, session) => {
   }
 })
 
-const roomSearch = document.getElementById('room-search')
-const roomResults = document.getElementById('room-results')
-const roomMode = document.getElementById('room-mode')
+window.addEventListener('DOMContentLoaded', () => {
 
-function scoreMatch(text, query) {
-  let score = 0
+  const roomSearch = document.getElementById('room-search')
+  const roomResults = document.getElementById('room-results')
+  const roomMode = document.getElementById('room-mode')
 
-  if (text === query) score += 100
-  if (text.includes(query)) score += 20
-
-  for (let i = 0; i < Math.min(text.length, query.length); i++) {
-    if (text[i] === query[i]) score++
+  if (!roomSearch || !roomResults || !roomMode) {
+    console.error("Room search elements not found in DOM")
+    return
   }
 
-  return score
-}
+  function scoreMatch(text, query) {
+    let score = 0
 
-roomSearch.addEventListener('input', () => {
-  const query = roomSearch.value.toLowerCase().trim()
-  const mode = roomMode.value
+    if (text === query) score += 100
+    if (text.includes(query)) score += 20
 
-  roomResults.innerHTML = ''
-  if (!query) return
-
-  let results = roomsIndex.filter(r =>
-    r.id.includes(query)
-  )
-
-  if (mode === 'match') {
-    results.sort((a, b) =>
-      scoreMatch(b.id, query) - scoreMatch(a.id, query)
-    )
-  }
-
-  if (mode === 'popular') {
-    results.sort((a, b) => b.count - a.count)
-  }
-
-  if (mode === 'trending') {
-    results.sort((a, b) => b.lastActivity - a.lastActivity)
-  }
-
-  results.forEach(room => {
-    const div = document.createElement('div')
-    div.textContent = `${room.id} (${room.count})`
-
-    div.onclick = () => {
-      window.location.href = `/SimplyChat/chat/${room.id}`
+    for (let i = 0; i < Math.min(text.length, query.length); i++) {
+      if (text[i] === query[i]) score++
     }
 
-    roomResults.appendChild(div)
+    return score
+  }
+
+  roomSearch.addEventListener('input', () => {
+    const query = roomSearch.value.toLowerCase().trim()
+    const mode = roomMode.value
+
+    roomResults.innerHTML = ''
+    if (!query) return
+
+    if (!roomsIndex || roomsIndex.length === 0) return
+
+    let results = roomsIndex.filter(r =>
+      r.id.includes(query)
+    )
+
+    if (mode === 'match') {
+      results.sort((a, b) =>
+        scoreMatch(b.id, query) - scoreMatch(a.id, query)
+      )
+    }
+
+    if (mode === 'popular') {
+      results.sort((a, b) => b.count - a.count)
+    }
+
+    if (mode === 'trending') {
+      results.sort((a, b) => b.lastActivity - a.lastActivity)
+    }
+
+    results.forEach(room => {
+      const div = document.createElement('div')
+      div.textContent = `${room.id} (${room.count})`
+
+      div.onclick = () => {
+        window.location.href = `/SimplyChat/chat/${room.id}`
+      }
+
+      roomResults.appendChild(div)
+    })
   })
+
 })
