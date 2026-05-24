@@ -132,11 +132,6 @@ input[type="text"] {
   white-space: nowrap;
 }
 
-#room-search {
-  flex: 1;
-  min-width: 0;
-}
-
 #room-search-container {
   margin: 10px 0;
 }
@@ -146,8 +141,11 @@ input[type="text"] {
   border: 1px solid #ccc;
   background: #fff;
   font-family: monospace;
+  font-size: 0.8em;
   width: 100%;
   box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
 }
 
 #room-mode {
@@ -155,6 +153,7 @@ input[type="text"] {
   border: 1px solid #ccc;
   background: #fff;
   font-family: monospace;
+  font-size: 0.8em;
   margin-bottom: 5px;
 }
 
@@ -169,6 +168,7 @@ input[type="text"] {
   padding: 8px;
   cursor: pointer;
   border-top: 1px solid #eee;
+  font-size: 0.8em;
 }
 
 #room-results div:first-child {
