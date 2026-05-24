@@ -121,6 +121,48 @@ input[type="text"] {
   margin-top: 2px;
 }
 
+#room-search-container {
+  margin: 10px 0;
+}
+
+#room-search {
+  padding: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-family: monospace;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#room-mode {
+  padding: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-family: monospace;
+  margin-bottom: 5px;
+}
+
+#room-results {
+  border: 1px solid #ccc;
+  background: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#room-results div {
+  padding: 8px;
+  cursor: pointer;
+  border-top: 1px solid #eee;
+}
+
+#room-results div:first-child {
+  border-top: none;
+}
+
+#room-results div:hover {
+  background: #f2f2f2;
+}
+
 #title-container {
   display: flex;
   align-items: center;
