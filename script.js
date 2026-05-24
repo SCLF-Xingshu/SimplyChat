@@ -17,13 +17,12 @@ if (redirect) {
 
 // Build room list with message counts (for search & ranking)
 async function fetchRoomsIndex() {
-
   const { data, error } = await supabase
     .from('simplychat_messages')
-    .select('room_id')
+    .select('room_id, created_at')
 
   if (error) {
-    console.error('Room fetch error:', error)
+    console.error(error)
     return []
   }
 
@@ -32,15 +31,23 @@ async function fetchRoomsIndex() {
   data.forEach(row => {
     const room = row.room_id.toLowerCase()
 
-    // count messages per room
-    map[room] = (map[room] || 0) + 1
+    if (!map[room]) {
+      map[room] = {
+        id: room,
+        count: 0,
+        lastActivity: 0
+      }
+    }
+
+    map[room].count++
+
+    const time = new Date(row.created_at).getTime()
+    if (time > map[room].lastActivity) {
+      map[room].lastActivity = time
+    }
   })
 
-  // convert object → array
-  return Object.entries(map).map(([id, count]) => ({
-    id,
-    count
-  }))
+  return Object.values(map)
 }
 
 // RoomId setup  
@@ -163,40 +170,6 @@ async function loadMessages() {
 }
 
 loadMessages()
-
-async function fetchRoomsIndex() {
-  const { data, error } = await supabase
-    .from('simplychat_messages')
-    .select('room_id, created_at')
-
-  if (error) {
-    console.error(error)
-    return []
-  }
-
-  const map = {}
-
-  data.forEach(row => {
-    const room = row.room_id.toLowerCase()
-
-    if (!map[room]) {
-      map[room] = {
-        id: room,
-        count: 0,
-        lastActivity: 0
-      }
-    }
-
-    map[room].count++
-
-    const time = new Date(row.created_at).getTime()
-    if (time > map[room].lastActivity) {
-      map[room].lastActivity = time
-    }
-  })
-
-  return Object.values(map)
-}
 
 async function initRooms() {
   roomsIndex = await fetchRoomsIndex()
