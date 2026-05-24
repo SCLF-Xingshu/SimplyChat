@@ -294,6 +294,17 @@ window.addEventListener('DOMContentLoaded', () => {
       r.id.includes(query)
     )
 
+    const exactRoomExists = results.some(r => r.id === query)
+
+    if (!exactRoomExists && query) {
+      results.unshift({
+        id: query,
+        count: 0,
+        lastActivity: 0,
+        virtual: true
+      })
+    }
+    
     if (mode === 'match') {
       results.sort((a, b) =>
         scoreMatch(b.id, query) - scoreMatch(a.id, query)
@@ -310,7 +321,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     results.forEach(room => {
       const div = document.createElement('div')
-      div.textContent = `${room.id} (${room.count})`
+      if (room.virtual) {
+        div.textContent = `${room.id} (new room)`
+        } else {
+        div.textContent = `${room.id} (${room.count})`
+      }
 
       div.onclick = () => {
         window.location.href = `/SimplyChat/chat/${room.id}`
