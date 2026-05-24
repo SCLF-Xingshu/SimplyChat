@@ -121,6 +121,22 @@ input[type="text"] {
   margin-top: 2px;
 }
 
+#top-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+#navbar {
+  white-space: nowrap;
+}
+
+#room-search {
+  flex: 1;
+  min-width: 0;
+}
+
 #room-search-container {
   margin: 10px 0;
 }
