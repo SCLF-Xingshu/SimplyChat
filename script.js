@@ -257,20 +257,16 @@ supabase.auth.onAuthStateChange((_event, session) => {
   }
 })
 
-window.addEventListener('DOMContentLoaded', () => {
-
-  function initRoomSearchSystem() {
+function initRoomSearchSystem() {
 
   const roomSearch = document.getElementById('room-search')
   const roomResults = document.getElementById('room-results')
   const roomMode = document.getElementById('room-mode')
 
-  // If search UI is not on this page, do nothing
   if (!roomSearch || !roomResults || !roomMode) return
 
   function scoreMatch(text, query) {
     let score = 0
-
     if (text === query) score += 100
     if (text.includes(query)) score += 20
 
@@ -284,7 +280,6 @@ window.addEventListener('DOMContentLoaded', () => {
   function render(results, query, mode) {
 
     roomResults.innerHTML = ''
-
     if (!query) return
 
     let finalResults = [...results]
@@ -318,17 +313,92 @@ window.addEventListener('DOMContentLoaded', () => {
 
       const div = document.createElement('div')
 
-      if (room.virtual) {
-        div.textContent = `${room.id} (new room)`
-        div.style.fontStyle = 'italic'
-        div.style.color = '#555'
-      } else {
-        div.textContent = `${room.id} (${room.count})`
+      div.textContent = room.virtual
+        ? `${room.id} (new room)`
+        : `${room.id} (${room.count})`
+
+      div.onclick = () => {
+        window.location.href = `/SimplyChat/chat/${room.id}`
       }
 
-      div.addEventListener('click', () => {
-        window.location.href = `/SimplyChat/chat/${room.id}`
+      roomResults.appendChild(div)
+    })
+  }
+
+  roomSearch.addEventListener('input', () => {
+
+    const query = roomSearch.value.toLowerCase().trim()
+    const mode = roomMode.value
+
+    const filtered = roomsIndex.filter(room =>
+      room.id.includes(query)
+    )
+
+    render(filtered, query, mode)
+  })
+}function initRoomSearchSystem() {
+
+  const roomSearch = document.getElementById('room-search')
+  const roomResults = document.getElementById('room-results')
+  const roomMode = document.getElementById('room-mode')
+
+  if (!roomSearch || !roomResults || !roomMode) return
+
+  function scoreMatch(text, query) {
+    let score = 0
+    if (text === query) score += 100
+    if (text.includes(query)) score += 20
+
+    for (let i = 0; i < Math.min(text.length, query.length); i++) {
+      if (text[i] === query[i]) score++
+    }
+
+    return score
+  }
+
+  function render(results, query, mode) {
+
+    roomResults.innerHTML = ''
+    if (!query) return
+
+    let finalResults = [...results]
+
+    const exists = finalResults.some(r => r.id === query)
+
+    if (!exists) {
+      finalResults.unshift({
+        id: query,
+        count: 0,
+        lastActivity: 0,
+        virtual: true
       })
+    }
+
+    if (mode === 'match') {
+      finalResults.sort((a, b) =>
+        scoreMatch(b.id, query) - scoreMatch(a.id, query)
+      )
+    }
+
+    if (mode === 'popular') {
+      finalResults.sort((a, b) => b.count - a.count)
+    }
+
+    if (mode === 'trending') {
+      finalResults.sort((a, b) => b.lastActivity - a.lastActivity)
+    }
+
+    finalResults.forEach(room => {
+
+      const div = document.createElement('div')
+
+      div.textContent = room.virtual
+        ? `${room.id} (new room)`
+        : `${room.id} (${room.count})`
+
+      div.onclick = () => {
+        window.location.href = `/SimplyChat/chat/${room.id}`
+      }
 
       roomResults.appendChild(div)
     })
@@ -347,6 +417,4 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 }
 
-})
-
-initRoomSearchSystem() /*stay at bottom*/
+initRoomSearchSystem()
