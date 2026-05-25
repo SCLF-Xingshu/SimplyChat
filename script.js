@@ -257,25 +257,6 @@ supabase.auth.onAuthStateChange((_event, session) => {
   }
 })
 
-function initRoomSearchSystem() {
-
-  const roomSearch = document.getElementById('room-search')
-  const roomResults = document.getElementById('room-results')
-  const roomMode = document.getElementById('room-mode')
-
-  if (!roomSearch || !roomResults || !roomMode) return
-
-  function scoreMatch(text, query) {
-    let score = 0
-    if (text === query) score += 100
-    if (text.includes(query)) score += 20
-
-    for (let i = 0; i < Math.min(text.length, query.length); i++) {
-      if (text[i] === query[i]) score++
-    }
-
-    return score
-  }
 
   function render(results, query, mode) {
 
