@@ -259,14 +259,14 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
 window.addEventListener('DOMContentLoaded', () => {
 
+  function initRoomSearchSystem() {
+
   const roomSearch = document.getElementById('room-search')
   const roomResults = document.getElementById('room-results')
   const roomMode = document.getElementById('room-mode')
 
-  if (!roomSearch || !roomResults || !roomMode) {
-    console.error("Room search elements not found in DOM")
-    return
-  }
+  // If search UI is not on this page, do nothing
+  if (!roomSearch || !roomResults || !roomMode) return
 
   function scoreMatch(text, query) {
     let score = 0
@@ -281,58 +281,72 @@ window.addEventListener('DOMContentLoaded', () => {
     return score
   }
 
-  roomSearch.addEventListener('input', () => {
-    const query = roomSearch.value.toLowerCase().trim()
-    const mode = roomMode.value
+  function render(results, query, mode) {
 
     roomResults.innerHTML = ''
+
     if (!query) return
 
-    if (!roomsIndex || roomsIndex.length === 0) return
+    let finalResults = [...results]
 
-    let results = roomsIndex.filter(r =>
-      r.id.includes(query)
-    )
+    const exists = finalResults.some(r => r.id === query)
 
-    const exactRoomExists = results.some(r => r.id === query)
-
-    if (!exactRoomExists && query) {
-      results.unshift({
+    if (!exists) {
+      finalResults.unshift({
         id: query,
         count: 0,
         lastActivity: 0,
         virtual: true
       })
     }
-    
+
     if (mode === 'match') {
-      results.sort((a, b) =>
+      finalResults.sort((a, b) =>
         scoreMatch(b.id, query) - scoreMatch(a.id, query)
       )
     }
 
     if (mode === 'popular') {
-      results.sort((a, b) => b.count - a.count)
+      finalResults.sort((a, b) => b.count - a.count)
     }
 
     if (mode === 'trending') {
-      results.sort((a, b) => b.lastActivity - a.lastActivity)
+      finalResults.sort((a, b) => b.lastActivity - a.lastActivity)
     }
 
-    results.forEach(room => {
+    finalResults.forEach(room => {
+
       const div = document.createElement('div')
+
       if (room.virtual) {
         div.textContent = `${room.id} (new room)`
-        } else {
+        div.style.fontStyle = 'italic'
+        div.style.color = '#555'
+      } else {
         div.textContent = `${room.id} (${room.count})`
       }
 
-      div.onclick = () => {
+      div.addEventListener('click', () => {
         window.location.href = `/SimplyChat/chat/${room.id}`
-      }
+      })
 
       roomResults.appendChild(div)
     })
+  }
+
+  roomSearch.addEventListener('input', () => {
+
+    const query = roomSearch.value.toLowerCase().trim()
+    const mode = roomMode.value
+
+    const filtered = roomsIndex.filter(room =>
+      room.id.includes(query)
+    )
+
+    render(filtered, query, mode)
   })
+}
 
 })
+
+initRoomSearchSystem() /*stay at bottom*/
