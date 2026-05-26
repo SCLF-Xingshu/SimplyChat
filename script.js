@@ -106,9 +106,11 @@ fontSlider.addEventListener('input', () => {
 })
 
 // Character counter
-messageInput.addEventListener('input', () => { 
-  charCount.textContent = `${messageInput.value.length} / 1000`
-})
+if (messageInput && charCount) {
+  messageInput.addEventListener('input', () => { 
+    charCount.textContent = `${messageInput.value.length} / 1000`
+  })
+}
 
 // Add message
 function addMessage(msg) {
