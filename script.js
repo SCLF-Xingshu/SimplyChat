@@ -317,7 +317,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
     render(filtered, query, mode)
   })
-}function initRoomSearchSystem() {
+function initRoomSearchSystem() {
 
   const roomSearch = document.getElementById('room-search')
   const roomResults = document.getElementById('room-results')
