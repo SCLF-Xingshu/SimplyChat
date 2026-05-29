@@ -80,6 +80,11 @@ const messageInput = document.getElementById('message')
 const charCount = document.getElementById('char-count')
 const sendBtn = document.getElementById('send')
 const githubLoginBtn = document.getElementById('github-login')
+const isChatPage =
+  messagesDiv &&
+  messageInput &&
+  charCount &&
+  sendBtn
 const fontSlider = document.getElementById('font-slider')
 const fontSizeDisplay = document.getElementById('font-size-display')
 
@@ -95,21 +100,25 @@ if (savedFontSize) {
   fontSizeDisplay.textContent = savedFontSize + 'px'
 }
 
-fontSlider.addEventListener('input', () => {
-  const size = fontSlider.value
+if (fontSlider && fontSizeDisplay) {
+  fontSlider.addEventListener('input', () => {
+    const size = fontSlider.value
 
-  document.documentElement.style.setProperty('--font-size', size + 'px')
+    document.documentElement.style.setProperty('--font-size', size + 'px')
 
-  fontSizeDisplay.textContent = size + 'px'
+    fontSizeDisplay.textContent = size + 'px'
 
-  localStorage.setItem('fontSize', size)
-})
-
-// Character counter
-if (messageInput && charCount) {
-  messageInput.addEventListener('input', () => { 
-    charCount.textContent = `${messageInput.value.length} / 1000`
+    localStorage.setItem('fontSize', size)
   })
+}
+
+if (isChatPage) {
+  // Character counter
+  if (messageInput && charCount) {
+    messageInput.addEventListener('input', () => { 
+      charCount.textContent = `${messageInput.value.length} / 1000`
+    })
+  }
 }
 
 // Add message
@@ -191,42 +200,46 @@ const chatChannel = supabase
   })
   .subscribe()
 
-sendBtn.addEventListener('click', async () => {
-  let username = 'Anonymous'
+if (isChatPage) {
+  sendBtn.addEventListener('click', async () => {
+    let username = 'Anonymous'
 
-  if (currentUser) { 
-    username = `[GH] ${currentUser.user_metadata.user_name}` 
-  } else {
-    username = usernameInput.value.trim() || 'Anonymous'
-  }
+    if (currentUser) { 
+      username = `[GH] ${currentUser.user_metadata.user_name}` 
+    } else {
+      username = usernameInput.value.trim() || 'Anonymous'
+    }
   
-  const content = messageInput.value.trim()
-  if (!content) return
-  if (content.length > 1000) {
-    alert('Your message exceeds 1000 characters')
-    return
-  }
+    const content = messageInput.value.trim()
+    if (!content) return
+    if (content.length > 1000) {
+      alert('Your message exceeds 1000 characters')
+      return
+    }
 
-  const { error } = await supabase.from('simplychat_messages').insert([{
-    username,
-    content,
-    room_id: roomId.toLowerCase()
-  }])
+    const { error } = await supabase.from('simplychat_messages').insert([{
+      username,
+      content,
+      room_id: roomId.toLowerCase()
+    }])
 
-  if (error) {
-    console.error('Error inserting message:', error)
-  } else {
-    messageInput.value = ''
-    charCount.textContent = '0 / 1000'
-  }
-})
-
-githubLoginBtn.addEventListener('click', async () => {
-  await supabase.auth.signInWithOAuth({
-    provider: 'github',
-    options: { redirectTo: 'https://sclf-xingshu.github.io/SimplyChat/' }
+    if (error) {
+      console.error('Error inserting message:', error)
+    } else {
+      messageInput.value = ''
+      charCount.textContent = '0 / 1000'
+    }
   })
-})
+}
+
+if (githubLoginBtn) {
+  githubLoginBtn.addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: 'https://sclf-xingshu.github.io/SimplyChat/' }
+    })
+  })
+}
 
 async function checkUser() {
   const { data: { session }, error } = await supabase.auth.getSession()
@@ -260,7 +273,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
 })
 
 
-  function render(results, query, mode) {
+  /*function render(results, query, mode) {
 
     roomResults.innerHTML = ''
     if (!query) return
@@ -306,9 +319,9 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
       roomResults.appendChild(div)
     })
-  }
+  }*/
 
-  roomSearch.addEventListener('input', () => {
+  /*roomSearch.addEventListener('input', () => {
 
     const query = roomSearch.value.toLowerCase().trim()
     const mode = roomMode.value
@@ -318,7 +331,8 @@ supabase.auth.onAuthStateChange((_event, session) => {
     )
 
     render(filtered, query, mode)
-  })
+  })*/
+
 function initRoomSearchSystem() {
 
   const roomSearch = document.getElementById('room-search')
