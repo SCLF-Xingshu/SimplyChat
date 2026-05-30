@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SimplyChat · Explore</title>
+
+  <link rel="stylesheet" href="/SimplyChat/style.css">
+  <link rel="icon" href="/SimplyChat/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/SimplyChat/SimplyChatLogo11May2026.png" type="image/png" sizes="32x32">
+
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+  <script type="module" src="/SimplyChat/script.js"></script>
+</head>
+
+<body>
+
+  <div id="chat-container">
+
+    <div id="title-container">
+      <img src="https://raw.githubusercontent.com/SCLF-Xingshu/SimplyChat/refs/heads/master/SimplyChatLogo11May2026.png"
+           class="title-icon"
+           alt="SimplyChat logo">
+
+      <h1>
+        <span class="title-highlight">SimplyChat.</span>
+        <span>Explore</span>
+      </h1>
+    </div>
+
+    <div id="top-bar">
+      <div id="navbar">
+        <p>
+          <a href="/SimplyChat/">Home</a> ·
+          <a href="/SimplyChat/blog">Blog</a> ·
+          <a href="/SimplyChat/explore">Explore</a>
+        </p>
+      </div>
+
+      <select id="explore-mode">
+        <option value="trending">Trending</option>
+        <option value="popular">Popular</option>
+        <option value="alphabetic">Alphabetical</option>
+      </select>
+    </div>
+
+    <p style="text-align: center;">
+      Discover all chatrooms on SimplyChat
+    </p>
+
+    <div id="explore-results"></div>
+
+  </div>
+
+</body>
+</html>
