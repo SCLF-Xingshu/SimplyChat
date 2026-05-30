@@ -27,25 +27,34 @@
     </div>
 
     <div id="top-bar">
-      <div id="navbar">
-        <p>
-          <a href="/SimplyChat/">Home</a> ·
-          <a href="/SimplyChat/blog">Blog</a> ·
-          <a href="/SimplyChat/explore">Explore</a>
-        </p>
-      </div>
-
-      <select id="explore-mode">
+      <div id="navbar"><p>
+        <a href="https://sclf-xingshu.github.io/SimplyChat/">Home</a> · 
+        <a href="https://sclf-xingshu.github.io/SimplyChat/blog">Blog</a> ·
+        <a href="https://sclf-xingshu.github.io/SimplyChat/explore">Explore</a>
+      </p></div>
+      <select id="room-mode">
         <option value="trending">Trending</option>
         <option value="popular">Popular</option>
-        <option value="alphabetic">Alphabetical</option>
+        <option value="match">Best match</option>
       </select>
+      <input type="text" id="room-search" placeholder="Search for a chatroom..." />
     </div>
-
+    <div id="room-results"></div>
+    
+    <select id="explore-mode">
+      <option value="trending">Trending</option>
+      <option value="popular">Popular</option>
+      <option value="alphabetic">Alphabetical</option>
+    </select>
     <p style="text-align: center;">
       Discover all chatrooms on SimplyChat
     </p>
 
+    <div id="font-size-controls">
+      <label for="font-slider">Font size:</label>
+      <input type="range" id="font-slider" min="10" max="40" value="20">
+      <span id="font-size-display">20px</span>
+    </div>
     <div id="explore-results"></div>
 
   </div>
