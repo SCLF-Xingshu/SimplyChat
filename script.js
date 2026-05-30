@@ -240,6 +240,7 @@ function renderExplore(rooms, mode) {
   sorted.forEach(function (room) {
 
     const div = document.createElement("div")
+    div.classList.add("explore-room")
 
     div.textContent =
       room.id + " (" + room.count + " messages)"
