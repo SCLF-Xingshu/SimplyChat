@@ -85,6 +85,9 @@ const isChatPage =
   messageInput &&
   charCount &&
   sendBtn
+const isExplorePage =
+  document.getElementById('explore-results') &&
+  document.getElementById('explore-mode')
 const fontSlider = document.getElementById('font-slider')
 const fontSizeDisplay = document.getElementById('font-size-display')
 
@@ -184,6 +187,71 @@ loadMessages()
 
 async function initRooms() {
   roomsIndex = await fetchRoomsIndex()
+}
+
+if (isExplorePage) {
+
+  loadExplore()
+
+  document.getElementById('explore-mode')
+    .addEventListener('change', function () {
+      loadExplore()
+    })
+
+}
+
+async function loadExplore() {
+
+  const rooms = await fetchRoomsIndex()
+
+  const mode = document.getElementById('explore-mode').value
+
+  renderExplore(rooms, mode)
+}
+
+function renderExplore(rooms, mode) {
+
+  const container = document.getElementById('explore-results')
+
+  container.innerHTML = ""
+
+  let sorted = [...rooms]
+
+  if (mode === "trending") {
+
+    sorted.sort(function (a, b) {
+      return b.lastActivity - a.lastActivity
+    })
+
+  } else if (mode === "popular") {
+
+    sorted.sort(function (a, b) {
+      return b.count - a.count
+    })
+
+  } else if (mode === "alphabetic") {
+
+    sorted.sort(function (a, b) {
+      return a.id.localeCompare(b.id)
+    })
+
+  }
+
+  sorted.forEach(function (room) {
+
+    const div = document.createElement("div")
+
+    div.textContent =
+      room.id + " (" + room.count + " messages)"
+
+    div.onclick = function () {
+      window.location.href =
+        "/SimplyChat/chat/" + room.id
+    }
+
+    container.appendChild(div)
+
+  })
 }
 
 initRooms()
