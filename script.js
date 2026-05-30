@@ -321,8 +321,10 @@ async function checkUser() {
 
   if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
-    usernameInput.value = `[GH] ${githubUsername}`
-    usernameInput.disabled = true
+    if (usernameInput) {
+      usernameInput.value = `[GH] ${githubUsername}`
+      usernameInput.disabled = true
+    }
   }
 
   if (window.location.hash) {
@@ -336,8 +338,10 @@ supabase.auth.onAuthStateChange((_event, session) => {
   if (session) {
     currentUser = session.user
     const githubUsername = currentUser.user_metadata.user_name
-    usernameInput.value = `[GH] ${githubUsername}`
-    usernameInput.disabled = true
+    if (usernameInput) {
+      usernameInput.value = `[GH] ${githubUsername}`
+      usernameInput.disabled = true
+    }
   }
 })
 
