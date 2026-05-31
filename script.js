@@ -126,17 +126,24 @@ if (isChatPage) {
 
 // Add message
 function addMessage(msg) {
+
+  if (!messagesDiv) return
+
   const div = document.createElement('div')
   div.classList.add('message')
+
   const date = new Date(msg.created_at)
+
   const day = String(date.getDate()).padStart(2,'0')
   const month = String(date.getMonth() + 1).padStart(2,'0')
   const year = date.getFullYear()
+
   const hours = String(date.getHours()).padStart(2,'0')
   const minutes = String(date.getMinutes()).padStart(2,'0')
+
   const tzParts = date.toLocaleTimeString(undefined, { timeZoneName: 'short' }).split(' ')
   const tz = tzParts[tzParts.length - 1] || ''
-  
+
   let safeText = DOMPurify.sanitize(msg.content)
   safeText = safeText.replace(/\n/g, '<br>')
 
@@ -144,7 +151,7 @@ function addMessage(msg) {
     <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${msg.username}:</div>
     <div class="msg-content">${safeText}</div>
   `
-  
+
   messagesDiv.appendChild(div)
   messagesDiv.scrollTop = messagesDiv.scrollHeight
 }
@@ -152,6 +159,8 @@ function addMessage(msg) {
 // Load existing messages
 async function loadMessages() {
 
+  if (!messagesDiv) return
+  
   let query = supabase
     .from('simplychat_messages')
     .select('*')
@@ -183,7 +192,9 @@ async function loadMessages() {
   }
 }
 
-loadMessages()
+if (messagesDiv) {
+  loadMessages()
+}
 
 async function initRooms() {
   roomsIndex = await fetchRoomsIndex()
