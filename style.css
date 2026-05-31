@@ -126,9 +126,15 @@ input[type="text"] {
   align-items: center;
   gap: 8px;
   margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+#top-bar > * {
+  max-width: 100%;
 }
 
 #navbar {
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 
@@ -184,6 +190,8 @@ input[type="text"] {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 #title-container h1 {
