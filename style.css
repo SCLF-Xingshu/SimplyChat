@@ -161,7 +161,7 @@ input[type="text"] {
   font-family: monospace;
   font-size: 0.7em;
   margin-bottom: 5px;
-  margin-left: 10px;
+  margin-left: calc(0.5em + 5px);
 }
 
 #room-results {
