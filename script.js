@@ -62,9 +62,12 @@ if (parts[2] === 'chat' && parts[3]) {
 }
 
 // Dynamic title (using the RoomId)
-if (roomId === 'global') {
+/*old, not working on Blog and Explore*/ /*if (roomId === 'global') {
   document.title = 'SimplyChat / Online Chatrooms'
 } else {
+  document.title = 'SimplyChat / ' + roomId
+}*/
+if (roomId !== 'global') {
   document.title = 'SimplyChat / ' + roomId
 }
 
