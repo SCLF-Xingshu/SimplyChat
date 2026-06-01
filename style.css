@@ -121,6 +121,12 @@ input[type="text"] {
   margin-top: 2px;
 }
 
+#message {
+  height: 120px;
+  width: 100%;
+  resize: vertical;
+}
+
 #top-bar {
   display: flex;
   align-items: center;
