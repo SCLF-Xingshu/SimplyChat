@@ -325,7 +325,7 @@ body {
 #chat-container,
 #top-bar,
 #messages,
-#font-size-controls,
+/*#font-size-controls,*/
 #room-results,
 #blog-container {
   position: relative;
