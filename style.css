@@ -122,7 +122,7 @@ input[type="text"] {
 }
 
 #message {
-  height: 120px;
+  height: 60px;
   width: 100%;
   resize: vertical;
 }
