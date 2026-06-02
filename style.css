@@ -26,9 +26,9 @@
   bottom: auto !important;
   transform: none !important;
 
-  z-index: 99999;
-}
-  z-index: 9999;
+  z-index: 2147483647 !important;
+
+  isolation: isolate;
 
   background: rgba(255,255,255,0.5);
   border: 1px solid #ccc;
