@@ -1,5 +1,10 @@
 const bgCanvas = document.getElementById('bg-canvas')
+console.log('bgCanvas =', bgCanvas)
+if (!bgCanvas) {
+  throw new Error('bg-canvas not found')
+}
 const bgCtx = bgCanvas.getContext('2d')
+console.log('bgCtx =', bgCtx)
 
 function resizeBgCanvas() {
   bgCanvas.width = window.innerWidth
