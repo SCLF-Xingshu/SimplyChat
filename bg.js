@@ -85,6 +85,8 @@ for (let i = 0; i < 20; i++) {
 
 function animateBg() {
 
+  const frameStart = performance.now()
+  
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height)
 
   if (Math.random() < 0.015) {
@@ -171,6 +173,12 @@ function animateBg() {
     drawBgTriangle(t)
   }
 
+  const frameTime = performance.now() - frameStart
+
+  if (frameTime > 10) {
+    console.log('Frame:', frameTime.toFixed(2), 'ms')
+  }
+  
   requestAnimationFrame(animateBg)
 }
 
