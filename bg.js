@@ -178,6 +178,10 @@ function animateBg() {
   if (frameTime > 10) {
     console.log('Frame:', frameTime.toFixed(2), 'ms')
   }
+
+  if (Math.random() < 0.01) {
+    console.log('Triangles:', bgTriangles.length)
+  }
   
   requestAnimationFrame(animateBg)
 }
