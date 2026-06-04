@@ -170,6 +170,14 @@ function animateBg() {
       }
     }
 
+    if (Math.random() < 0.0005) {
+    console.log(
+      'blur=', t.blur.toFixed(2),
+      'alpha=', t.alpha.toFixed(2),
+      'dying=', t.dying
+      )
+    }
+    
     drawBgTriangle(t)
   }
 
