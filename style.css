@@ -127,6 +127,9 @@ input[type="text"] {
   color: #666;
   margin-top: 2px;
 }
+#chat-container > p {
+  color: #ffffff;
+}
 
 #message {
   height: 60px;
