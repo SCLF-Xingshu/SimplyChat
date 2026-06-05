@@ -14,7 +14,7 @@
 } */
 
 :root {
-  ---size: 20px;
+  --font-size: 20px;
 }
 
 #font-size-controls {
