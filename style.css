@@ -89,8 +89,9 @@ input[type="text"] {
   flex: 1;
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   font-family: monospace;
+  background: #fff;
 }
 
 #send {
