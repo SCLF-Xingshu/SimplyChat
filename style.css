@@ -287,6 +287,16 @@ input[type="text"] {
   color: grey;
 }
 
+.user-tag-gh {
+  background-color: #0FBF3E;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-right: 4px;
+  display: inline-block;
+}
+
 /* blog styles */
 
 #blog-container {
