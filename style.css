@@ -291,7 +291,7 @@ input[type="text"] {
   background-color: #0FBF3E;
   color: white;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 12px;
   font-weight: bold;
   margin-right: 4px;
   display: inline-block;
