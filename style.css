@@ -151,6 +151,15 @@ input[type="text"] {
   white-space: nowrap;
 }
 
+#navbar a,
+#navbar a:visited {
+  color: #ffffff;
+}
+
+#navbar a:hover {
+  color: #cccccc;
+}
+
 #room-search-container {
   margin: 10px 0;
 }
