@@ -22,6 +22,8 @@ function bgRand(min, max) {
 
 function spawnBgTriangle() {
 
+  if (bgTriangles.length >= 60) return;
+
   const maxBlur = bgRand(6, 14)
 
   bgTriangles.push({
@@ -159,7 +161,7 @@ function animateBg() {
       t.blur >= t.maxBlur * 0.95 &&
       t.alpha <= 0.05
     ) {
-      if (Math.random() < 0.2) {
+      if (Math.random() < 0.6) {
         t.dying = true
       }
     }
