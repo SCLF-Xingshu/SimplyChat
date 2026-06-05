@@ -36,7 +36,7 @@ function spawnBgTriangle() {
     ax: 0,
     ay: 0,
 
-    size: bgRand(4, 14),
+    size: bgRand(14, 28),
 
     angle: bgRand(0, Math.PI * 2),
     rot: bgRand(-0.01, 0.01),
