@@ -151,6 +151,7 @@ input[type="text"] {
   white-space: nowrap;
 }
 
+#navbar p,
 #navbar a,
 #navbar a:visited {
   color: #ffffff;
