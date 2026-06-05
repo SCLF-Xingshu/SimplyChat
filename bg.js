@@ -50,6 +50,7 @@ function spawnBgTriangle() {
     focusTimer: bgRand(80, 180),
 
     dying: false,
+    fading: false,
     deathProgress: 0,
 
     appearing: true
@@ -139,12 +140,20 @@ function animateBg() {
     if (t.focusTimer <= 0 && !t.dying) {
 
       t.targetBlur = bgRand(0, t.maxBlur)
-
+      if (Math.random() < 0.15) {
+        t.fading = true
+      }
       t.focusTimer = bgRand(100, 250)
     }
 
     t.blur += (t.targetBlur - t.blur) * 0.02
 
+    if (t.fading) {
+      t.alpha *= 0.985
+    } else {
+      t.alpha += (0.5 - t.alpha) * 0.01
+    }
+    
     if (
       !t.dying &&
       t.blur >= t.maxBlur * 0.95 &&
