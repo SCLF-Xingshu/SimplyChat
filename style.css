@@ -124,13 +124,13 @@ input[type="text"] {
 #char-count {
   text-align: right;
   font-size: 0.6em;
-  color: #666;
+  color: #fff;
   margin-top: 2px;
 }
 
 #chat-container > p,
 #blog-container > p {
-  color: #ffffff;
+  color: #fff;
 }
 
 #message {
@@ -159,7 +159,7 @@ input[type="text"] {
 #navbar p,
 #navbar a,
 #navbar a:visited {
-  color: #ffffff;
+  color: #fff;
 }
 
 #navbar a:hover {
