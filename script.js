@@ -166,7 +166,7 @@ function addMessage(msg) {
   safeText = safeText.replace(/\n/g, '<br>')
 
   div.innerHTML = `
-    <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${msg.username}:</div>
+    <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)}:</div>
     <div class="msg-content">${safeText}</div>
   `
 
@@ -303,7 +303,7 @@ if (isChatPage) {
     let username = 'Anonymous'
 
     if (currentUser) { 
-      username = `[GH] ${currentUser.user_metadata.user_name}` 
+      username = `[GH]${currentUser.user_metadata.user_name}` 
     } else {
       username = usernameInput.value.trim() || 'Anonymous'
     }
