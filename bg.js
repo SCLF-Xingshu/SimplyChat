@@ -64,8 +64,8 @@ function drawBgTriangle(t) {
   bgCtx.translate(t.x, t.y)
   bgCtx.rotate(t.angle)
 
-  /*bgCtx.filter = `blur(${t.blur}px)`*/
-  bgCtx.filter = '6px'
+  bgCtx.filter = `blur(${t.blur}px)`
+  /*bgCtx.filter = '6px'*/
   bgCtx.globalAlpha = t.alpha
 
   bgCtx.fillStyle = 'white'
