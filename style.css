@@ -49,7 +49,7 @@ body {
   font-size: var(--font-size); /* multiple of 5 */
   line-height: 1;
   padding: 20px;
-  background: #f7f7f7;
+  background: /*#f7f7f7*/#1671cc;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeSpeed;
