@@ -1,5 +1,20 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatUsername(username) {
+  const ghMatch = username.match(/^\[GH\]/);
+  if (ghMatch) {
+    const restOfName = username.slice(4);
+    return `<span class="user-tag-gh">[GH]</span>${escapeHtml(restOfName)}`;
+  }
+  return escapeHtml(username);
+}
+
 // Supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
