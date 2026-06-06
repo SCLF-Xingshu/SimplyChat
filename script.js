@@ -225,7 +225,7 @@ async function loadMessages() {
   console.log('Error:', error)
   // end debug
   
-  if (error) {
+    if (error) {
     console.error('Error loading messages:', error)
   } else {
 
@@ -260,6 +260,11 @@ async function loadMessages() {
   // Custom message goes after welcome but before chat messages
   if (customMessages[roomId]) {
     addSystemMessage(customMessages[roomId], false)
+  }
+  
+  // Add messages from Supabase
+  if (messages && messages.length > 0) {
+    messages.forEach(addMessage)
   }
   
   // Server message only if no messages, goes after custom message
