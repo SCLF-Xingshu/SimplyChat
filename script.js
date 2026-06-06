@@ -66,7 +66,8 @@ async function fetchRoomsIndex() {
 }
 
 // RoomId setup  
-const parts = window.location.pathname.split('/')
+//old
+/*const parts = window.location.pathname.split('/')
 
 let roomId
 
@@ -74,7 +75,31 @@ if (parts[2] === 'chat' && parts[3]) {
   roomId = parts[3].toLowerCase()
 } else {
   roomId = 'global'
+}*/
+//new
+const parts = window.location.pathname.split('/')
+let roomId
+const redirectPath = sessionStorage.getItem('redirect')
+
+if (redirectPath) {
+  const redirectParts = redirectPath.split('/')
+  if (redirectParts[2] === 'chat' && redirectParts[3]) {
+    roomId = redirectParts[3].toLowerCase()
+  } else if (redirectParts[2] && redirectParts[2] !== 'chat' && redirectParts[2] !== '') {
+    roomId = redirectParts[2].toLowerCase()
+  } else {
+    roomId = 'global'
+  }
+} else if (parts[2] === 'chat' && parts[3]) {
+  roomId = parts[3].toLowerCase()
+} else if (parts[2] && parts[2] !== 'chat' && parts[2] !== '') {
+  roomId = parts[2].toLowerCase()
+} else {
+  roomId = 'global'
 }
+
+console.log('Detected roomId:', roomId)
+
 
 // Dynamic title (using the RoomId)
 /*old, not working on Blog and Explore*/ /*if (roomId === 'global') {
