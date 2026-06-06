@@ -181,13 +181,13 @@ function animateBg() {
       }
     }
 
-    if (Math.random() < 0.0005) {
+    /*if (Math.random() < 0.0005) {
     console.log(
       'blur=', t.blur.toFixed(2),
       'alpha=', t.alpha.toFixed(2),
       'dying=', t.dying
       )
-    }
+    }*/
     
     drawBgTriangle(t)
   }
@@ -198,9 +198,9 @@ function animateBg() {
     console.log('Frame:', frameTime.toFixed(2), 'ms')
   }
 
-  if (Math.random() < 0.01) {
+ /* if (Math.random() < 0.01) {
     console.log('Triangles:', bgTriangles.length)
-  }
+  }*/
   
   requestAnimationFrame(animateBg)
 }
