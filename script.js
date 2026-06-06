@@ -170,6 +170,8 @@ if (isChatPage) {
 // Add message
 function addMessage(msg) {
 
+  /*debug*/console.log('addMessage called:', msg)
+  
   if (!messagesDiv) return
 
   const div = document.createElement('div')
