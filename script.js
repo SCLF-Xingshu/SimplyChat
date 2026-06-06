@@ -191,12 +191,18 @@ async function loadMessages() {
   }
 
   const { data: messages, error } = await query
+
+  // Temporary debug
+  console.log('RoomId being queried:', roomId)
+  console.log('Messages returned:', messages)
+  console.log('Error:', error)
+  // end debug
   
   if (error) {
     console.error('Error loading messages:', error)
   } else {
 
-  /*Welcome messages*/
+  // Welcome messages
   const customMessages = {
     'feedback': 'Welcome to the feedback page!',
     'simplychat': 'Find here the latest infos about SimplyChat.',
@@ -233,7 +239,7 @@ async function loadMessages() {
   if (!messages || messages.length === 0) {
     addSystemMessage('Server : No messages yet.', false)
   }
-  /*End Welcome messages*/
+  // End Welcome messages
   }
 }
 
