@@ -196,17 +196,40 @@ async function loadMessages() {
     console.error('Error loading messages:', error)
   } else {
 
-    if (!messages || messages.length === 0) {
-      const empty = document.createElement('div')
-      empty.classList.add('message')
-      empty.textContent = 'Server : No messages yet.'
-      empty.style.fontStyle = 'italic'
-      empty.style.color = '#8c8c8c'
-      messagesDiv.appendChild(empty)
-    } else {
-      messages.forEach(addMessage)
+  if (!messages || messages.length === 0) {
+    const customMessages = {
+      'feedback': 'Welcome to the feedback page!',
+      'simplychat': 'Welcome to the SimplyChat hub!',
+      'welcome': 'Welcome new members!'
     }
-
+  
+    const noWelcomeRooms = ['feedback', 'simplychat', 'welcome']
+  
+    if (customMessages[roomId]) {
+      const customDiv = document.createElement('div')
+      customDiv.classList.add('message')
+      customDiv.style.fontStyle = 'italic'
+      customDiv.style.color = '#8c8c8c'
+      customDiv.textContent = customMessages[roomId]
+      messagesDiv.appendChild(customDiv)
+    }
+  
+    if (!noWelcomeRooms.includes(roomId)) {
+      const welcomeDiv = document.createElement('div')
+      welcomeDiv.classList.add('message')
+      welcomeDiv.style.fontStyle = 'italic'
+      welcomeDiv.style.color = '#8c8c8c'
+      welcomeDiv.textContent = `Welcome to /${roomId}!`
+      messagesDiv.appendChild(welcomeDiv)
+    }
+  
+    const serverDiv = document.createElement('div')
+    serverDiv.classList.add('message')
+    serverDiv.style.fontStyle = 'italic'
+    serverDiv.style.color = '#8c8c8c'
+    serverDiv.textContent = 'Server : No messages yet.'
+    messagesDiv.appendChild(serverDiv)
+  }
   }
 }
 
