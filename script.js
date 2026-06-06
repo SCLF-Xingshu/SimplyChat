@@ -196,40 +196,44 @@ async function loadMessages() {
     console.error('Error loading messages:', error)
   } else {
 
-  if (!messages || messages.length === 0) {
-    const customMessages = {
-      'feedback': 'Welcome to the feedback page!',
-      'simplychat': 'Welcome to the SimplyChat hub!',
-      'welcome': 'Welcome new members!'
-    }
-  
-    const noWelcomeRooms = ['feedback', 'simplychat', 'welcome']
-  
-    if (customMessages[roomId]) {
-      const customDiv = document.createElement('div')
-      customDiv.classList.add('message')
-      customDiv.style.fontStyle = 'italic'
-      customDiv.style.color = '#8c8c8c'
-      customDiv.textContent = customMessages[roomId]
-      messagesDiv.appendChild(customDiv)
-    }
-  
-    if (!noWelcomeRooms.includes(roomId)) {
-      const welcomeDiv = document.createElement('div')
-      welcomeDiv.classList.add('message')
-      welcomeDiv.style.fontStyle = 'italic'
-      welcomeDiv.style.color = '#8c8c8c'
-      welcomeDiv.textContent = `Welcome to /${roomId}!`
-      messagesDiv.appendChild(welcomeDiv)
-    }
-  
-    const serverDiv = document.createElement('div')
-    serverDiv.classList.add('message')
-    serverDiv.style.fontStyle = 'italic'
-    serverDiv.style.color = '#8c8c8c'
-    serverDiv.textContent = 'Server : No messages yet.'
-    messagesDiv.appendChild(serverDiv)
+  /*Welcome messages*/
+  const customMessages = {
+    'feedback': 'Welcome to the feedback page!',
+    'simplychat': 'Find here the latest infos about SimplyChat.',
+    'welcome': 'Introduce yourself to SimplyChat!'
   }
+  
+  const noWelcomeRooms = ['feedback', 'simplychat', 'welcome']
+  
+  function addSystemMessage(text, insertAtTop) {
+    const div = document.createElement('div')
+    div.classList.add('message')
+    div.style.fontStyle = 'italic'
+    div.style.color = '#8c8c8c'
+    div.textContent = text
+    
+    if (insertAtTop) {
+      messagesDiv.insertBefore(div, messagesDiv.firstChild)
+    } else {
+      messagesDiv.appendChild(div)
+    }
+  }
+  
+  // Welcome message goes to top (always)
+  if (!noWelcomeRooms.includes(roomId)) {
+    addSystemMessage(`Welcome to /${roomId}!`, true)
+  }
+  
+  // Custom message goes after welcome but before chat messages
+  if (customMessages[roomId]) {
+    addSystemMessage(customMessages[roomId], false)
+  }
+  
+  // Server message only if no messages, goes after custom message
+  if (!messages || messages.length === 0) {
+    addSystemMessage('Server : No messages yet.', false)
+  }
+  /*End Welcome messages*/
   }
 }
 
