@@ -35,7 +35,6 @@ function generateHexId() {
 async function getOrCreateUser() {
   console.log('getOrCreateUser() started');
   
-  // Check localStorage first
   const storedUserId = localStorage.getItem('simplychat_user_id');
   const storedHexId = localStorage.getItem('simplychat_hex_id');
   
@@ -46,70 +45,68 @@ async function getOrCreateUser() {
     return { userId: currentUserId, hexId: currentHexId };
   }
   
-  // Create new user
   console.log('Creating new user...');
   
-  // Get highest user_id
-  const { data: existingUsers, error: fetchError } = await supabase
-    .from('users')
-    .select('user_id')
-    .order('user_id', { ascending: false })
-    .limit(1);
-  
-  if (fetchError) {
-    console.error('Error fetching users:', fetchError);
-  }
-  
-  let newUserId = 1;
-  if (existingUsers && existingUsers.length > 0) {
-    newUserId = existingUsers[0].user_id + 1;
-  }
-  
+  // Use timestamp as user_id (milliseconds since epoch)
+  const newUserId = Date.now();
   const newHexId = generateHexId();
   
-  const { error: insertError } = await supabase
-    .from('users')
-    .insert({ user_id: newUserId, hex_id: newHexId });
+  console.log('Attempting to insert user_id:', newUserId);
   
-  if (insertError) {
-    console.error('Error inserting user:', insertError);
+  try {
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert({ user_id: newUserId, hex_id: newHexId });
+    
+    if (insertError) {
+      console.error('Error inserting user:', insertError);
+      return null;
+    }
+    
+    currentUserId = newUserId;
+    currentHexId = newHexId;
+    
+    localStorage.setItem('simplychat_user_id', newUserId);
+    localStorage.setItem('simplychat_hex_id', newHexId);
+    
+    console.log('User created:', newUserId, newHexId);
+    return { userId: newUserId, hexId: newHexId };
+    
+  } catch (err) {
+    console.error('Exception in insert:', err);
     return null;
   }
-  
-  currentUserId = newUserId;
-  currentHexId = newHexId;
-  
-  localStorage.setItem('simplychat_user_id', newUserId);
-  localStorage.setItem('simplychat_hex_id', newHexId);
-  
-  console.log('User created:', newUserId, newHexId);
-  return { userId: newUserId, hexId: newHexId };
 }
 
 // Load all rooms the current user follows
 async function loadFollowedRooms() {
-  console.log('loadFollowedRooms() started, currentUserId:', currentUserId);
+  console.log('loadFollowedRooms() started');
   
   if (!currentUserId) {
-    console.log('No currentUserId, skipping');
+    console.log('No currentUserId');
     return;
   }
   
-  const { data, error } = await supabase
-    .from('user_follows')
-    .select('room_id')
-    .eq('user_id', currentUserId);
-  
-  if (error) {
-    console.error('Error loading followed rooms:', error);
-    return;
+  try {
+    const { data, error } = await supabase
+      .from('user_follows')
+      .select('room_id')
+      .eq('user_id', currentUserId);
+    
+    if (error) {
+      console.error('Error loading followed rooms:', error);
+      return;
+    }
+    
+    followingRooms.clear();
+    if (data && data.length > 0) {
+      data.forEach(item => followingRooms.add(item.room_id));
+    }
+    console.log('Followed rooms count:', followingRooms.size);
+    
+  } catch (err) {
+    console.error('Exception in loadFollowedRooms:', err);
   }
-  
-  followingRooms.clear();
-  if (data) {
-    data.forEach(item => followingRooms.add(item.room_id));
-  }
-  console.log('Followed rooms:', [...followingRooms]);
 }
 
 // Check if user follows a specific room
