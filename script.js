@@ -88,17 +88,28 @@ async function getOrCreateUser() {
 
 // Load all rooms the current user follows
 async function loadFollowedRooms() {
-  if (!currentUserId) return;
+  console.log('loadFollowedRooms() started, currentUserId:', currentUserId);
+  
+  if (!currentUserId) {
+    console.log('No currentUserId, skipping');
+    return;
+  }
   
   const { data, error } = await supabase
     .from('user_follows')
     .select('room_id')
     .eq('user_id', currentUserId);
   
-  if (!error && data) {
-    followingRooms.clear();
+  if (error) {
+    console.error('Error loading followed rooms:', error);
+    return;
+  }
+  
+  followingRooms.clear();
+  if (data) {
     data.forEach(item => followingRooms.add(item.room_id));
   }
+  console.log('Followed rooms:', [...followingRooms]);
 }
 
 // Check if user follows a specific room
