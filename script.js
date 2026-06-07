@@ -1,3 +1,9 @@
+// 1 - User identification for notifications
+let currentUserId = null;
+let currentHexId = null;
+let followingRooms = new Set();
+// end 1
+
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 function escapeHtml(text) {
@@ -13,6 +19,173 @@ function formatUsername(username) {
     return `<span class="user-tag-gh">[GH]</span>${escapeHtml(restOfName)}`;
   }
   return escapeHtml(username);
+}
+
+// Generate random 12-character hex string (0~9, a~f)
+function generateHexId() {
+  const chars = '0123456789abcdef';
+  let result = '';
+  for (let i = 0; i < 12; i++) {
+    result += chars[Math.floor(Math.random() * 16)];
+  }
+  return result;
+}
+
+// Get or create user (stored in users table)
+async function getOrCreateUser() {
+  const storedUserId = localStorage.getItem('simplychat_user_id');
+  const storedHexId = localStorage.getItem('simplychat_hex_id');
+  
+  if (storedUserId && storedHexId) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('user_id, hex_id')
+      .eq('user_id', parseInt(storedUserId))
+      .eq('hex_id', storedHexId)
+      .single();
+    
+    if (!error && data) {
+      currentUserId = data.user_id;
+      currentHexId = data.hex_id;
+      return { userId: currentUserId, hexId: currentHexId };
+    }
+  }
+  
+  const { data: maxRow, error: maxError } = await supabase
+    .from('users')
+    .select('user_id')
+    .order('user_id', { ascending: false })
+    .limit(1);
+  
+  let newUserId = 1;
+  if (!maxError && maxRow && maxRow.length > 0) {
+    newUserId = maxRow[0].user_id + 1;
+  }
+  
+  const newHexId = generateHexId();
+  
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert([{ user_id: newUserId, hex_id: newHexId }]);
+  
+  if (insertError) {
+    console.error('Error creating user:', insertError);
+    return null;
+  }
+  
+  currentUserId = newUserId;
+  currentHexId = newHexId;
+  
+  localStorage.setItem('simplychat_user_id', newUserId);
+  localStorage.setItem('simplychat_hex_id', newHexId);
+  
+  return { userId: newUserId, hexId: newHexId };
+}
+
+// Load all rooms the current user follows
+async function loadFollowedRooms() {
+  if (!currentUserId) return;
+  
+  const { data, error } = await supabase
+    .from('user_follows')
+    .select('room_id')
+    .eq('user_id', currentUserId);
+  
+  if (!error && data) {
+    followingRooms.clear();
+    data.forEach(item => followingRooms.add(item.room_id));
+  }
+}
+
+// Check if user follows a specific room
+async function isFollowingRoom(roomId) {
+  if (!currentUserId) return false;
+  return followingRooms.has(roomId);
+}
+
+// Follow a room
+async function followRoom(roomId) {
+  if (!currentUserId) {
+    await getOrCreateUser();
+    await loadFollowedRooms();
+  }
+  
+  if (followingRooms.has(roomId)) return true;
+  
+  const { error } = await supabase
+    .from('user_follows')
+    .insert([{
+      user_id: currentUserId,
+      room_id: roomId
+    }]);
+  
+  if (error) {
+    console.error('Error following room:', error);
+    return false;
+  }
+  
+  followingRooms.add(roomId);
+  return true;
+}
+
+// Unfollow a room
+async function unfollowRoom(roomId) {
+  if (!currentUserId) return false;
+  
+  if (!followingRooms.has(roomId)) return true;
+  
+  const { error } = await supabase
+    .from('user_follows')
+    .delete()
+    .eq('user_id', currentUserId)
+    .eq('room_id', roomId);
+  
+  if (error) {
+    console.error('Error unfollowing room:', error);
+    return false;
+  }
+  
+  followingRooms.delete(roomId);
+  return true;
+}
+
+// Request notification permission
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications");
+    return false;
+  }
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission !== "denied") {
+    const permission = await Notification.requestPermission();
+    return permission === "granted";
+  }
+  return false;
+}
+
+// Send browser notification
+function sendNotification(roomId, username, content) {
+  if (Notification.permission !== "granted") return;
+  
+  if (currentUser) {
+    const githubName = currentUser.user_metadata?.user_name;
+    if (githubName && (username === `[GH]${githubName}` || username === `[GH] ${githubName}`)) {
+      return;
+    }
+  }
+  
+  const notification = new Notification(`New message in ${roomId}`, {
+    body: `${username}: ${content.substring(0, 100)}${content.length > 100 ? '...' : ''}`,
+    icon: '/SimplyChat/logo.svg',
+    tag: roomId,
+  });
+  
+  notification.onclick = () => {
+    window.focus();
+    notification.close();
+  };
+  
+  setTimeout(() => notification.close(), 5000);
 }
 
 // Supabase setup
