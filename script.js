@@ -39,6 +39,7 @@ async function getOrCreateUser() {
   const storedHexId = localStorage.getItem('simplychat_hex_id');
   console.log('localStorage - userId:', storedUserId, 'hexId:', storedHexId);
   
+  // If we have stored IDs, try to use them
   if (storedUserId && storedHexId) {
     console.log('Found stored IDs, verifying with Supabase...');
     const { data, error } = await supabase
@@ -46,7 +47,7 @@ async function getOrCreateUser() {
       .select('user_id, hex_id')
       .eq('user_id', parseInt(storedUserId))
       .eq('hex_id', storedHexId)
-      .single();
+      .maybeSingle();  // Changed from .single() to .maybeSingle()
     
     console.log('Supabase verification result:', data, error);
     
@@ -60,30 +61,39 @@ async function getOrCreateUser() {
   
   console.log('No existing user found, creating new user...');
   
+  // Get the current highest user_id
+  console.log('Querying for max user_id...');
   const { data: maxRow, error: maxError } = await supabase
     .from('users')
     .select('user_id')
     .order('user_id', { ascending: false })
     .limit(1);
   
-  console.log('Max user_id query result:', maxRow, maxError);
+  console.log('Max user_id query result:', maxRow);
+  console.log('Max user_id query error:', maxError);
   
+  // Determine new user_id
   let newUserId = 1;
-  if (!maxError && maxRow && maxRow.length > 0) {
+  if (maxRow && maxRow.length > 0 && maxRow[0].user_id) {
     newUserId = maxRow[0].user_id + 1;
   }
   
   const newHexId = generateHexId();
-  console.log('New user_id:', newUserId, 'new hexId:', newHexId);
+  console.log('Attempting to insert user_id:', newUserId, 'hex_id:', newHexId);
   
-  const { error: insertError } = await supabase
+  // Insert the new user
+  const { data: insertData, error: insertError } = await supabase
     .from('users')
-    .insert([{ user_id: newUserId, hex_id: newHexId }]);
+    .insert([{ user_id: newUserId, hex_id: newHexId }])
+    .select();
   
   if (insertError) {
-    console.error('Error creating user:', insertError);
+    console.error('ERROR creating user:', insertError.message);
+    console.error('Full error:', insertError);
     return null;
   }
+  
+  console.log('Insert successful:', insertData);
   
   currentUserId = newUserId;
   currentHexId = newHexId;
@@ -91,7 +101,7 @@ async function getOrCreateUser() {
   localStorage.setItem('simplychat_user_id', newUserId);
   localStorage.setItem('simplychat_hex_id', newHexId);
   
-  console.log('New user created and saved to localStorage');
+  console.log('New user created and saved!');
   return { userId: newUserId, hexId: newHexId };
 }
 
