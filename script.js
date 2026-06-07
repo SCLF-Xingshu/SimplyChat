@@ -188,6 +188,60 @@ function sendNotification(roomId, username, content) {
   setTimeout(() => notification.close(), 5000);
 }
 
+// Follow button DOM element
+const followBtn = document.getElementById('follow-btn');
+
+// Update button text and style based on follow status
+async function updateFollowButton() {
+  if (!followBtn) return;
+  
+  if (!currentUserId) {
+    followBtn.style.display = 'none';
+    return;
+  }
+  
+  const following = await isFollowingRoom(roomId);
+  
+  followBtn.style.display = 'inline-block';
+  
+  if (following) {
+    followBtn.textContent = '🔕 Unfollow Room';
+    followBtn.classList.add('following');
+    followBtn.classList.remove('not-following');
+  } else {
+    followBtn.textContent = '🔔 Follow Room';
+    followBtn.classList.add('not-following');
+    followBtn.classList.remove('following');
+  }
+}
+
+// Handle follow button click
+if (followBtn) {
+  followBtn.addEventListener('click', async () => {
+    // If user doesn't exist yet, create them
+    if (!currentUserId) {
+      await getOrCreateUser();
+      await loadFollowedRooms();
+    }
+    
+    const currentlyFollowing = await isFollowingRoom(roomId);
+    
+    if (!currentlyFollowing) {
+      // Request notification permission before following
+      const granted = await requestNotificationPermission();
+      if (!granted) {
+        alert('Please allow notifications in your browser settings to follow rooms.');
+        return;
+      }
+      await followRoom(roomId);
+    } else {
+      await unfollowRoom(roomId);
+    }
+    
+    await updateFollowButton();
+  });
+}
+
 // Supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU'
