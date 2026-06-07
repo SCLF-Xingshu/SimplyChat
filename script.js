@@ -35,65 +35,46 @@ function generateHexId() {
 async function getOrCreateUser() {
   console.log('getOrCreateUser() started');
   
+  // Check localStorage first
   const storedUserId = localStorage.getItem('simplychat_user_id');
   const storedHexId = localStorage.getItem('simplychat_hex_id');
-  console.log('localStorage - userId:', storedUserId, 'hexId:', storedHexId);
   
-  // If we have stored IDs, try to use them
   if (storedUserId && storedHexId) {
-    console.log('Found stored IDs, verifying with Supabase...');
-    const { data, error } = await supabase
-      .from('users')
-      .select('user_id, hex_id')
-      .eq('user_id', parseInt(storedUserId))
-      .eq('hex_id', storedHexId)
-      .maybeSingle();  // Changed from .single() to .maybeSingle()
-    
-    console.log('Supabase verification result:', data, error);
-    
-    if (!error && data) {
-      currentUserId = data.user_id;
-      currentHexId = data.hex_id;
-      console.log('User verified, currentUserId:', currentUserId);
-      return { userId: currentUserId, hexId: currentHexId };
-    }
+    currentUserId = parseInt(storedUserId);
+    currentHexId = storedHexId;
+    console.log('Using stored user:', currentUserId, currentHexId);
+    return { userId: currentUserId, hexId: currentHexId };
   }
   
-  console.log('No existing user found, creating new user...');
+  // Create new user
+  console.log('Creating new user...');
   
-  // Get the current highest user_id
-  console.log('Querying for max user_id...');
-  const { data: maxRow, error: maxError } = await supabase
+  // Get highest user_id
+  const { data: existingUsers, error: fetchError } = await supabase
     .from('users')
     .select('user_id')
     .order('user_id', { ascending: false })
     .limit(1);
   
-  console.log('Max user_id query result:', maxRow);
-  console.log('Max user_id query error:', maxError);
+  if (fetchError) {
+    console.error('Error fetching users:', fetchError);
+  }
   
-  // Determine new user_id
   let newUserId = 1;
-  if (maxRow && maxRow.length > 0 && maxRow[0].user_id) {
-    newUserId = maxRow[0].user_id + 1;
+  if (existingUsers && existingUsers.length > 0) {
+    newUserId = existingUsers[0].user_id + 1;
   }
   
   const newHexId = generateHexId();
-  console.log('Attempting to insert user_id:', newUserId, 'hex_id:', newHexId);
   
-  // Insert the new user
-  const { data: insertData, error: insertError } = await supabase
+  const { error: insertError } = await supabase
     .from('users')
-    .insert([{ user_id: newUserId, hex_id: newHexId }])
-    .select();
+    .insert({ user_id: newUserId, hex_id: newHexId });
   
   if (insertError) {
-    console.error('ERROR creating user:', insertError.message);
-    console.error('Full error:', insertError);
+    console.error('Error inserting user:', insertError);
     return null;
   }
-  
-  console.log('Insert successful:', insertData);
   
   currentUserId = newUserId;
   currentHexId = newHexId;
@@ -101,7 +82,7 @@ async function getOrCreateUser() {
   localStorage.setItem('simplychat_user_id', newUserId);
   localStorage.setItem('simplychat_hex_id', newHexId);
   
-  console.log('New user created and saved!');
+  console.log('User created:', newUserId, newHexId);
   return { userId: newUserId, hexId: newHexId };
 }
 
