@@ -33,10 +33,14 @@ function generateHexId() {
 
 // Get or create user (stored in users table)
 async function getOrCreateUser() {
+  console.log('getOrCreateUser() started');
+  
   const storedUserId = localStorage.getItem('simplychat_user_id');
   const storedHexId = localStorage.getItem('simplychat_hex_id');
+  console.log('localStorage - userId:', storedUserId, 'hexId:', storedHexId);
   
   if (storedUserId && storedHexId) {
+    console.log('Found stored IDs, verifying with Supabase...');
     const { data, error } = await supabase
       .from('users')
       .select('user_id, hex_id')
@@ -44,12 +48,17 @@ async function getOrCreateUser() {
       .eq('hex_id', storedHexId)
       .single();
     
+    console.log('Supabase verification result:', data, error);
+    
     if (!error && data) {
       currentUserId = data.user_id;
       currentHexId = data.hex_id;
+      console.log('User verified, currentUserId:', currentUserId);
       return { userId: currentUserId, hexId: currentHexId };
     }
   }
+  
+  console.log('No existing user found, creating new user...');
   
   const { data: maxRow, error: maxError } = await supabase
     .from('users')
@@ -57,12 +66,15 @@ async function getOrCreateUser() {
     .order('user_id', { ascending: false })
     .limit(1);
   
+  console.log('Max user_id query result:', maxRow, maxError);
+  
   let newUserId = 1;
   if (!maxError && maxRow && maxRow.length > 0) {
     newUserId = maxRow[0].user_id + 1;
   }
   
   const newHexId = generateHexId();
+  console.log('New user_id:', newUserId, 'new hexId:', newHexId);
   
   const { error: insertError } = await supabase
     .from('users')
@@ -79,6 +91,7 @@ async function getOrCreateUser() {
   localStorage.setItem('simplychat_user_id', newUserId);
   localStorage.setItem('simplychat_hex_id', newHexId);
   
+  console.log('New user created and saved to localStorage');
   return { userId: newUserId, hexId: newHexId };
 }
 
@@ -193,14 +206,19 @@ const followBtn = document.getElementById('follow-btn');
 
 // Update button text and style based on follow status
 async function updateFollowButton() {
+  console.log('updateFollowButton() called, followBtn exists?', !!followBtn);
+  
   if (!followBtn) return;
   
   if (!currentUserId) {
+    console.log('No currentUserId, hiding button');
     followBtn.style.display = 'none';
     return;
   }
   
+  console.log('Checking if following room:', roomId);
   const following = await isFollowingRoom(roomId);
+  console.log('Following status:', following);
   
   followBtn.style.display = 'inline-block';
   
@@ -632,6 +650,8 @@ if (githubLoginBtn) {
 }
 
 async function checkUser() {
+  console.log('checkUser() started');
+  
   const { data: { session }, error } = await supabase.auth.getSession()
 
   if (error) {
@@ -639,11 +659,20 @@ async function checkUser() {
   }
 
   currentUser = session?.user || null
+  console.log('currentUser:', currentUser);
 
   // Initialize user IDs and followed rooms
+  console.log('Calling getOrCreateUser()...');
   await getOrCreateUser();
+  console.log('getOrCreateUser() completed, currentUserId:', currentUserId);
+  
+  console.log('Calling loadFollowedRooms()...');
   await loadFollowedRooms();
+  console.log('loadFollowedRooms() completed, followingRooms size:', followingRooms.size);
+  
+  console.log('Calling updateFollowButton()...');
   updateFollowButton();
+  console.log('updateFollowButton() completed');
 
   if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
