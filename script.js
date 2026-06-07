@@ -586,6 +586,11 @@ async function checkUser() {
 
   currentUser = session?.user || null
 
+  // Initialize user IDs and followed rooms
+  await getOrCreateUser();
+  await loadFollowedRooms();
+  updateFollowButton();
+
   if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
     if (usernameInput) {
@@ -601,7 +606,7 @@ async function checkUser() {
 
 checkUser()
 
-supabase.auth.onAuthStateChange((_event, session) => {
+supabase.auth.onAuthStateChange(async (_event, session) => {
   if (session) {
     currentUser = session.user
     const githubUsername = currentUser.user_metadata.user_name
@@ -609,6 +614,11 @@ supabase.auth.onAuthStateChange((_event, session) => {
       usernameInput.value = `[GH] ${githubUsername}`
       usernameInput.disabled = true
     }
+    
+    // Initialize user IDs and followed rooms on login
+    await getOrCreateUser();
+    await loadFollowedRooms();
+    updateFollowButton();
   }
 })
 
