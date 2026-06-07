@@ -860,3 +860,6 @@ function initRoomSearchSystem() {
 initRoomSearchSystem()
 
 window.debugSupabase = supabase;
+// Make supabase available globally for debugging
+window.supabase = supabase;
+console.log('Supabase exposed to window. Type window.supabase in console.');
