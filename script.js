@@ -858,3 +858,5 @@ function initRoomSearchSystem() {
 }
 
 initRoomSearchSystem()
+
+window.debugSupabase = supabase;
