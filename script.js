@@ -47,35 +47,37 @@ async function getOrCreateUser() {
   
   console.log('Creating new user...');
   
-  // Use timestamp as user_id (milliseconds since epoch)
   const newUserId = Date.now();
   const newHexId = generateHexId();
   
-  console.log('Attempting to insert user_id:', newUserId);
+  // Use fetch instead of supabase client
+  const response = await fetch('https://koprmimlvjziuznbntzc.supabase.co/rest/v1/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ user_id: newUserId, hex_id: newHexId })
+  });
   
-  try {
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert({ user_id: newUserId, hex_id: newHexId });
-    
-    if (insertError) {
-      console.error('Error inserting user:', insertError);
-      return null;
-    }
-    
-    currentUserId = newUserId;
-    currentHexId = newHexId;
-    
-    localStorage.setItem('simplychat_user_id', newUserId);
-    localStorage.setItem('simplychat_hex_id', newHexId);
-    
-    console.log('User created:', newUserId, newHexId);
-    return { userId: newUserId, hexId: newHexId };
-    
-  } catch (err) {
-    console.error('Exception in insert:', err);
+  console.log('Insert response status:', response.status);
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Insert failed:', response.status, errorText);
     return null;
   }
+  
+  currentUserId = newUserId;
+  currentHexId = newHexId;
+  
+  localStorage.setItem('simplychat_user_id', newUserId);
+  localStorage.setItem('simplychat_hex_id', newHexId);
+  
+  console.log('User created via fetch:', newUserId, newHexId);
+  return { userId: newUserId, hexId: newHexId };
 }
 
 // Load all rooms the current user follows
