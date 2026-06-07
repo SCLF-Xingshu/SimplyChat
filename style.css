@@ -358,3 +358,34 @@ body {
   position: relative;
   z-index: 2;
 }
+
+/* Follow button styles */
+#follow-container {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.follow-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.follow-btn.following {
+  background-color: #ff4444;
+  color: white;
+}
+
+.follow-btn:not(.following) {
+  background-color: #0FBF3E;
+  color: white;
+}
+
+.follow-btn:hover {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
