@@ -688,19 +688,20 @@ async function checkUser() {
   }
 
   currentUser = session?.user || null
-  console.log('currentUser:', currentUser);
+  console.log('checkUser - currentUser:', currentUser);
 
-  console.log('Calling getOrCreateUser()...');
-  await getOrCreateUser();
-  console.log('getOrCreateUser() completed, currentUserId:', currentUserId);
+  if (!currentUserId) {
+    console.log('checkUser - calling getOrCreateUser()...');
+    await getOrCreateUser();
+  } else {
+    console.log('checkUser - user already exists, userId:', currentUserId);
+  }
   
-  console.log('Calling loadFollowedRooms()...');
+  console.log('checkUser - calling loadFollowedRooms()...');
   await loadFollowedRooms();
-  console.log('loadFollowedRooms() completed, followingRooms size:', followingRooms.size);
   
-  console.log('Calling updateFollowButton()...');
+  console.log('checkUser - calling updateFollowButton()...');
   updateFollowButton();
-  console.log('updateFollowButton() completed');
 
   if (currentUser) {
     const githubUsername = currentUser.user_metadata.user_name
@@ -714,15 +715,16 @@ async function checkUser() {
     history.replaceState(null, '', window.location.pathname)
   }
   
-  console.log('Calling initRealtimeSubscription()...');
+  console.log('checkUser - calling initRealtimeSubscription()...');
   await initRealtimeSubscription();
-  console.log('initRealtimeSubscription() completed');
+  console.log('checkUser - completed');
 }
 
 checkUser()
 
 supabase.auth.onAuthStateChange(async (_event, session) => {
   if (session) {
+    console.log('onAuthStateChange - session detected');
     currentUser = session.user
     const githubUsername = currentUser.user_metadata.user_name
     if (usernameInput) {
@@ -730,11 +732,23 @@ supabase.auth.onAuthStateChange(async (_event, session) => {
       usernameInput.disabled = true
     }
     
-    // Initialize user IDs and followed rooms on login
-    await getOrCreateUser();
+    if (!currentUserId) {
+      console.log('onAuthStateChange - calling getOrCreateUser()...');
+      await getOrCreateUser();
+    } else {
+      console.log('onAuthStateChange - user already exists, userId:', currentUserId);
+    }
+    
+    console.log('onAuthStateChange - calling loadFollowedRooms()...');
     await loadFollowedRooms();
+    
+    console.log('onAuthStateChange - calling updateFollowButton()...');
     updateFollowButton();
+    
+    console.log('onAuthStateChange - calling initRealtimeSubscription()...');
     await initRealtimeSubscription();
+    
+    console.log('onAuthStateChange - completed');
   }
 })
 
