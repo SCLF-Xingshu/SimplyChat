@@ -2,6 +2,7 @@
 let currentUserId = null;
 let currentHexId = null;
 let followingRooms = new Set();
+let chatChannel = null;
 // end 1
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -139,6 +140,7 @@ async function followRoom(roomId) {
   }
   
   followingRooms.add(roomId);
+  await initRealtimeSubscription();
   return true;
 }
 
@@ -160,6 +162,7 @@ async function unfollowRoom(roomId) {
   }
   
   followingRooms.delete(roomId);
+  await initRealtimeSubscription();
   return true;
 }
 
@@ -525,6 +528,40 @@ if (messagesDiv) {
   loadMessages()
 }
 
+async function initRealtimeSubscription() {
+  console.log('Creating realtime subscription for room:', roomId);
+  
+  if (chatChannel) {
+    console.log('Removing existing subscription');
+    await supabase.removeChannel(chatChannel);
+  }
+  
+  chatChannel = supabase
+    .channel(`room:${roomId}`)
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'simplychat_messages',
+      filter: `room_id=eq.${roomId.toLowerCase()}`
+    }, async (payload) => {
+      console.log('New message received in realtime!');
+      addMessage(payload.new);
+      
+      const canNotify = Notification.permission === "granted";
+      const isFollowing = followingRooms.has(roomId);
+      
+      if (canNotify && isFollowing) {
+        sendNotification(roomId, payload.new.username, payload.new.content);
+      }
+    })
+    .subscribe((status, err) => {
+      console.log('Realtime status:', status, err || '');
+      if (status === 'SUBSCRIBED') {
+        console.log('Successfully subscribed to room:', roomId);
+      }
+    });
+}
+
 async function initRooms() {
   roomsIndex = await fetchRoomsIndex()
 }
@@ -597,17 +634,6 @@ function renderExplore(rooms, mode) {
 
 initRooms()
 
-const chatChannel = supabase
-  .channel('room:' + roomId)
-  .on('postgres_changes', {
-    event: 'INSERT',
-    schema: 'public',
-    table: 'simplychat_messages',
-    filter: `room_id=eq.${roomId.toLowerCase()}`
-  }, payload => {
-    addMessage(payload.new)
-  })
-  .subscribe()
 
 if (isChatPage) {
   sendBtn.addEventListener('click', async () => {
@@ -686,6 +712,8 @@ async function checkUser() {
   if (window.location.hash) {
     history.replaceState(null, '', window.location.pathname)
   }
+  
+  await initRealtimeSubscription();
 }
 
 checkUser()
@@ -703,6 +731,7 @@ supabase.auth.onAuthStateChange(async (_event, session) => {
     await getOrCreateUser();
     await loadFollowedRooms();
     updateFollowButton();
+    await initRealtimeSubscription();
   }
 })
 
