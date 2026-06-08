@@ -1,208 +1,105 @@
-const bgCanvas = document.getElementById('bg-canvas')
-console.log('bgCanvas =', bgCanvas)
-if (!bgCanvas) {
-  throw new Error('bg-canvas not found')
-}
-const bgCtx = bgCanvas.getContext('2d')
-console.log('bgCtx =', bgCtx)
+// 1 - canvas element and context
+const bgCanvas = document.getElementById('bg-canvas');
+if (!bgCanvas) throw new Error('bg-canvas not found');
+const bgCtx = bgCanvas.getContext('2d');
+// end 1
 
+// 2 - resize handler
 function resizeBgCanvas() {
-  bgCanvas.width = window.innerWidth
-  bgCanvas.height = window.innerHeight
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
 }
+resizeBgCanvas();
+window.addEventListener('resize', resizeBgCanvas);
+// end 2
 
-resizeBgCanvas()
-window.addEventListener('resize', resizeBgCanvas)
+// 3 - triangle storage
+let triangles = [];
+const MAX_TRIANGLES = 20;               // limited to reduce gpu load
+// end 3
 
-const bgTriangles = []
-
-function bgRand(min, max) {
-  return min + Math.random() * (max - min)
+// 4 - random helper
+function rand(min, max) {
+  return min + Math.random() * (max - min);
 }
+// end 4
 
-function spawnBgTriangle() {
-
-  if (bgTriangles.length >= 60) return;
-
-  const maxBlur = bgRand(6, 14)
-
-  bgTriangles.push({
+// 5 - spawn a new triangle
+function spawnTriangle() {
+  if (triangles.length >= MAX_TRIANGLES) return;
+  triangles.push({
     x: Math.random() * bgCanvas.width,
     y: Math.random() * bgCanvas.height,
-
-    vx: bgRand(-0.25, 0.25),
-    vy: bgRand(-0.25, 0.25),
-
-    ax: 0,
-    ay: 0,
-
-    size: bgRand(14, 28),
-
-    angle: bgRand(0, Math.PI * 2),
-    rot: bgRand(-0.01, 0.01),
-
-    seed: Math.random() * 1000,
-
-    alpha: 0.5,
-
-    blur: maxBlur,
-    targetBlur: 0,
-    maxBlur: maxBlur,
-
-    focusTimer: bgRand(80, 180),
-
-    dying: false,
-    fading: false,
-    deathProgress: 0,
-
-    appearing: true
-  })
+    vx: rand(-0.2, 0.2),
+    vy: rand(-0.2, 0.2),
+    size: rand(6, 16),
+    alpha: rand(0.2, 0.5),
+    angle: rand(0, Math.PI * 2),
+    rot: rand(-0.01, 0.01),
+  });
 }
+// end 5
 
-function drawBgTriangle(t) {
+// 6 - initial triangles
+for (let i = 0; i < 12; i++) spawnTriangle();
+// end 6
 
-  bgCtx.save()
-
-  bgCtx.translate(t.x, t.y)
-  bgCtx.rotate(t.angle)
-
-  bgCtx.filter = `blur(${t.blur}px)`
-  /*bgCtx.filter = '6px'*/
-  bgCtx.globalAlpha = t.alpha
-
-  bgCtx.fillStyle = 'white'
-
-  bgCtx.beginPath()
-  bgCtx.moveTo(0, -t.size)
-  bgCtx.lineTo(t.size * 0.9, t.size)
-  bgCtx.lineTo(-t.size * 0.9, t.size)
-  bgCtx.closePath()
-  bgCtx.fill()
-
-  bgCtx.restore()
+// 7 - draw a single triangle
+function drawTriangle(t) {
+  bgCtx.save();
+  bgCtx.translate(t.x, t.y);
+  bgCtx.rotate(t.angle);
+  bgCtx.globalAlpha = t.alpha;
+  bgCtx.fillStyle = 'white';
+  bgCtx.beginPath();
+  bgCtx.moveTo(0, -t.size);
+  bgCtx.lineTo(t.size * 0.9, t.size);
+  bgCtx.lineTo(-t.size * 0.9, t.size);
+  bgCtx.closePath();
+  bgCtx.fill();
+  bgCtx.restore();
 }
+// end 7
 
-for (let i = 0; i < 20; i++) {
-  spawnBgTriangle()
-}
-
-function animateBg() {
-
-  const frameStart = performance.now()
-  
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height)
-
-  if (Math.random() < 0.015) {
-    spawnBgTriangle()
+// 8 - animation loop with fps throttle
+let lastTimestamp = 0;
+function animate(timestamp) {
+  // throttle to ~30 fps (reduces cpu/gpu usage)
+  if (timestamp - lastTimestamp < 33) {
+    requestAnimationFrame(animate);
+    return;
   }
+  lastTimestamp = timestamp;
 
-  const time = performance.now() * 0.001
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-  for (let i = bgTriangles.length - 1; i >= 0; i--) {
+  // occasionally spawn a new triangle
+  if (Math.random() < 0.02 && triangles.length < MAX_TRIANGLES) spawnTriangle();
 
-    const t = bgTriangles[i]
+  for (let i = triangles.length - 1; i >= 0; i--) {
+    const t = triangles[i];
+    t.x += t.vx;
+    t.y += t.vy;
+    t.angle += t.rot;
+    t.alpha *= 0.998;                // slow fade
 
-    const flowX = Math.sin(time * 0.6 + t.seed)
-    const flowY = Math.cos(time * 0.5 + t.seed * 1.4)
+    // wrap around edges
+    if (t.x < -50) t.x = bgCanvas.width + 50;
+    if (t.x > bgCanvas.width + 50) t.x = -50;
+    if (t.y < -50) t.y = bgCanvas.height + 50;
+    if (t.y > bgCanvas.height + 50) t.y = -50;
 
-    t.ax += flowX * 0.01
-    t.ay += flowY * 0.01
-
-    t.vx += t.ax
-    t.vy += t.ay
-
-    t.vx *= 0.97
-    t.vy *= 0.97
-
-    t.ax *= 0.5
-    t.ay *= 0.5
-
-    t.x += t.vx
-    t.y += t.vy
-
-    t.angle += t.rot
-
-    if (t.x < -40) t.x = bgCanvas.width + 40
-    if (t.x > bgCanvas.width + 40) t.x = -40
-    if (t.y < -40) t.y = bgCanvas.height + 40
-    if (t.y > bgCanvas.height + 40) t.y = -40
-
-    if (t.appearing) {
-
-      t.blur += (0 - t.blur) * 0.03
-      t.alpha += (0.5 - t.alpha) * 0.03
-
-      if (t.blur < 0.5) {
-        t.appearing = false
-      }
+    // remove if nearly invisible
+    if (t.alpha < 0.02) {
+      triangles.splice(i, 1);
+      continue;
     }
-
-    t.focusTimer--
-
-    if (t.focusTimer <= 0 && !t.dying) {
-
-      t.targetBlur = bgRand(0, t.maxBlur)
-      if (Math.random() < 0.15) {
-        t.fading = true
-      }
-      t.focusTimer = bgRand(100, 250)
-    }
-
-    t.blur += (t.targetBlur - t.blur) * 0.02
-
-    if (t.fading) {
-      t.alpha *= 0.985
-    } else {
-      t.alpha += (0.5 - t.alpha) * 0.01
-    }
-    
-    if (
-      !t.dying &&
-      t.blur >= t.maxBlur * 0.95 &&
-      t.alpha <= 0.05
-    ) {
-      if (Math.random() < 0.6) {
-        t.dying = true
-      }
-    }
-
-    if (t.dying) {
-
-      t.deathProgress += 0.01
-
-      t.alpha *= 0.97
-      t.blur += 0.15
-
-      if (t.deathProgress > 1) {
-
-        bgTriangles.splice(i, 1)
-
-        continue
-      }
-    }
-
-    /*if (Math.random() < 0.0005) {
-    console.log(
-      'blur=', t.blur.toFixed(2),
-      'alpha=', t.alpha.toFixed(2),
-      'dying=', t.dying
-      )
-    }*/
-    
-    drawBgTriangle(t)
+    drawTriangle(t);
   }
-
-  const frameTime = performance.now() - frameStart
-
-  if (frameTime > 10) {
-    console.log('Frame:', frameTime.toFixed(2), 'ms')
-  }
-
- /* if (Math.random() < 0.01) {
-    console.log('Triangles:', bgTriangles.length)
-  }*/
-  
-  requestAnimationFrame(animateBg)
+  requestAnimationFrame(animate);
 }
+// end 8
 
-animateBg()
+// 9 - start the animation
+requestAnimationFrame(animate);
+// end 9
