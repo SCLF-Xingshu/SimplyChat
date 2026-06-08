@@ -110,6 +110,8 @@ async function loadFollowedRooms() {
   } catch (err) {
     console.error('Exception in loadFollowedRooms:', err);
   }
+  
+  console.log('loadFollowedRooms() finished');
 }
 
 // Check if user follows a specific room
@@ -688,7 +690,6 @@ async function checkUser() {
   currentUser = session?.user || null
   console.log('currentUser:', currentUser);
 
-  // Initialize user IDs and followed rooms
   console.log('Calling getOrCreateUser()...');
   await getOrCreateUser();
   console.log('getOrCreateUser() completed, currentUserId:', currentUserId);
@@ -713,7 +714,9 @@ async function checkUser() {
     history.replaceState(null, '', window.location.pathname)
   }
   
+  console.log('Calling initRealtimeSubscription()...');
   await initRealtimeSubscription();
+  console.log('initRealtimeSubscription() completed');
 }
 
 checkUser()
