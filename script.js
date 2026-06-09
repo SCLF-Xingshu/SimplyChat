@@ -177,7 +177,7 @@ function sendNotification(roomId, username, content) {
     window.focus();
     notification.close();
   };
-  setTimeout(() => notification.close(), 5000);
+  setTimeout(() => notification.close(), 15000); // the time is in milliseconds (ms)
 }
 // end 11
 
