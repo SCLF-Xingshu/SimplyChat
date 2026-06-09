@@ -2,6 +2,7 @@
 let currentUserId = null;
 let currentHexId = null;
 let followingRooms = new Set();
+let isCreatingUser = false;
 let chatChannel = null;
 // end 1
 
@@ -39,6 +40,16 @@ function generateHexId() {
 
 // 5 - create or retrieve local user id (sequential)
 async function getOrCreateLocalUser() {
+  if (isCreatingUser) {
+    console.log('user creation already in progress, waiting...');
+    // wait up to 2 seconds for the other attempt to complete
+    for (let i = 0; i < 20; i++) {
+      await new Promise(r => setTimeout(r, 100));
+      if (currentUserId) return;
+    }
+    return;
+  }
+  
   const storedUserId = localStorage.getItem('simplychat_user_id');
   const storedHexId = localStorage.getItem('simplychat_hex_id');
   
@@ -49,38 +60,44 @@ async function getOrCreateLocalUser() {
     return;
   }
   
-  // 5.1 - find highest existing user_id
-  const { data, error } = await supabase
-    .from('users')
-    .select('user_id')
-    .order('user_id', { ascending: false })
-    .limit(1);
+  isCreatingUser = true;
   
-  let newUserId = 1;
-  if (!error && data && data.length > 0) {
-    newUserId = data[0].user_id + 1;
+  try {
+    // 5.1 - find highest existing user_id
+    const { data, error } = await supabase
+      .from('users')
+      .select('user_id')
+      .order('user_id', { ascending: false })
+      .limit(1);
+    
+    let newUserId = 1;
+    if (!error && data && data.length > 0) {
+      newUserId = data[0].user_id + 1;
+    }
+    
+    const newHexId = generateHexId();
+    
+    // 5.2 - insert new user
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert({ user_id: newUserId, hex_id: newHexId });
+    
+    if (insertError) {
+      console.error('error creating user:', insertError);
+      // fallback to timestamp
+      currentUserId = Date.now();
+      currentHexId = generateHexId();
+    } else {
+      currentUserId = newUserId;
+      currentHexId = newHexId;
+    }
+    
+    localStorage.setItem('simplychat_user_id', currentUserId);
+    localStorage.setItem('simplychat_hex_id', currentHexId);
+    console.log('new user created (sequential):', currentUserId);
+  } finally {
+    isCreatingUser = false;
   }
-  
-  const newHexId = generateHexId();
-  
-  // 5.2 - insert new user
-  const { error: insertError } = await supabase
-    .from('users')
-    .insert({ user_id: newUserId, hex_id: newHexId });
-  
-  if (insertError) {
-    console.error('error creating user:', insertError);
-    // fallback to timestamp
-    currentUserId = Date.now();
-    currentHexId = generateHexId();
-  } else {
-    currentUserId = newUserId;
-    currentHexId = newHexId;
-  }
-  
-  localStorage.setItem('simplychat_user_id', currentUserId);
-  localStorage.setItem('simplychat_hex_id', currentHexId);
-  console.log('new user created (sequential):', currentUserId);
 }
 // end 5
 
