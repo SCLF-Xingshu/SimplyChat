@@ -38,93 +38,52 @@ function generateHexId() {
 }
 // end 4
 
-// 5 - create or retrieve local user id (sequential)
+// 5 - create or retrieve local user id (localStorage only, no Supabase)
 async function getOrCreateLocalUser() {
-  if (isCreatingUser) {
-    console.log('user creation already in progress, waiting...');
-    // wait up to 2 seconds for the other attempt to complete
-    for (let i = 0; i < 20; i++) {
-      await new Promise(r => setTimeout(r, 100));
-      if (currentUserId) return;
-    }
-    return;
-  }
-  
   const storedUserId = localStorage.getItem('simplychat_user_id');
   const storedHexId = localStorage.getItem('simplychat_hex_id');
   
   if (storedUserId && storedHexId) {
     currentUserId = parseInt(storedUserId);
     currentHexId = storedHexId;
-    console.log('local user restored:', currentUserId);
+    console.log('local user restored (localStorage):', currentUserId);
     return;
   }
   
-  isCreatingUser = true;
+  currentUserId = Date.now();
+  currentHexId = generateHexId();
   
-  try {
-    // 5.1 - find highest existing user_id
-    const { data, error } = await supabase
-      .from('users')
-      .select('user_id')
-      .order('user_id', { ascending: false })
-      .limit(1);
-    
-    let newUserId = 1;
-    if (!error && data && data.length > 0) {
-      newUserId = data[0].user_id + 1;
-    }
-    
-    const newHexId = generateHexId();
-    
-    // 5.2 - insert new user
-    const { error: insertError } = await supabase
-      .from('users')
-      .insert({ user_id: newUserId, hex_id: newHexId });
-    
-    if (insertError) {
-      console.error('error creating user:', insertError);
-      // fallback to timestamp
-      currentUserId = Date.now();
-      currentHexId = generateHexId();
-    } else {
-      currentUserId = newUserId;
-      currentHexId = newHexId;
-    }
-    
-    localStorage.setItem('simplychat_user_id', currentUserId);
-    localStorage.setItem('simplychat_hex_id', currentHexId);
-    console.log('new user created (sequential):', currentUserId);
-  } finally {
-    isCreatingUser = false;
-  }
+  localStorage.setItem('simplychat_user_id', currentUserId);
+  localStorage.setItem('simplychat_hex_id', currentHexId);
+  console.log('new local user created (localStorage only):', currentUserId);
 }
 // end 5
-
 // 6 - save follows to localstorage (for anonymous users)
 function saveFollowsToLocal() {
   localStorage.setItem('simplychat_following', JSON.stringify([...followingRooms]));
 }
 // end 6
 
-// 7 - load followed rooms from the correct source
+// 7 - load followed rooms from correct source
 async function loadFollowedRooms() {
   console.log('loadFollowedRooms() started');
   followingRooms.clear();
 
   if (currentUser) {
-    // logged in -> load from supabase
+    // logged in: load from supabase using GitHub username
+    const githubUsername = currentUser.user_metadata.user_name;
     const { data, error } = await supabase
       .from('user_follows')
       .select('room_id')
-      .eq('user_id', currentUserId);
+      .eq('username', githubUsername);
+    
     if (!error && data) {
       data.forEach(item => followingRooms.add(item.room_id));
     } else if (error) {
       console.error('error loading follows from supabase:', error);
     }
   } else {
-    // not logged in -> load from localstorage
+    // not logged in: load from localStorage
     const stored = localStorage.getItem('simplychat_following');
     if (stored) {
       const rooms = JSON.parse(stored);
@@ -140,14 +99,18 @@ async function followRoom(roomId) {
   if (followingRooms.has(roomId)) return true;
 
   if (currentUser) {
+    // logged in: use supabase with GitHub username
+    const githubUsername = currentUser.user_metadata.user_name;
     const { error } = await supabase
       .from('user_follows')
-      .insert({ user_id: currentUserId, room_id: roomId });
+      .insert({ username: githubUsername, room_id: roomId });
+    
     if (error) {
       console.error('follow error:', error);
       return false;
     }
   }
+  // always update local cache and localStorage
   followingRooms.add(roomId);
   saveFollowsToLocal();
   return true;
@@ -159,11 +122,14 @@ async function unfollowRoom(roomId) {
   if (!followingRooms.has(roomId)) return true;
 
   if (currentUser) {
+    // logged in: delete from supabase using GitHub username
+    const githubUsername = currentUser.user_metadata.user_name;
     const { error } = await supabase
       .from('user_follows')
       .delete()
-      .eq('user_id', currentUserId)
+      .eq('username', githubUsername)
       .eq('room_id', roomId);
+    
     if (error) {
       console.error('unfollow error:', error);
       return false;
