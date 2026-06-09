@@ -37,23 +37,50 @@ function generateHexId() {
 }
 // end 4
 
-// 5 - create or retrieve local user id (anonymous)
+// 5 - create or retrieve local user id (sequential)
 async function getOrCreateLocalUser() {
-  let storedUserId = localStorage.getItem('simplychat_user_id');
-  let storedHexId = localStorage.getItem('simplychat_hex_id');
-
+  const storedUserId = localStorage.getItem('simplychat_user_id');
+  const storedHexId = localStorage.getItem('simplychat_hex_id');
+  
   if (storedUserId && storedHexId) {
     currentUserId = parseInt(storedUserId);
     currentHexId = storedHexId;
     console.log('local user restored:', currentUserId);
     return;
   }
-
-  currentUserId = Date.now();
-  currentHexId = generateHexId();
+  
+  // 5.1 - find highest existing user_id
+  const { data, error } = await supabase
+    .from('users')
+    .select('user_id')
+    .order('user_id', { ascending: false })
+    .limit(1);
+  
+  let newUserId = 1;
+  if (!error && data && data.length > 0) {
+    newUserId = data[0].user_id + 1;
+  }
+  
+  const newHexId = generateHexId();
+  
+  // 5.2 - insert new user
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert({ user_id: newUserId, hex_id: newHexId });
+  
+  if (insertError) {
+    console.error('error creating user:', insertError);
+    // fallback to timestamp
+    currentUserId = Date.now();
+    currentHexId = generateHexId();
+  } else {
+    currentUserId = newUserId;
+    currentHexId = newHexId;
+  }
+  
   localStorage.setItem('simplychat_user_id', currentUserId);
   localStorage.setItem('simplychat_hex_id', currentHexId);
-  console.log('new local user created:', currentUserId);
+  console.log('new user created (sequential):', currentUserId);
 }
 // end 5
 
