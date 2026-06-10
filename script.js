@@ -265,6 +265,16 @@ async function checkUser() {
   currentUser = session?.user || null;
   console.log('currentUser:', currentUser ? currentUser.user_metadata.user_name : 'null');
 
+  // 15.1 - show/hide login/logout buttons
+  if (currentUser) {
+    if (githubLoginBtn) githubLoginBtn.style.display = 'none';
+    if (githubLogoutBtn) githubLogoutBtn.style.display = 'block';
+  } else {
+    if (githubLoginBtn) githubLoginBtn.style.display = 'block';
+    if (githubLogoutBtn) githubLogoutBtn.style.display = 'none';
+  }
+  // end 15.1
+
   if (!currentUserId) {
     await getOrCreateLocalUser();
   }
@@ -644,3 +654,34 @@ initRoomSearchSystem();
 window.supabase = supabase;
 console.log('supabase exposed to window. type window.supabase in console.');
 // end 35
+
+// 36 - logout function
+async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Logout error:', error);
+    return;
+  }
+  currentUser = null;
+  currentUserId = null;
+  followingRooms.clear();
+  localStorage.removeItem('simplychat_user_id');
+  localStorage.removeItem('simplychat_hex_id');
+  if (usernameInput) {
+    usernameInput.value = '';
+    usernameInput.disabled = false;
+  }
+  if (githubLogoutBtn) githubLogoutBtn.style.display = 'none';
+  if (githubLoginBtn) githubLoginBtn.style.display = 'block';
+  await loadFollowedRooms();
+  updateUIForUser();
+  updateFollowButton();
+  location.reload();
+}
+// end 36
+
+// 37 - logout button event listener
+if (githubLogoutBtn) {
+  githubLogoutBtn.addEventListener('click', logout);
+}
+// end 37
