@@ -384,6 +384,7 @@ const messageInput = document.getElementById('message');
 const charCount = document.getElementById('char-count');
 const sendBtn = document.getElementById('send');
 const githubLoginBtn = document.getElementById('github-login');
+const githubLogoutBtn = document.getElementById('github-logout');
 const isChatPage = messagesDiv && messageInput && charCount && sendBtn;
 const isExplorePage = document.getElementById('explore-results') && document.getElementById('explore-mode');
 const fontSlider = document.getElementById('font-slider');
