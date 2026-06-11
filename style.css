@@ -80,6 +80,7 @@ h1 {
   margin-bottom: 8px;
 }*/
 
+/* button container - aligns message input and send button on the same line */
 #input-container {
   display: flex;
   gap: 5px;
@@ -93,6 +94,25 @@ input[type="text"] {
   font-family: monospace;
   background: #fff;
   color: #000;
+}
+
+/* button container - aligns username input and auth buttons on the same line */
+.auth-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.auth-container input[type="text"] {
+  flex: 2;
+  min-width: 150px;
+}
+
+.auth-container button {
+  flex: 0 0 auto;
 }
 
 #send {
