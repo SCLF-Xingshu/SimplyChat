@@ -553,12 +553,15 @@ initRooms();
 // 30 - send message
 if (isChatPage) {
   sendBtn.addEventListener('click', async () => {
-    let username = 'anonymous';
+    // 30.1 - generate username using stored local user ID
+    let username;
     if (currentUser) {
       username = `[GH]${currentUser.user_metadata.user_name}`;
     } else {
-      username = usernameInput.value.trim() || 'anonymous';
+      username = `Anon ${currentUserId}`;
     }
+    // end 30.1
+
     const content = messageInput.value.trim();
     if (!content) return;
     if (content.length > 1000) {
