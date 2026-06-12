@@ -58,6 +58,7 @@ async function getOrCreateLocalUser() {
   console.log('new local user created (localStorage only):', currentUserId);
 }
 // end 5
+
 // 6 - save follows to localstorage (for anonymous users)
 function saveFollowsToLocal() {
   localStorage.setItem('simplychat_following', JSON.stringify([...followingRooms]));
@@ -177,13 +178,21 @@ function sendNotification(roomId, username, content) {
     window.focus();
     notification.close();
   };
-  setTimeout(() => notification.close(), 15000); // the time is in milliseconds (ms)
+  setTimeout(() => notification.close(), 15000);
 }
 // end 11
 
 // 12 - update follow button text and style
 async function updateFollowButton() {
   const followBtn = document.getElementById('follow-btn');
+  
+  // 12.1 - hide follow button in disabled old rooms
+  if (isDisabledOldRoom) {
+    if (followBtn) followBtn.style.display = 'none';
+    return;
+  }
+  // end 12.1
+  
   if (!followBtn) return;
 
   if (!currentUserId) {
@@ -373,6 +382,11 @@ if (redirectPath) {
   roomId = 'global';
 }
 console.log('detected roomId:', roomId);
+
+// 20.1 - check if room is an old official room (disabled)
+const oldOfficialRooms = ['feedback', 'simplychat', 'welcome'];
+let isDisabledOldRoom = oldOfficialRooms.includes(roomId);
+// end 20.1
 // end 20
 
 // 21 - dynamic page title
@@ -457,7 +471,28 @@ function addMessage(msg) {
 
 // 27 - load existing messages from supabase
 async function loadMessages() {
+  // 27.1 - handle disabled old official rooms
+  if (isDisabledOldRoom) {
+    messagesDiv.innerHTML = '';
+    const disabledDiv = document.createElement('div');
+    disabledDiv.classList.add('message');
+    disabledDiv.style.fontStyle = 'italic';
+    disabledDiv.style.color = '#ff4444';
+    disabledDiv.style.textAlign = 'center';
+    disabledDiv.style.padding = '20px';
+    const newRoomId = `!${roomId}`;
+    disabledDiv.innerHTML = `
+      ⚠️ This chatroom is disabled.<br>
+      Did you mean: <a href="/SimplyChat/chat/${newRoomId}" style="color: #0FBF3E;">/${newRoomId}</a>, 
+      the SimplyChat official ${roomId} page?
+    `;
+    messagesDiv.appendChild(disabledDiv);
+    return;
+  }
+  // end 27.1
+
   if (!messagesDiv) return;
+  
   let query = supabase
     .from('simplychat_messages')
     .select('*')
@@ -501,6 +536,15 @@ async function loadMessages() {
   if (customMessages[roomId]) {
     addSystemMessage(customMessages[roomId], false);
   }
+
+  // 27.2 - show lock status for admin-only rooms
+  if (roomId.startsWith('!') && !isDisabledOldRoom) {
+    const isUnlocked = await isAdminRoomUnlocked(roomId);
+    if (!isUnlocked) {
+      addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
+    }
+  }
+  // end 27.2
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
@@ -561,6 +605,24 @@ if (isChatPage) {
       username = `anon${currentUserId}`;
     }
     // end 30.1
+    
+    // 30.2 - block sending in disabled old official rooms
+    if (isDisabledOldRoom) {
+      alert('This chatroom is disabled. Please use the official room link shown above.');
+      return;
+    }
+    // end 30.2
+    
+    // 30.3 - admin-only room restriction for !-prefixed rooms
+    if (roomId.startsWith('!') && !isDisabledOldRoom) {
+      const isUnlocked = await isAdminRoomUnlocked(roomId);
+      const isAdmin = isAdminUser(username);
+      if (!isUnlocked && !isAdmin) {
+        alert('This room is reserved for administrators. Only admins can send the first message.');
+        return;
+      }
+    }
+    // end 30.3
 
     const content = messageInput.value.trim();
     if (!content) return;
@@ -658,7 +720,27 @@ window.supabase = supabase;
 console.log('supabase exposed to window. type window.supabase in console.');
 // end 35
 
-// 36 - logout function
+// 36 - check if user is admin
+function isAdminUser(username) {
+  const adminNames = ['[GH]SCLF-Xingshu', '[GH][ADMIN]SCLF-Xingshu'];
+  return adminNames.includes(username);
+}
+// end 36
+
+// 37 - check if admin room has any messages (unlocked)
+async function isAdminRoomUnlocked(roomId) {
+  if (!roomId.startsWith('!')) return true;
+  const { data, error } = await supabase
+    .from('simplychat_messages')
+    .select('id')
+    .eq('room_id', roomId)
+    .limit(1);
+  if (error) console.error('Unlock check error:', error);
+  return data && data.length > 0;
+}
+// end 37
+
+// 38 - logout function
 async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -681,10 +763,10 @@ async function logout() {
   updateFollowButton();
   location.reload();
 }
-// end 36
+// end 38
 
-// 37 - logout button event listener
+// 39 - logout button event listener
 if (githubLogoutBtn) {
   githubLogoutBtn.addEventListener('click', logout);
 }
-// end 37
+// end 39
