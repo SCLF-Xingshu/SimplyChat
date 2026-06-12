@@ -558,7 +558,7 @@ if (isChatPage) {
     if (currentUser) {
       username = `[GH]${currentUser.user_metadata.user_name}`;
     } else {
-      username = `Anon ${currentUserId}`;
+      username = `anon${currentUserId}`;
     }
     // end 30.1
 
