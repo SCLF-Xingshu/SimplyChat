@@ -476,9 +476,9 @@ async function loadMessages() {
   }
 
   const customMessages = {
-    '!feedback': 'welcome to the feedback page!',
-    '!simplychat': 'find here the latest infos about simplychat.',
-    '!welcome': 'introduce yourself to simplychat!'
+    '!feedback': 'Welcome to the feedback page!',
+    '!simplychat': 'Find here the latest infos about SimplyChat.',
+    '!welcome': 'Introduce yourself to SimplyChat!'
   };
   const noWelcomeRooms = ['!feedback', '!simplychat', '!welcome'];
   
