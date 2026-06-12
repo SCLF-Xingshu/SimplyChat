@@ -476,12 +476,12 @@ async function loadMessages() {
   }
 
   const customMessages = {
-    feedback: 'Welcome to the feedback page!',
-    simplychat: 'Find here the latest infos about SimplyChat.',
-    welcome: 'Introduce yourself to SimplyChat!'
+    '!feedback': 'welcome to the feedback page!',
+    '!simplychat': 'find here the latest infos about simplychat.',
+    '!welcome': 'introduce yourself to simplychat!'
   };
-  const noWelcomeRooms = ['feedback', 'simplychat', 'welcome'];
-
+  const noWelcomeRooms = ['!feedback', '!simplychat', '!welcome'];
+  
   const addSystemMessage = (text, insertAtTop) => {
     const div = document.createElement('div');
     div.classList.add('message');
