@@ -503,7 +503,7 @@ async function loadMessages() {
   }
   // end 27.1
 
-  // 27.2 - handle too long room names
+    // 27.2 - handle too long room names
   if (isTooLongRoom) {
     messagesDiv.innerHTML = '';
     const errorDiv = document.createElement('div');
@@ -512,8 +512,9 @@ async function loadMessages() {
     errorDiv.style.color = '#ff4444';
     errorDiv.style.textAlign = 'center';
     errorDiv.style.padding = '20px';
+    const roomNameLength = roomId.length;
     errorDiv.innerHTML = `
-      ⚠️ The chatroom name "<strong>${escapeHtml(roomId)}</strong>" is too long.<br>
+      ⚠️ The chatroom name "<strong>${escapeHtml(roomId)}</strong>" (${roomNameLength} characters) is too long.<br>
       The maximum length is ${MAX_ROOM_LENGTH} characters. Please try a shorter name.
     `;
     messagesDiv.appendChild(errorDiv);
