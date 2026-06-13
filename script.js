@@ -193,6 +193,13 @@ async function updateFollowButton() {
   }
   // end 12.1
   
+  // 12.2 - hide follow button in rooms with name too long
+  if (isTooLongRoom) {
+    if (followBtn) followBtn.style.display = 'none';
+    return;
+  }
+  // end 12.2
+  
   if (!followBtn) return;
 
   if (!currentUserId) {
@@ -387,6 +394,11 @@ console.log('detected roomId:', roomId);
 const oldOfficialRooms = ['feedback', 'simplychat', 'welcome'];
 let isDisabledOldRoom = oldOfficialRooms.includes(roomId);
 // end 20.1
+
+// 20.2 - check if room name exceeds 32 characters
+const MAX_ROOM_LENGTH = 32;
+let isTooLongRoom = roomId.length > MAX_ROOM_LENGTH;
+// end 20.2
 // end 20
 
 // 21 - dynamic page title
@@ -491,6 +503,24 @@ async function loadMessages() {
   }
   // end 27.1
 
+  // 27.2 - handle too long room names
+  if (isTooLongRoom) {
+    messagesDiv.innerHTML = '';
+    const errorDiv = document.createElement('div');
+    errorDiv.classList.add('message');
+    errorDiv.style.fontStyle = 'italic';
+    errorDiv.style.color = '#ff4444';
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.padding = '20px';
+    errorDiv.innerHTML = `
+      ⚠️ The chatroom name "<strong>${escapeHtml(roomId)}</strong>" is too long.<br>
+      The maximum length is ${MAX_ROOM_LENGTH} characters. Please try a shorter name.
+    `;
+    messagesDiv.appendChild(errorDiv);
+    return;
+  }
+  // end 27.2
+
   if (!messagesDiv) return;
   
   let query = supabase
@@ -537,14 +567,14 @@ async function loadMessages() {
     addSystemMessage(customMessages[roomId], false);
   }
 
-  // 27.2 - show lock status for admin-only rooms
+  // 27.3 - show lock status for admin-only rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
       addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
     }
   }
-  // end 27.2
+  // end 27.3
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
@@ -613,7 +643,14 @@ if (isChatPage) {
     }
     // end 30.2
     
-    // 30.3 - admin-only room restriction for !-prefixed rooms
+    // 30.3 - block sending in rooms with name too long
+    if (isTooLongRoom) {
+      alert(`The chatroom name "${roomId}" is too long. The maximum length is ${MAX_ROOM_LENGTH} characters.`);
+      return;
+    }
+    // end 30.3
+    
+    // 30.4 - admin-only room restriction for !-prefixed rooms
     if (roomId.startsWith('!') && !isDisabledOldRoom) {
       const isUnlocked = await isAdminRoomUnlocked(roomId);
       const isAdmin = isAdminUser(username);
@@ -622,7 +659,7 @@ if (isChatPage) {
         return;
       }
     }
-    // end 30.3
+    // end 30.4
 
     const content = messageInput.value.trim();
     if (!content) return;
