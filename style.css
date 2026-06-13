@@ -313,11 +313,12 @@ input[type="text"] {
   max-width: 500px;
   border-radius: 8px;
   transition: background-color 0.2s ease, color 0.2s ease;
+  color: #ffffff;
 }
 .explore-room:hover {
   cursor: pointer;
-  background-color: #e0e0e0;
-  color: grey;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
 }
 
 .user-tag-gh {
