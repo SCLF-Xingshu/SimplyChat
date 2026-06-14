@@ -578,6 +578,7 @@ function addMessage(msg) {
 // 33 - load existing messages from supabase
 async function loadMessages() {
   // 33.1 - handle disabled old official rooms
+  const loadingIndicator = document.getElementById('loading-indicator');
   if (isDisabledOldRoom) {
     messagesDiv.innerHTML = '';
     const disabledDiv = document.createElement('div');
@@ -593,11 +594,19 @@ async function loadMessages() {
       the SimplyChat official ${roomId} page?
     `;
     messagesDiv.appendChild(disabledDiv);
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
     return;
   }
   // end 33.1
-
-  // 33.2 - handle too long room names
+  
+  // 33.2 - show loading indicator
+  const loadingIndicator = document.getElementById('loading-indicator');
+  if (loadingIndicator) {
+    loadingIndicator.style.display = 'block';
+  }
+  // end 33.2
+  
+  // 33.3 - handle too long room names
   if (isTooLongRoom) {
     messagesDiv.innerHTML = '';
     const errorDiv = document.createElement('div');
@@ -612,9 +621,10 @@ async function loadMessages() {
       The maximum length is ${MAX_ROOM_LENGTH} characters. Please try a shorter name.
     `;
     messagesDiv.appendChild(errorDiv);
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
     return;
   }
-  // end 33.2
+  // end 33.3
 
   if (!messagesDiv) return;
   
@@ -635,6 +645,12 @@ async function loadMessages() {
     return;
   }
 
+  // 33.4 - hide loading indicator
+  if (loadingIndicator) {
+    loadingIndicator.style.display = 'none';
+  }
+  // end 33.4
+  
   const customMessages = {
     '!feedback': 'Welcome to the feedback page!',
     '!simplychat': 'Find here the latest infos about SimplyChat.',
@@ -662,14 +678,14 @@ async function loadMessages() {
     addSystemMessage(customMessages[roomId], false);
   }
 
-  // 33.3 - show lock status for admin-only rooms
+  // 33.5 - show lock status for admin-only rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
       addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
     }
   }
-  // end 33.3
+  // end 33.5
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
