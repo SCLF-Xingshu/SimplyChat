@@ -200,7 +200,7 @@ const cooldownDisplay = document.getElementById('cooldown-countdown');
 function updateCooldownDisplay(secondsLeft) {
   if (cooldownDisplay) {
     if (secondsLeft > 0) {
-      cooldownDisplay.textContent = `⏱️ Cooldown: ${secondsLeft}s`;
+      cooldownDisplay.textContent = `Cooldown: ${secondsLeft}s`;
       cooldownDisplay.classList.add('visible');
     } else {
       cooldownDisplay.textContent = '';
