@@ -439,3 +439,26 @@ body {
   opacity: 0.85;
   transform: scale(0.98);
 }
+
+/* loading indicator */
+#loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #ffffff;
+  display: none;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #ffffff;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
