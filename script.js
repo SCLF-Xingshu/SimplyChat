@@ -2,7 +2,6 @@
 let currentUserId = null;
 let currentHexId = null;
 let followingRooms = new Set();
-let isCreatingUser = false;
 let chatChannel = null;
 // end 1
 
@@ -182,23 +181,114 @@ function sendNotification(roomId, username, content) {
 }
 // end 11
 
-// 12 - update follow button text and style
+// 12 - rate limiting helper functions
+function getRateLimitKey() {
+  if (currentUser) {
+    return `simplychat_lastmessage_${currentUser.user_metadata.user_name}`;
+  } else {
+    return `simplychat_lastmessage_anon_${currentUserId}`;
+  }
+}
+// end 12
+
+// 13 - cooldown countdown variables
+let cooldownInterval = null;
+const cooldownDisplay = document.getElementById('cooldown-countdown');
+// end 13
+
+// 14 - update countdown display
+function updateCooldownDisplay(secondsLeft) {
+  if (cooldownDisplay) {
+    if (secondsLeft > 0) {
+      cooldownDisplay.textContent = `⏱️ Cooldown: ${secondsLeft}s`;
+      cooldownDisplay.classList.add('visible');
+    } else {
+      cooldownDisplay.textContent = '';
+      cooldownDisplay.classList.remove('visible');
+      if (cooldownInterval) {
+        clearInterval(cooldownInterval);
+        cooldownInterval = null;
+      }
+    }
+  }
+}
+// end 14
+
+// 15 - start cooldown countdown timer
+function startCooldownTimer() {
+  if (cooldownInterval) {
+    clearInterval(cooldownInterval);
+  }
+  
+  cooldownInterval = setInterval(() => {
+    const key = getRateLimitKey();
+    const lastMessageTime = localStorage.getItem(key);
+    const now = Date.now();
+    const COOLDOWN_SECONDS = 5;
+    const COOLDOWN_MS = COOLDOWN_SECONDS * 1000;
+    
+    if (lastMessageTime) {
+      const timeSinceLastMessage = now - parseInt(lastMessageTime);
+      if (timeSinceLastMessage < COOLDOWN_MS) {
+        const secondsLeft = Math.ceil((COOLDOWN_MS - timeSinceLastMessage) / 1000);
+        updateCooldownDisplay(secondsLeft);
+      } else {
+        updateCooldownDisplay(0);
+      }
+    } else {
+      updateCooldownDisplay(0);
+    }
+  }, 200);
+}
+// end 15
+
+// 16 - check if user is rate limited (5 second cooldown)
+function isRateLimited() {
+  const key = getRateLimitKey();
+  const lastMessageTime = localStorage.getItem(key);
+  const now = Date.now();
+  const COOLDOWN_SECONDS = 5;
+  const COOLDOWN_MS = COOLDOWN_SECONDS * 1000;
+  
+  if (lastMessageTime) {
+    const timeSinceLastMessage = now - parseInt(lastMessageTime);
+    if (timeSinceLastMessage < COOLDOWN_MS) {
+      const secondsLeft = Math.ceil((COOLDOWN_MS - timeSinceLastMessage) / 1000);
+      updateCooldownDisplay(secondsLeft);
+      startCooldownTimer();
+      return true;
+    }
+  }
+  updateCooldownDisplay(0);
+  return false;
+}
+// end 16
+
+// 17 - record message timestamp in localStorage
+function recordMessageTimestamp() {
+  const key = getRateLimitKey();
+  localStorage.setItem(key, Date.now().toString());
+  startCooldownTimer();
+}
+// end 17
+
+// 18 - update follow button text and style
 async function updateFollowButton() {
   const followBtn = document.getElementById('follow-btn');
   
-  // 12.1 - hide follow button in disabled old rooms
+  // 18.1 - hide follow button in disabled old rooms
   if (isDisabledOldRoom) {
     if (followBtn) followBtn.style.display = 'none';
     return;
   }
-  // end 12.1
+  // end 18.1
   
-  // 12.2 - hide follow button in rooms with name too long
+  // 18.2 - hide follow button in rooms with name too long
   if (isTooLongRoom) {
     if (followBtn) followBtn.style.display = 'none';
     return;
   }
-  // end 12.2
+  // end 18.2
   
   if (!followBtn) return;
 
@@ -219,9 +309,9 @@ async function updateFollowButton() {
     followBtn.classList.remove('following');
   }
 }
-// end 12
+// end 18
 
-// 13 - ui updates when user logs in/out
+// 19 - ui updates when user logs in/out
 function updateUIForUser() {
   const usernameInput = document.getElementById('username');
   if (currentUser && usernameInput) {
@@ -234,9 +324,9 @@ function updateUIForUser() {
   }
   updateFollowButton();
 }
-// end 13
+// end 19
 
-// 14 - realtime subscription (always connects)
+// 20 - realtime subscription (always connects)
 async function initRealtimeSubscription() {
   console.log('creating realtime subscription for room:', roomId);
 
@@ -269,9 +359,9 @@ async function initRealtimeSubscription() {
       }
     });
 }
-// end 14
+// end 20
 
-// 15 - main initialisation (single source of truth)
+// 21 - main initialisation (single source of truth)
 async function checkUser() {
   console.log('checkUser() started');
 
@@ -281,7 +371,7 @@ async function checkUser() {
   currentUser = session?.user || null;
   console.log('currentUser:', currentUser ? currentUser.user_metadata.user_name : 'null');
 
-  // 15.1 - show/hide login/logout buttons
+  // 21.1 - show/hide login/logout buttons
   if (currentUser) {
     if (githubLoginBtn) githubLoginBtn.style.display = 'none';
     if (githubLogoutBtn) githubLogoutBtn.style.display = 'block';
@@ -289,7 +379,7 @@ async function checkUser() {
     if (githubLoginBtn) githubLoginBtn.style.display = 'block';
     if (githubLogoutBtn) githubLogoutBtn.style.display = 'none';
   }
-  // end 15.1
+  // end 21.1
 
   if (!currentUserId) {
     await getOrCreateLocalUser();
@@ -299,11 +389,15 @@ async function checkUser() {
   updateUIForUser();
   await initRealtimeSubscription();
 
+  // 21.2 - check if user is in cooldown on page load
+  isRateLimited();
+  // end 21.2
+
   console.log('checkUser() completed');
 }
-// end 15
+// end 21
 
-// 16 - follow button event listener
+// 22 - follow button event listener
 const followBtn = document.getElementById('follow-btn');
 if (followBtn) {
   followBtn.addEventListener('click', async () => {
@@ -326,25 +420,25 @@ if (followBtn) {
     await updateFollowButton();
   });
 }
-// end 16
+// end 22
 
-// 17 - supabase setup
+// 23 - supabase setup
 const supabaseUrl = 'https://koprmimlvjziuznbntzc.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvcHJtaW1sdmp6aXV6bmJudHpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExMDI2NjYsImV4cCI6MjA4NjY3ODY2Nn0.hPp-Fx6o7LtBSW_YIuw7WtJd73z8l1KLbg-O5UbPWeU';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 let roomsIndex = [];
-// end 17
+// end 23
 
-// 18 - redirect handling (for 404 fallback)
+// 24 - redirect handling (for 404 fallback)
 const redirect = sessionStorage.getItem('redirect');
 if (redirect) {
   sessionStorage.removeItem('redirect');
   window.history.replaceState({}, '', redirect);
 }
-// end 18
+// end 24
 
-// 19 - build room index (for explore / search)
+// 25 - build room index (for explore / search)
 async function fetchRoomsIndex() {
   const { data, error } = await supabase
     .from('simplychat_messages')
@@ -365,9 +459,9 @@ async function fetchRoomsIndex() {
   });
   return Object.values(map);
 }
-// end 19
+// end 25
 
-// 20 - room id detection (supports /chat/room and direct /room)
+// 26 - room id detection (supports /chat/room and direct /room)
 const parts = window.location.pathname.split('/');
 let roomId;
 const redirectPath = sessionStorage.getItem('redirect');
@@ -390,30 +484,30 @@ if (redirectPath) {
 }
 console.log('detected roomId:', roomId);
 
-// 20.1 - check if room is an old official room (disabled)
+// 26.1 - check if room is an old official room (disabled)
 const oldOfficialRooms = ['feedback', 'simplychat', 'welcome'];
 let isDisabledOldRoom = oldOfficialRooms.includes(roomId);
-// end 20.1
+// end 26.1
 
-// 20.2 - check if room name exceeds 32 characters
+// 26.2 - check if room name exceeds 32 characters
 const MAX_ROOM_LENGTH = 32;
 let isTooLongRoom = roomId.length > MAX_ROOM_LENGTH;
-// end 20.2
-// end 20
+// end 26.2
+// end 26
 
-// 21 - dynamic page title
+// 27 - dynamic page title
 if (roomId !== 'global') {
   document.title = 'SimplyChat / ' + roomId;
 }
-// end 21
+// end 27
 
-// 22 - clean url (if needed)
+// 28 - clean url (if needed)
 if (parts[3] && parts[3] !== roomId) {
   window.history.replaceState({}, '', `/SimplyChat/chat/${roomId}`);
 }
-// end 22
+// end 28
 
-// 23 - dom elements
+// 29 - dom elements
 const messagesDiv = document.getElementById('messages');
 const usernameInput = document.getElementById('username');
 const messageInput = document.getElementById('message');
@@ -427,9 +521,9 @@ const fontSlider = document.getElementById('font-slider');
 const fontSizeDisplay = document.getElementById('font-size-display');
 
 let currentUser = null;
-// end 23
+// end 29
 
-// 24 - font size persistence
+// 30 - font size persistence
 const savedFontSize = localStorage.getItem('fontSize');
 if (savedFontSize) {
   document.documentElement.style.setProperty('--font-size', savedFontSize + 'px');
@@ -444,17 +538,17 @@ if (fontSlider && fontSizeDisplay) {
     localStorage.setItem('fontSize', size);
   });
 }
-// end 24
+// end 30
 
-// 25 - character counter
+// 31 - character counter
 if (isChatPage && messageInput && charCount) {
   messageInput.addEventListener('input', () => {
     charCount.textContent = `${messageInput.value.length} / 1000`;
   });
 }
-// end 25
+// end 31
 
-// 26 - display a message in the chat
+// 32 - display a message in the chat
 function addMessage(msg) {
   if (!messagesDiv) return;
   const div = document.createElement('div');
@@ -479,11 +573,11 @@ function addMessage(msg) {
   messagesDiv.appendChild(div);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
-// end 26
+// end 32
 
-// 27 - load existing messages from supabase
+// 33 - load existing messages from supabase
 async function loadMessages() {
-  // 27.1 - handle disabled old official rooms
+  // 33.1 - handle disabled old official rooms
   if (isDisabledOldRoom) {
     messagesDiv.innerHTML = '';
     const disabledDiv = document.createElement('div');
@@ -501,9 +595,9 @@ async function loadMessages() {
     messagesDiv.appendChild(disabledDiv);
     return;
   }
-  // end 27.1
+  // end 33.1
 
-    // 27.2 - handle too long room names
+  // 33.2 - handle too long room names
   if (isTooLongRoom) {
     messagesDiv.innerHTML = '';
     const errorDiv = document.createElement('div');
@@ -520,7 +614,7 @@ async function loadMessages() {
     messagesDiv.appendChild(errorDiv);
     return;
   }
-  // end 27.2
+  // end 33.2
 
   if (!messagesDiv) return;
   
@@ -568,14 +662,14 @@ async function loadMessages() {
     addSystemMessage(customMessages[roomId], false);
   }
 
-  // 27.3 - show lock status for admin-only rooms
+  // 33.3 - show lock status for admin-only rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
       addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
     }
   }
-  // end 27.3
+  // end 33.3
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
@@ -583,13 +677,13 @@ async function loadMessages() {
     addSystemMessage('server : no messages yet.', false);
   }
 }
-// end 27
+// end 33
 
-// 28 - start loading messages
+// 34 - start loading messages
 if (messagesDiv) loadMessages();
-// end 28
+// end 34
 
-// 29 - room index for explore page
+// 35 - room index for explore page
 async function initRooms() {
   roomsIndex = await fetchRoomsIndex();
 }
@@ -623,35 +717,35 @@ function renderExplore(rooms, mode) {
 }
 
 initRooms();
-// end 29
+// end 35
 
-// 30 - send message
+// 36 - send message
 if (isChatPage) {
   sendBtn.addEventListener('click', async () => {
-    // 30.1 - generate username using stored local user ID
+    // 36.1 - generate username using stored local user ID
     let username;
     if (currentUser) {
       username = `[GH]${currentUser.user_metadata.user_name}`;
     } else {
       username = `anon${currentUserId}`;
     }
-    // end 30.1
+    // end 36.1
     
-    // 30.2 - block sending in disabled old official rooms
+    // 36.2 - block sending in disabled old official rooms
     if (isDisabledOldRoom) {
       alert('This chatroom is disabled. Please use the official room link shown above.');
       return;
     }
-    // end 30.2
+    // end 36.2
     
-    // 30.3 - block sending in rooms with name too long
+    // 36.3 - block sending in rooms with name too long
     if (isTooLongRoom) {
       alert(`The chatroom name "${roomId}" is too long. The maximum length is ${MAX_ROOM_LENGTH} characters.`);
       return;
     }
-    // end 30.3
+    // end 36.3
     
-    // 30.4 - admin-only room restriction for !-prefixed rooms
+    // 36.4 - admin-only room restriction for !-prefixed rooms
     if (roomId.startsWith('!') && !isDisabledOldRoom) {
       const isUnlocked = await isAdminRoomUnlocked(roomId);
       const isAdmin = isAdminUser(username);
@@ -660,7 +754,13 @@ if (isChatPage) {
         return;
       }
     }
-    // end 30.4
+    // end 36.4
+
+    // 36.5 - rate limiting check (5 second cooldown)
+    if (isRateLimited()) {
+      return;
+    }
+    // end 36.5
 
     const content = messageInput.value.trim();
     if (!content) return;
@@ -676,14 +776,15 @@ if (isChatPage) {
     if (error) {
       console.error('error inserting message:', error);
     } else {
+      recordMessageTimestamp();
       messageInput.value = '';
       charCount.textContent = '0 / 1000';
     }
   });
 }
-// end 30
+// end 36
 
-// 31 - github login
+// 37 - github login
 if (githubLoginBtn) {
   githubLoginBtn.addEventListener('click', async () => {
     await supabase.auth.signInWithOAuth({
@@ -692,20 +793,20 @@ if (githubLoginBtn) {
     });
   });
 }
-// end 31
+// end 37
 
-// 32 - run the main initialisation
+// 38 - run the main initialisation
 checkUser();
-// end 32
+// end 38
 
-// 33 - simple auth state change (only re‑runs checkuser)
+// 39 - simple auth state change (only re‑runs checkuser)
 supabase.auth.onAuthStateChange((_event, session) => {
   console.log('auth state changed', session ? 'logged in' : 'logged out');
   checkUser();
 });
-// end 33
+// end 39
 
-// 34 - room search system (explore page)
+// 40 - room search system (explore page)
 function initRoomSearchSystem() {
   const roomSearch = document.getElementById('room-search');
   const roomResults = document.getElementById('room-results');
@@ -751,21 +852,21 @@ function initRoomSearchSystem() {
 }
 
 initRoomSearchSystem();
-// end 34
+// end 40
 
-// 35 - debug: expose supabase for console
+// 41 - debug: expose supabase for console
 window.supabase = supabase;
 console.log('supabase exposed to window. type window.supabase in console.');
-// end 35
+// end 41
 
-// 36 - check if user is admin
+// 42 - check if user is admin
 function isAdminUser(username) {
   const adminNames = ['[GH]SCLF-Xingshu', '[GH][ADMIN]SCLF-Xingshu'];
   return adminNames.includes(username);
 }
-// end 36
+// end 42
 
-// 37 - check if admin room has any messages (unlocked)
+// 43 - check if admin room has any messages (unlocked)
 async function isAdminRoomUnlocked(roomId) {
   if (!roomId.startsWith('!')) return true;
   const { data, error } = await supabase
@@ -776,9 +877,9 @@ async function isAdminRoomUnlocked(roomId) {
   if (error) console.error('Unlock check error:', error);
   return data && data.length > 0;
 }
-// end 37
+// end 43
 
-// 38 - logout function
+// 44 - logout function
 async function logout() {
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -801,10 +902,10 @@ async function logout() {
   updateFollowButton();
   location.reload();
 }
-// end 38
+// end 44
 
-// 39 - logout button event listener
+// 45 - logout button event listener
 if (githubLogoutBtn) {
   githubLogoutBtn.addEventListener('click', logout);
 }
-// end 39
+// end 45
