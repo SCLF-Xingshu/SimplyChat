@@ -577,8 +577,8 @@ function addMessage(msg) {
 
 // 33 - load existing messages from supabase
 async function loadMessages() {
-  // 33.1 - handle disabled old official rooms
   const loadingIndicator = document.getElementById('loading-indicator');
+  // 33.1 - handle disabled old official rooms
   if (isDisabledOldRoom) {
     messagesDiv.innerHTML = '';
     const disabledDiv = document.createElement('div');
@@ -600,7 +600,6 @@ async function loadMessages() {
   // end 33.1
   
   // 33.2 - show loading indicator
-  const loadingIndicator = document.getElementById('loading-indicator');
   if (loadingIndicator) {
     loadingIndicator.style.display = 'block';
   }
