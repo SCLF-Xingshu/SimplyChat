@@ -742,8 +742,13 @@ if (isChatPage) {
     if (currentUser) {
       username = `[GH]${currentUser.user_metadata.user_name}`;
     } else {
-      const customName = usernameInput.value.trim();
+      let customName = usernameInput.value.trim();
+      const MAX_CUSTOM_NAME = 24;
       if (customName !== '') {
+        if (customName.length > MAX_CUSTOM_NAME) {
+          customName = customName.substring(0, MAX_CUSTOM_NAME);
+          usernameInput.value = customName;
+        }
         username = customName;
       } else {
         username = `anon${currentUserId}`;
