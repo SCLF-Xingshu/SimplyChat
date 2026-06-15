@@ -737,12 +737,17 @@ initRooms();
 // 36 - send message
 if (isChatPage) {
   sendBtn.addEventListener('click', async () => {
-    // 36.1 - generate username using stored local user ID
+    // 36.1 - generate username (custom for anonymous, GitHub for logged in)
     let username;
     if (currentUser) {
       username = `[GH]${currentUser.user_metadata.user_name}`;
     } else {
-      username = `anon${currentUserId}`;
+      const customName = usernameInput.value.trim();
+      if (customName !== '') {
+        username = customName;
+      } else {
+        username = `anon${currentUserId}`;
+      }
     }
     // end 36.1
     
