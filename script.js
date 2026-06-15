@@ -679,15 +679,19 @@ async function loadMessages() {
   if (customMessages[roomId]) {
     addSystemMessage(customMessages[roomId], false);
   }
-
-  // 33.5 - show lock status for admin-only rooms
+  // 33.5 - official room notice for !-prefixed rooms
+  if (roomId.startsWith('!') && !isDisabledOldRoom) {
+    addSystemMessage(`Note: you are on ${roomId}. Chatrooms starting with "!" are official SimplyChat chatrooms.`, false);
+  }
+  // end 33.5
+  // 33.6 - show lock status for admin-only rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
       addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
     }
   }
-  // end 33.5
+  // end 33.6
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
