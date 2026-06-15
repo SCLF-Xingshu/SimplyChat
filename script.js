@@ -665,7 +665,7 @@ async function loadMessages() {
     div.classList.add('message');
     div.style.fontStyle = 'italic';
     div.style.color = '#8c8c8c';
-    div.textContent = text;
+    div.innerHTML = text.replace(/\n/g, '<br>');
     if (insertAtTop) {
       messagesDiv.insertBefore(div, messagesDiv.firstChild);
     } else {
