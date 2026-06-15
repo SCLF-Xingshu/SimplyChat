@@ -681,7 +681,7 @@ async function loadMessages() {
   }
   // 33.5 - official room notice for !-prefixed rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
-    addSystemMessage(`Note: you are on ${roomId}. Chatrooms starting with "!" are official SimplyChat chatrooms.`, false);
+    addSystemMessage(`Note: you are on /${roomId}. Chatrooms starting with "!" are official SimplyChat chatrooms.`, false);
   }
   // end 33.5
   // 33.6 - show lock status for admin-only rooms
