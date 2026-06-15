@@ -651,11 +651,14 @@ async function loadMessages() {
   // end 33.4
   
   const customMessages = {
-    '!feedback': 'Welcome to the feedback page!',
+    'global': 'This is the main chatroom. Create you own using the search bar !',
+    '!feedback': 'Welcome to the feedback page!\nNote: if you encountered a bug, report it here: <a href="https://sclf-xingshu.github.io/SimplyChat/chat/!bugs">/!bugs</a>\nThank you!',
     '!simplychat': 'Find here the latest infos about SimplyChat.',
-    '!welcome': 'Introduce yourself to SimplyChat!'
+    '!welcome': 'Introduce yourself to SimplyChat!',
+    '!explore': 'Explore and discuss about chatrooms!',
+    '!bugs': 'Found a bug ? Report it here !\nBe precise when describing the bug, so we can fix it. Thank you !'
   };
-  const noWelcomeRooms = ['!feedback', '!simplychat', '!welcome'];
+  const noWelcomeRooms = ['!feedback'/*, '!simplychat', '!welcome'*/];
   
   const addSystemMessage = (text, insertAtTop) => {
     const div = document.createElement('div');
