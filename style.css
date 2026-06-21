@@ -462,3 +462,91 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* D10 – Create page styles */
+.create-wrapper {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.create-wrapper h1 {
+  font-family: monospace;
+  font-size: 2em;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.create-wrapper .sub {
+  color: #ccc;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+.create-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 24px;
+  text-align: left;
+}
+
+.create-box label {
+  display: block;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.8em;
+  margin-bottom: 6px;
+}
+
+.create-box input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-family: monospace;
+  font-size: 1em;
+  box-sizing: border-box;
+  flex: none;
+}
+
+.create-box .hint {
+  font-size: 0.7em;
+  color: #ccc;
+  margin-top: 6px;
+  margin-bottom: 16px;
+}
+
+.create-box .hint span {
+  color: #80f5ff;
+}
+
+.create-box .btn-create {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 0px;
+  background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
+  color: #fff;
+  font-family: monospace;
+  font-size: 1em;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.create-box .btn-create:hover {
+  background: linear-gradient(90deg, #00e4ff, #0017ff, #9e00ff);
+}
+
+.create-box .error {
+  color: #ff6b6b;
+  font-size: 0.7em;
+  margin-top: 8px;
+  display: none;
+}
+
+.create-box .error.visible {
+  display: block;
+}
