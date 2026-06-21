@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimplyChat · Create</title>
+  <link rel="stylesheet" href="/SimplyChat/style.css">
+  <link rel="icon" href="/SimplyChat/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/SimplyChat/SimplyChatLogo11May2026.png" type="image/png" sizes="32x32">
+  <script src="/SimplyChat/create.js" defer></script>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="title-container">
+      <img src="https://raw.githubusercontent.com/SCLF-Xingshu/SimplyChat/refs/heads/master/SimplyChatLogo11May2026.png" class="title-icon" alt="SimplyChat logo">
+      <h1><span class="title-highlight">SimplyChat.</span></h1>
+    </div>
 
+    <div id="top-bar">
+      <div id="navbar"><p>
+        <a href="https://sclf-xingshu.github.io/SimplyChat/">Home</a> ·
+        <a href="https://sclf-xingshu.github.io/SimplyChat/blog">Blog</a> ·
+        <a href="https://sclf-xingshu.github.io/SimplyChat/explore">Explore</a>
+      </p></div>
+    </div>
+
+    <div class="create-wrapper">
+      <h1>Create a room</h1>
+      <div class="sub">Give your room a name and start chatting instantly!</div>
+
+      <div class="create-box">
+        <label for="roomName">Room name</label>
+        <input type="text" id="roomName" placeholder="e.g. design, gaming, mychat..." maxlength="32" />
+        <div class="hint">Allows lowercase letters, numbers, hyphens and underscores. Max <span>32</span> characters.</div>
+        <button class="btn-create" id="createBtn">Create</button>
+        <div class="error" id="errorMsg">Room name is required.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
