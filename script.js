@@ -13,6 +13,40 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+// 2.1 - convert custom link syntax to HTML links
+function renderCustomLinks(text) {
+  // Match any \...\ pattern (non-greedy)
+  return text.replace(/\\\\([^\\\\]+)\\\\/g, function(match, content) {
+    const trimmed = content.trim();
+    
+    // Rule 1: @/room → chatroom link
+    if (trimmed.startsWith('@/')) {
+      const roomId = trimmed.slice(2);
+      return `<a href="/SimplyChat/chat/${roomId}" class="custom-link">@/${roomId}</a>`;
+    }
+    
+    // Rule 2: @page → internal page link
+    if (trimmed.startsWith('@')) {
+      const page = trimmed.slice(1);
+      return `<a href="/SimplyChat/${page}" class="custom-link">@${page}</a>`;
+    }
+    
+    // Rule 3: https:// → external link (only secure)
+    if (trimmed.startsWith('https://')) {
+      const displayText = trimmed.replace('https://', '');
+      return `<a href="${trimmed}" class="custom-link" target="_blank" rel="noopener noreferrer">${displayText}</a>`;
+    }
+    
+    // Rule 4: http:// → ignored (not a link) - show backslashes
+    if (trimmed.startsWith('http://')) {
+      return match; // keep \http://...\ as plain text
+    }
+    
+    // Rule 5: anything else → plain text (show backslashes)
+    return match;
+  });
+}
+// end 2.1
 // end 2
 
 // 3 - format username (green [gh] tag)
