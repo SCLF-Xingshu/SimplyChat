@@ -13,10 +13,12 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+// end 2
+
 // 2.1 - convert custom link syntax to HTML links
 function renderCustomLinks(text) {
-  // Match any \...\ pattern (non-greedy)
-  return text.replace(/\\\\([^\\\\]+)\\\\/g, function(match, content) {
+  // Match any \...\ pattern (simplified regex)
+  return text.replace(/\\([^\\]+)\\/g, function(match, content) {
     const trimmed = content.trim();
     
     // Rule 1: @/room → chatroom link
@@ -39,7 +41,7 @@ function renderCustomLinks(text) {
     
     // Rule 4: http:// → ignored (not a link) - show backslashes
     if (trimmed.startsWith('http://')) {
-      return match; // keep \http://...\ as plain text
+      return match;
     }
     
     // Rule 5: anything else → plain text (show backslashes)
@@ -47,7 +49,6 @@ function renderCustomLinks(text) {
   });
 }
 // end 2.1
-// end 2
 
 // 3 - format username (green [gh] tag)
 function formatUsername(username) {
@@ -104,7 +105,6 @@ async function loadFollowedRooms() {
   followingRooms.clear();
 
   if (currentUser) {
-    // logged in: load from supabase using GitHub username
     const githubUsername = currentUser.user_metadata.user_name;
     const { data, error } = await supabase
       .from('user_follows')
@@ -117,7 +117,6 @@ async function loadFollowedRooms() {
       console.error('error loading follows from supabase:', error);
     }
   } else {
-    // not logged in: load from localStorage
     const stored = localStorage.getItem('simplychat_following');
     if (stored) {
       const rooms = JSON.parse(stored);
@@ -133,7 +132,6 @@ async function followRoom(roomId) {
   if (followingRooms.has(roomId)) return true;
 
   if (currentUser) {
-    // logged in: use supabase with GitHub username
     const githubUsername = currentUser.user_metadata.user_name;
     const { error } = await supabase
       .from('user_follows')
@@ -144,7 +142,6 @@ async function followRoom(roomId) {
       return false;
     }
   }
-  // always update local cache and localStorage
   followingRooms.add(roomId);
   saveFollowsToLocal();
   return true;
@@ -156,7 +153,6 @@ async function unfollowRoom(roomId) {
   if (!followingRooms.has(roomId)) return true;
 
   if (currentUser) {
-    // logged in: delete from supabase using GitHub username
     const githubUsername = currentUser.user_metadata.user_name;
     const { error } = await supabase
       .from('user_follows')
@@ -194,7 +190,6 @@ async function requestNotificationPermission() {
 function sendNotification(roomId, username, content) {
   if (Notification.permission !== 'granted') return;
 
-  // don't notify for own messages
   if (currentUser) {
     const githubName = currentUser.user_metadata?.user_name;
     if (githubName && (username === `[GH]${githubName}` || username === `[GH] ${githubName}`)) {
