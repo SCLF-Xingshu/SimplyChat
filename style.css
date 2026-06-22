@@ -557,11 +557,12 @@ body {
 /* D11 – Centered navbar + search row */
 #navbar {
   text-align: center;
+  width: 100%;
 }
 
 #navbar p {
   display: inline-block;
-  margin: 0;
+  margin: 0 auto;
   color: #fff;
 }
 
@@ -583,8 +584,21 @@ body {
   box-sizing: border-box;
 }
 
-#search-row select,
+#search-row select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-family: monospace;
+  font-size: 0.7em;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 100%;
+}
+
 #search-row #room-search {
+  flex: 1;
+  min-width: 0;
   padding: 8px;
   border: 1px solid #ccc;
   background: #fff;
@@ -592,13 +606,5 @@ body {
   font-size: 0.7em;
   box-sizing: border-box;
   height: auto;
-}
-
-#search-row select {
-  flex: 0 0 auto;
-}
-
-#search-row #room-search {
-  flex: 1;
-  min-width: 0;
+  min-height: 100%;
 }
