@@ -604,3 +604,34 @@ body {
   flex: 1;
   min-width: 0;
 }
+
+/* D11.4 – Animated underline from center to sides */
+#navbar a {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  padding: 0.15em 0;
+  transition: color 0.2s ease;
+}
+
+#navbar a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  height: 2px;
+  background-color: #80f5ff;
+  border-radius: 4px;
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+#navbar a:hover::after {
+  width: 100%;
+}
+
+#navbar a:hover {
+  color: #80f5ff;
+}
