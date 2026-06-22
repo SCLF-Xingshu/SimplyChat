@@ -387,7 +387,12 @@ async function checkUser() {
 
   await loadFollowedRooms();
   updateUIForUser();
-  await initRealtimeSubscription();
+  
+  // 21.3 - only initialize realtime subscription on chat pages
+  if (isChatPage) {
+    await initRealtimeSubscription();
+  }
+  // end 21.3
 
   // 21.2 - check if user is in cooldown on page load
   isRateLimited();
@@ -702,7 +707,7 @@ async function loadMessages() {
 // end 33
 
 // 34 - start loading messages
-if (messagesDiv) loadMessages();
+if (isChatPage) loadMessages();
 // end 34
 
 // 35 - room index for explore page
