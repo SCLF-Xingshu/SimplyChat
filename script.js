@@ -603,6 +603,7 @@ function addMessage(msg) {
   const tz = tzParts[tzParts.length - 1] || '';
 
   let safeText = DOMPurify.sanitize(msg.content);
+  safeText = renderCustomLinks(safeText);
   safeText = safeText.replace(/\n/g, '<br>');
 
   div.innerHTML = `
