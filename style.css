@@ -578,33 +578,29 @@ body {
 #search-row {
   display: flex;
   gap: 8px;
-  align-items: stretch;
+  align-items: center;
   margin: 10px 0;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-#search-row select {
+#search-row select,
+#search-row #room-search {
+  height: 38px;
   padding: 8px;
   border: 1px solid #ccc;
   background: #fff;
   font-family: monospace;
   font-size: 0.7em;
   box-sizing: border-box;
+  margin: 0;
+}
+
+#search-row select {
   flex: 0 0 auto;
-  height: auto;
-  min-height: 100%;
 }
 
 #search-row #room-search {
   flex: 1;
   min-width: 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
-  font-family: monospace;
-  font-size: 0.7em;
-  box-sizing: border-box;
-  height: auto;
-  min-height: 100%;
 }
