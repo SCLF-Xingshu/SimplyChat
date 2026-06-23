@@ -77,10 +77,6 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* #messages div {
-  margin-bottom: 8px;
-}*/
-
 /* button container - aligns message input and send button on the same line */
 #input-container {
   display: flex;
@@ -191,59 +187,77 @@ input[type="text"] {
   resize: vertical;
 }
 
-#top-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 10px 0;
-  flex-wrap: wrap;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-#top-bar > * {
-  max-width: 100%;
-}
-
+/* D11 – Centered navbar + search row */
 #navbar {
-  flex: 0 0 auto;
-  white-space: nowrap;
+  text-align: center;
+  width: 100%;
 }
 
-#navbar p,
-#navbar a,
-#navbar a:visited {
+#navbar p {
+  display: inline-block;
+  margin: 0 auto;
   color: #fff;
 }
 
+/* D11.4 – Animated underline from center to sides */
+#navbar a {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  padding: 0.15em 0;
+  transition: color 0.2s ease;
+}
+
+#navbar a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  height: 0.12em;
+  background-color: #80f5ff;
+  border-radius: 4px;
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+#navbar a:hover::after {
+  width: 100%;
+}
+
 #navbar a:hover {
-  color: #cccccc;
+  color: #80f5ff;
 }
 
-#room-search-container {
+#search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
   margin: 10px 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-#room-search {
+#search-row select,
+#search-row #room-search {
+  height: 38px;
   padding: 8px;
   border: 1px solid #ccc;
   background: #fff;
   font-family: monospace;
   font-size: 0.7em;
-  width: 100%;
   box-sizing: border-box;
+  margin: 0;
+}
+
+#search-row select {
+  flex: 0 0 auto;
+}
+
+#search-row #room-search {
   flex: 1;
   min-width: 0;
-}
-
-#room-mode {
-  padding: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
-  font-family: monospace;
-  font-size: 0.7em;
-  margin-bottom: 5px;
-  margin-left: calc(0.5em + 5px);
 }
 
 #room-results {
@@ -283,29 +297,16 @@ input[type="text"] {
   margin: 0;
 }
 
-/*#title-container h1::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0.05em;
-  width: 100%;
-  height: 1em;
-  background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
-  border-radius: 0.3em;
-  z-index: 1;
-}*/
-
 #title-container h1 span {
   position: relative;
   z-index: 2;
 }
 
 .title-icon {
-  width: 2.8em; /*a multiple of 1.4em, since 1.4em is font height*/
+  width: 2.8em;
   height: 2.8em;
 }
 
-/*.title-part,*/
 .title-highlight {
   background: linear-gradient(90deg, #80f5ff, #8c97ff, #ce80ff);
   padding: 0 0.2em;
@@ -328,88 +329,30 @@ input[type="text"] {
   margin-bottom: 8px;
 }
 
-.explore-room {
-  padding: 10px;
-  margin: 5px auto;
-  max-width: 500px;
-  border-radius: 8px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  color: #fff;
-}
-.explore-room:hover {
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #fff;
-}
-
-.user-tag-gh {
-  background-color: #0FBF3E;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-right: 4px;
+/* D12.8 – Custom link styles (matches navbar exactly) */
+.custom-link {
   display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: #1e7d94;
+  padding: 0.15em 0;
 }
 
-/* blog styles */
-
-#blog-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 0 15px;
+.custom-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  height: 0.12em;
+  background-color: #1e7d94;
+  border-radius: 4px;
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.blog-post {
-  padding: 15px;
-  background: #fff;
-  border: 1px solid #ccc;
-  margin: 15px 0;
-
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.blog-post:last-child {
-  border-bottom: none;
-}
-
-.blog-post h2 {
-  margin: 0;
-  margin-bottom: 5px;
-}
-
-.post-date {
-  font-size: 0.6em;
-  color: #666;
-  margin: 0;
-  margin-bottom: 8px;
-}
-
-/*background styles*/
-
-#bg-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
+.custom-link:hover::after {
   width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* elevate other elements above the bg canvas */
-body {
-  position: relative;
-}
-
-#chat-container,
-#top-bar,
-#messages,
-/*#font-size-controls,*/
-#room-results,
-#blog-container {
-  position: relative;
-  z-index: 2;
 }
 
 /* Follow button styles */
@@ -464,6 +407,85 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.user-tag-gh {
+  background-color: #0FBF3E;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+.explore-room {
+  padding: 10px;
+  margin: 5px auto;
+  max-width: 500px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: #fff;
+}
+.explore-room:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+/* blog styles */
+#blog-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.blog-post {
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #ccc;
+  margin: 15px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.blog-post:last-child {
+  border-bottom: none;
+}
+
+.blog-post h2 {
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.post-date {
+  font-size: 0.6em;
+  color: #666;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+/*background styles*/
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body {
+  position: relative;
+}
+
+#chat-container,
+#top-bar,
+#messages,
+#room-results,
+#blog-container {
+  position: relative;
+  z-index: 2;
 }
 
 /* D10 – Create page styles */
@@ -552,112 +574,4 @@ body {
 
 .create-box .error.visible {
   display: block;
-}
-
-/* D11 – Centered navbar + search row */
-#navbar {
-  text-align: center;
-  width: 100%;
-}
-
-#navbar p {
-  display: inline-block;
-  margin: 0 auto;
-  color: #fff;
-}
-
-#navbar a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#navbar a:hover {
-  color: #cccccc;
-}
-
-#search-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin: 10px 0;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-#search-row select,
-#search-row #room-search {
-  height: 38px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  background: #fff;
-  font-family: monospace;
-  font-size: 0.7em;
-  box-sizing: border-box;
-  margin: 0;
-}
-
-#search-row select {
-  flex: 0 0 auto;
-}
-
-#search-row #room-search {
-  flex: 1;
-  min-width: 0;
-}
-
-/* D11.4 – Animated underline from center to sides */
-#navbar a {
-  display: inline-block;
-  position: relative;
-  text-decoration: none;
-  color: #fff;
-  padding: 0.15em 0;
-  transition: color 0.2s ease;
-}
-
-#navbar a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0%;
-  height: 0.12em;
-  background-color: #80f5ff;
-  border-radius: 4px;
-  transform: translateX(-50%);
-  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-#navbar a:hover::after {
-  width: 100%;
-}
-
-#navbar a:hover {
-  color: #80f5ff;
-}
-
-/* D12.8 – Custom link styles (matches navbar exactly) */
-.custom-link {
-  display: inline-block;
-  position: relative;
-  text-decoration: none;
-  color: #1e7d94;
-  padding: 0.15em 0;
-}
-
-.custom-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0%;
-  height: 0.12em;
-  background-color: #1e7d94;
-  border-radius: 4px;
-  transform: translateX(-50%);
-  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.custom-link:hover::after {
-  width: 100%;
 }
