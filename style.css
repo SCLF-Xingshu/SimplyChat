@@ -636,12 +636,13 @@ body {
   color: #80f5ff;
 }
 
-/* D12.8 – Custom link styles (exactly matches navbar) */
+/* D12.8 – Custom link styles (matches navbar exactly) */
 .custom-link {
   display: inline-block;
   position: relative;
   text-decoration: none;
   color: #4aadcb;
+  padding: 0.15em 0;
 }
 
 .custom-link::after {
