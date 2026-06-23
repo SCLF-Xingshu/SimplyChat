@@ -240,7 +240,8 @@ input[type="text"] {
 }
 
 #search-row select,
-#search-row #room-search {
+#search-row #room-search,
+#search-row #room-mode {
   height: 38px;
   padding: 8px;
   border: 1px solid #ccc;
@@ -249,6 +250,16 @@ input[type="text"] {
   font-size: 0.7em;
   box-sizing: border-box;
   margin: 0;
+}
+
+#search-row #room-mode {
+  border-radius: 999px 0px 0px 999px;
+  /* order: top-left | top-right | bottom-right | bottom-left */
+}
+
+#search-row #room-search {
+  border-radius: 0px 999px 999px 0px;
+  /* order: top-left | top-right | bottom-right | bottom-left */
 }
 
 #search-row select {
