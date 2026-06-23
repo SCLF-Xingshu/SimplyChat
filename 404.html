@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <script>
-      const path = window.location.pathname
-      sessionStorage.setItem('redirect', path)
-      window.location.href = '/SimplyChat/'
+      // Now, it stores the full path including hash (#msg165)
+      const fullPath = window.location.pathname + window.location.hash;
+      sessionStorage.setItem('redirect', fullPath);
+      window.location.href = '/SimplyChat/';
     </script>
   </head>
 </html>
