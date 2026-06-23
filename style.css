@@ -621,7 +621,7 @@ body {
   bottom: 0;
   left: 50%;
   width: 0%;
-  height: 2px;
+  height: 0.1em;
   background-color: #80f5ff;
   border-radius: 4px;
   transform: translateX(-50%);
@@ -651,7 +651,7 @@ body {
   bottom: 0;
   left: 50%;
   width: 0%;
-  height: 2px;
+  height: 0.1em;
   background-color: #1e7d94;
   border-radius: 4px;
   transform: translateX(-50%);
