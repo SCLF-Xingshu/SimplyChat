@@ -533,6 +533,14 @@ if (redirectPath) {
   } else {
     roomId = 'global';
   }
+  
+  // Restore hash if present in redirect path
+  if (redirectPath.includes('#')) {
+    const hash = redirectPath.split('#')[1];
+    if (hash) {
+      window.location.hash = '#' + hash;
+    }
+  }
 } else if (parts[2] === 'chat' && parts[3]) {
   roomId = parts[3].toLowerCase();
 } else if (parts[2] && parts[2] !== 'chat' && parts[2] !== '') {
@@ -540,6 +548,10 @@ if (redirectPath) {
 } else {
   roomId = 'global';
 }
+
+// Clear the redirect after processing
+sessionStorage.removeItem('redirect');
+
 console.log('detected roomId:', roomId);
 
 // 26.1 - check if room is an old official room (disabled)
