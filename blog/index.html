@@ -84,7 +84,62 @@
     <div class="blog-post">
       <h2>[Feature] Chatroom notifications</h2>
       <p class="post-date">June 13, 2026</p>
-      <p>A "Follow" button is added. You can "follow" a chatroom to receive notifications every time a new message is sent. You can "unfollow" at any moment.</p>
+      <p>A "Follow" button is added. You can "follow" a chatroom to receive a notification every time a new message is sent. You can "unfollow" at any moment.</p>
+    </div>
+    <div class="blog-post">
+      <h2>[UI] Improved design</h2>
+      <p class="post-date">June 23, 2026</p>
+      <p>The navbar has been centered. Links now show underlines only on hover, offering increased legibility. The app’s accessibility (particularly color contrasts) has also been reworked.</p>
+    </div>
+    <div class="blog-post">
+      <h2>[Feature] Guide to the custom link syntax</h2>
+      <p class="post-date">June 23, 2026</p>
+      <p>You can now link to chatrooms, users, messages and pages directly from your messages! Here's how it works:</p>
+    
+      <table style="width: 100%; border-collapse: collapse; margin: 15px 0; background: #fff; border: 1px solid #ccc;">
+        <thead>
+          <tr style="background: #f2f2f2;">
+            <th style="padding: 8px 12px; border: 1px solid #ccc; text-align: left;">You type</th>
+            <th style="padding: 8px 12px; border: 1px solid #ccc; text-align: left;">It links to</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\@/global\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Chatroom /global</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\@/global;msg:12345\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Message #12345 in /global</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\@SCLF-Xingshu\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">User profile</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\@msg:12345\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Message #12345 in current chatroom</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\~home\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Home page</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\~blog\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Blog page</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\~explore\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">Explore page</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;"><strong>\https://example.com\</strong></td>
+            <td style="padding: 8px 12px; border: 1px solid #ccc;">External website</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Note:</strong> The syntax only allows HTTPS URLs (eg. https://example.com). It <em>does not</em> allow HTTP URLs (eg. http://example.com) for safety reasons.</p>
+      <p>Just type any of these in your message - they will automatically become clickable links! Give it a try 😊</p>
     </div>
 </body>
 </html>
