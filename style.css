@@ -636,13 +636,12 @@ body {
   color: #80f5ff;
 }
 
-/* D12 – Custom link styles with #5abddb background */
+/* D12.8 – Custom link styles (exactly matches navbar) */
 .custom-link {
   display: inline-block;
   position: relative;
   text-decoration: none;
-  color: #80f5ff;
-  transition: color 0.2s ease;
+  color: #4aadcb;
 }
 
 .custom-link::after {
@@ -652,7 +651,7 @@ body {
   left: 50%;
   width: 0%;
   height: 2px;
-  background-color: #ffffff;
+  background-color: #4aadcb;
   border-radius: 4px;
   transform: translateX(-50%);
   transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -660,9 +659,4 @@ body {
 
 .custom-link:hover::after {
   width: 100%;
-}
-
-.custom-link:hover {
-  color: #ffffff;
-  background-color: #4aadcb;
 }
