@@ -254,6 +254,7 @@ input[type="text"] {
 #search-row #room-mode {
   border-radius: 999px 0px 0px 999px;
   /* order: top-left | top-right | bottom-right | bottom-left */
+  border-right: none;
 }
 
 #search-row #room-search {
