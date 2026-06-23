@@ -726,7 +726,7 @@ async function loadMessages() {
   // end 34.4
   
   const customMessages = {
-    'global': 'This is the main chatroom. Create you own using <a href="https://sclf-xingshu.github.io/SimplyChat/create">Create</a> page!',
+    'global': 'This is the main chatroom. Create you own using the <a href="https://sclf-xingshu.github.io/SimplyChat/create">Create</a> page!',
     '!feedback': 'Welcome to the feedback page!\nNote: if you encountered a bug, report it here: <a href="https://sclf-xingshu.github.io/SimplyChat/chat/!bugs">/!bugs</a>\nThank you!',
     '!simplychat': 'Find here the latest infos about SimplyChat.',
     '!welcome': 'Introduce yourself to SimplyChat!',
