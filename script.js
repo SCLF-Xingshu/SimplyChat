@@ -21,16 +21,26 @@ function renderCustomLinks(text) {
   return text.replace(/\\([^\\]+)\\/g, function(match, content) {
     const trimmed = content.trim();
     
-    // Rule 1: @/room → chatroom link
-    if (trimmed.startsWith('@/')) {
-      const roomId = trimmed.slice(2);
-      return `<a href="/SimplyChat/chat/${roomId}" class="custom-link">@/${roomId}</a>`;
+    // Rule 1: @username → user profile link
+    if (trimmed.startsWith('@') && !trimmed.startsWith('@/') && !trimmed.startsWith('@msg:')) {
+      const username = trimmed.slice(1);
+      return `<a href="/SimplyChat/user/${username}" class="custom-link">@${username}</a>`;
     }
     
-    // Rule 2: @page → internal page link
-    if (trimmed.startsWith('@')) {
-      const page = trimmed.slice(1);
-      return `<a href="/SimplyChat/${page}" class="custom-link">@${page}</a>`;
+    // Rule 2: @/room → chatroom link (with optional message ID)
+    if (trimmed.startsWith('@/')) {
+      const rest = trimmed.slice(2);
+      
+      // Check for message ID: @/room;msg:12345
+      if (rest.includes(';msg:')) {
+        const parts = rest.split(';msg:');
+        const room = parts[0];
+        const msgId = parts[1];
+        return `<a href="/SimplyChat/chat/${room}#msg${msgId}" class="custom-link">@/${room};msg:${msgId}</a>`;
+      }
+      
+      // Simple room link: @/room
+      return `<a href="/SimplyChat/chat/${rest}" class="custom-link">@/${rest}</a>`;
     }
     
     // Rule 3: https:// → external link (only secure)
@@ -39,12 +49,24 @@ function renderCustomLinks(text) {
       return `<a href="${trimmed}" class="custom-link" target="_blank" rel="noopener noreferrer">${displayText}</a>`;
     }
     
-    // Rule 4: http:// → ignored (not a link) - show backslashes
+    // Rule 4: http:// → ignored (not a link)
     if (trimmed.startsWith('http://')) {
       return match;
     }
     
-    // Rule 5: anything else → plain text (show backslashes)
+    // Rule 5: @msg:12345 → message link (uses current room)
+    if (trimmed.startsWith('@msg:')) {
+      const msgId = trimmed.slice(5);
+      return `<a href="/SimplyChat/chat/${roomId}#msg${msgId}" class="custom-link">@msg:${msgId}</a>`;
+    }
+    
+    // Rule 6: ~internalpage → internal page link
+    if (trimmed.startsWith('~')) {
+      const page = trimmed.slice(1);
+      return `<a href="/SimplyChat/${page}" class="custom-link">~${page}</a>`;
+    }
+    
+    // Rule 7: anything else → plain text (show backslashes)
     return match;
   });
 }
