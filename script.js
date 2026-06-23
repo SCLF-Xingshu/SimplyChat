@@ -609,6 +609,7 @@ function addMessage(msg) {
   if (!messagesDiv) return;
   const div = document.createElement('div');
   div.classList.add('message');
+  div.id = `msg${msg.id}`;
 
   const date = new Date(msg.created_at);
   const day = String(date.getDate()).padStart(2, '0');
@@ -755,11 +756,28 @@ async function loadMessages() {
   } else {
     addSystemMessage('server : no messages yet.', false);
   }
+  // 33.7 - scroll to message if needed
+  scrollToMessageIfNeeded();
+  // end 33.7
 }
 // end 33
 
 // 34 - start loading messages
 if (isChatPage) loadMessages();
+// 34.1 - scroll to message if URL has #msg12345
+function scrollToMessageIfNeeded() {
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#msg')) {
+    const target = document.getElementById(hash.slice(1));
+    if (target) {
+      // Small delay to ensure messages are rendered
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }
+}
+// end 34.1
 // end 34
 
 // 35 - room index for explore page
