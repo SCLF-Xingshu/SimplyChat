@@ -641,7 +641,7 @@ body {
   display: inline-block;
   position: relative;
   text-decoration: none;
-  color: #4aadcb;
+  color: #1e7d94;
   padding: 0.15em 0;
 }
 
@@ -652,7 +652,7 @@ body {
   left: 50%;
   width: 0%;
   height: 2px;
-  background-color: #4aadcb;
+  background-color: #1e7d94;
   border-radius: 4px;
   transform: translateX(-50%);
   transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
