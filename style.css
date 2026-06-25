@@ -586,3 +586,22 @@ body {
 .create-box .error.visible {
   display: block;
 }
+
+/* D14.2 – Syntax link styles */
+#syntax-link-container {
+  text-align: right;
+  margin-top: 4px;
+}
+
+.syntax-link {
+  color: #80f5ff;
+  text-decoration: none;
+  font-size: 0.7em;
+  font-family: monospace;
+  transition: color 0.2s ease;
+}
+
+.syntax-link:hover {
+  color: #a0ffff;
+  text-decoration: underline;
+}
