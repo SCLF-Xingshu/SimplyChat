@@ -297,6 +297,8 @@ input[type="text"] {
   border-radius: 999px 0px 0px 999px;
   border-right: none;
   padding: 0px 16px;
+  text-align: center;
+  text-align-last: center;
 }
 
 #search-row #room-search {
