@@ -64,7 +64,7 @@ h1 {
 #chat-container {
   max-width: 600px;
   margin: 0 auto;
-  overflow: hidden;
+  overflow: hidden; /* D6 - ensures search bar stays within container */
 }
 
 #messages {
@@ -77,7 +77,29 @@ h1 {
   margin-bottom: 10px;
 }
 
-/* button container - aligns message input and send button on the same line */
+/* D7.2 - Loading indicator inside messages container */
+#loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #333;
+  display: none;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 #input-container {
   display: flex;
   gap: 5px;
@@ -93,7 +115,7 @@ input[type="text"] {
   color: #000;
 }
 
-/* button container - aligns username input and auth buttons on the same line */
+/* D4.1 - button container: aligns username input and auth buttons on the same line */
 .auth-container {
   display: flex;
   gap: 8px;
@@ -151,6 +173,7 @@ input[type="text"] {
   background: linear-gradient(90deg, #dedede, #cccccc, #dedede);
 }
 
+/* D7.1 - Cooldown countdown and message stats */
 #message-stats {
   display: flex;
   justify-content: space-between;
@@ -187,7 +210,7 @@ input[type="text"] {
   resize: vertical;
 }
 
-/* D11 – Centered navbar + search row */
+/* D11 - Centered navbar + search row */
 #navbar {
   text-align: center;
   width: 100%;
@@ -199,7 +222,7 @@ input[type="text"] {
   color: #fff;
 }
 
-/* D11.4 – Animated underline from center to sides */
+/* D11.4 - Animated underline from center to sides */
 #navbar a {
   display: inline-block;
   position: relative;
@@ -230,6 +253,7 @@ input[type="text"] {
   color: #80f5ff;
 }
 
+/* D11 - Search row */
 #search-row {
   display: flex;
   align-items: center;
@@ -251,15 +275,14 @@ input[type="text"] {
   margin: 0;
 }
 
+/* Rounded corners on search row */
 #search-row #room-mode {
   border-radius: 999px 0px 0px 999px;
-  /* order: top-left | top-right | bottom-right | bottom-left */
   border-right: none;
 }
 
 #search-row #room-search {
   border-radius: 0px 999px 999px 0px;
-  /* order: top-left | top-right | bottom-right | bottom-left */
 }
 
 #search-row select {
@@ -340,7 +363,7 @@ input[type="text"] {
   margin-bottom: 8px;
 }
 
-/* D12.8 – Custom link styles (matches navbar exactly) */
+/* D12.8 - Custom link styles (same as navbar's) */
 .custom-link {
   display: inline-block;
   position: relative;
@@ -366,7 +389,7 @@ input[type="text"] {
   width: 100%;
 }
 
-/* Follow button styles */
+/* D4 - Follow button styles */
 #follow-container {
   margin: 10px 0;
   text-align: center;
@@ -397,39 +420,7 @@ input[type="text"] {
   transform: scale(0.98);
 }
 
-/* loading indicator */
-#loading-indicator {
-  text-align: center;
-  padding: 20px;
-  color: #333;
-  display: none;
-}
-
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(0, 0, 0, 0.3);
-  border-top: 3px solid #333;
-  border-radius: 50%;
-  margin: 0 auto 10px auto;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.user-tag-gh {
-  background-color: #0FBF3E;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-right: 4px;
-  display: inline-block;
-}
-
+/* D5 - Explore page styles */
 .explore-room {
   padding: 10px;
   margin: 5px auto;
@@ -444,7 +435,7 @@ input[type="text"] {
   color: #fff;
 }
 
-/* blog styles */
+/* Blog styles */
 #blog-container {
   max-width: 600px;
   margin: 20px auto;
@@ -456,6 +447,7 @@ input[type="text"] {
   background: #fff;
   border: 1px solid #ccc;
   margin: 15px 0;
+
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -475,7 +467,7 @@ input[type="text"] {
   margin-bottom: 8px;
 }
 
-/*background styles*/
+/* Background styles */
 #bg-canvas {
   position: fixed;
   top: 0;
@@ -499,7 +491,7 @@ body {
   z-index: 2;
 }
 
-/* D10 – Create page styles */
+/* D10 - Create page styles */
 .create-wrapper {
   max-width: 500px;
   margin: 20px auto;
@@ -587,7 +579,7 @@ body {
   display: block;
 }
 
-/* D14.2 – Syntax link styles */
+/* D14 - Syntax link styles */
 #syntax-link-container {
   text-align: left;
   margin-top: 4px;
