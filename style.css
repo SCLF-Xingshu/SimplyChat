@@ -300,6 +300,10 @@ input[type="text"] {
   text-align: center;
   text-align-last: center;
 }
+#search-row #room-mode option {
+  text-align: left;
+  text-align-last: left;
+}
 
 #search-row #room-search {
   border-radius: 0px 999px 999px 0px;
