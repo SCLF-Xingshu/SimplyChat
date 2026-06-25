@@ -778,7 +778,7 @@ async function loadMessages() {
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
-      addSystemMessage('🔒 This room is admin‑only. Only admins can send the first message.', false);
+      addSystemMessage('🔒 This chatroom is admin‑only. Only admins can send the first message and unlock this room.', false);
     }
   }
   // end 34.6
@@ -786,7 +786,7 @@ async function loadMessages() {
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
   } else {
-    addSystemMessage('server : no messages yet.', false);
+    addSystemMessage('Server : no messages yet.', false);
   }
   // 34.7 - scroll to message if needed
   scrollToMessageIfNeeded();
