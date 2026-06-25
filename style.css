@@ -253,6 +253,22 @@ input[type="text"] {
   color: #80f5ff;
 }
 
+/* Active page highlighting for navbar links */
+#navbar a.active {
+  background-color: #0B7527;
+  border-radius: 4px;
+  padding: 0.15em 0.6em;
+  color: #fff;
+}
+
+#navbar a.active::after {
+  display: none;
+}
+
+#navbar a.active:hover {
+  color: #fff;
+}
+
 /* D11 - Search row */
 #search-row {
   display: flex;
@@ -437,7 +453,7 @@ input[type="text"] {
 }
 
 #explore-mode {
-  padding: 8px
+  padding: 8px;
   font-family: monospace;
 }
 
