@@ -570,6 +570,7 @@ if (parts[2] === 'chat' && parts[3]) {             // On a chatroom (https://scl
   document.title = 'SimplyChat / ' + roomId;       //                part number  |   ↑[0]             ↑[1]     ↑[2]     ↑[3]   
 } else if (roomId === 'global' && !parts[2]) {     // Not on a chatroom AND on the homepage (https://sclf-xingshu.github.io/SimplyChat/)
   document.title = 'SimplyChat.';                  //                part number  |                           ↑[0]             ↑[1]
+}
 // For other pages, keep the title set in the HTML.
 // end 27
 
