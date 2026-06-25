@@ -279,7 +279,7 @@ input[type="text"] {
 #search-row #room-mode {
   border-radius: 999px 0px 0px 999px;
   border-right: none;
-  padding: 16px;
+  padding: 0px 16px;
 }
 
 #search-row #room-search {
