@@ -256,7 +256,7 @@ input[type="text"] {
 /* Active page highlighting for navbar links */
 #navbar a.active {
   background-color: #9900FF;
-  padding: 0.2em;
+  padding: 0.1em 0.2em 0.2em 0.2em;
   border: 2px solid #fff;
   border-radius: 0.2em;
   color: #fff;
