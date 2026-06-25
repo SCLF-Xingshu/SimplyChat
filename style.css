@@ -589,12 +589,12 @@ body {
 
 /* D14.2 – Syntax link styles */
 #syntax-link-container {
-  text-align: right;
+  text-align: left;
   margin-top: 4px;
 }
 
 .syntax-link {
-  color: #80f5ff;
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.7em;
   font-family: monospace;
@@ -602,6 +602,6 @@ body {
 }
 
 .syntax-link:hover {
-  color: #a0ffff;
+  color: #d1ffff;
   text-decoration: underline;
 }
