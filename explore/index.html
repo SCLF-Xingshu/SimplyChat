@@ -28,10 +28,10 @@
 
     <div id="navbar">
       <p>
-        <a href="https://sclf-xingshu.github.io/SimplyChat/">🏠 Home</a> ·
+        <a href="https://sclf-xingshu.github.io/SimplyChat/" class="active">🏠 Home</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/blog">📝 Blog</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/create">✨ Create</a> ·
-        <a href="https://sclf-xingshu.github.io/SimplyChat/explore" class="active">🔎 Explore</a>
+        <a href="https://sclf-xingshu.github.io/SimplyChat/explore">🔎 Explore</a>
       </p>
     </div>
     
@@ -46,10 +46,14 @@
     
     <div id="room-results"></div>
     
-    <div id="font-size-controls">
-      <label for="font-slider">Font size:</label>
-      <input type="range" id="font-slider" min="10" max="40" value="20">
-      <span id="font-size-display">20px</span>
+    <div id="settings-container">
+      <button id="settings-toggle" aria-label="Toggle settings">⚙️</button>
+      <div id="settings-panel" style="display: none;">
+        <strong style="font-size: 20px;">Settings</strong><br>
+        <label for="font-slider">Font size:</label>
+        <input type="range" id="font-slider" min="10" max="40" value="20">
+        <span id="font-size-display">20px</span>
+      </div>
     </div>
     
     <select id="explore-mode">
@@ -57,15 +61,11 @@
       <option value="popular">Popular</option>
       <option value="alphabetic">Alphabetical</option>
     </select>
+    
     <p style="text-align: center;">
-      Discover all chatrooms on SimplyChat
+      Find every chatroom on SimplyChat!
     </p>
 
-    <div id="font-size-controls">
-      <label for="font-slider">Font size:</label>
-      <input type="range" id="font-slider" min="10" max="40" value="20">
-      <span id="font-size-display">20px</span>
-    </div>
     <div id="explore-results"></div>
 
   </div>
