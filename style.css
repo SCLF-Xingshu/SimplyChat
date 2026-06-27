@@ -39,12 +39,10 @@
 
 #settings-toggle {
   display: block;
-  width: 20px;
-  height: 20px;
   background: rgba(255,255,255,0.25);
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 0;
+  padding: 6px;
   font-size: 20px;
   line-height: 20px;
   text-align: center;
