@@ -17,7 +17,8 @@
   --font-size: 20px;
 }
 
-#font-size-controls {
+/* D15 – Settings container (collapsible gear) */
+#settings-container {
   position: fixed;
   top: 0 !important;
   right: 0 !important;
@@ -25,22 +26,63 @@
   left: auto !important;
   bottom: auto !important;
   transform: none !important;
-
   z-index: 2147483647 !important;
-
   isolation: isolate;
+  font-family: monospace;
+  font-size: 14px;
+}
 
+#settings-toggle {
+  display: block;
+  width: 20px;
+  height: 20px;
   background: rgba(255,255,255,0.5);
   border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px;
-
+  border-radius: 999px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
   font-family: monospace;
-  font-size: 14px; /* important: prevents scaling */
+  transition: background 0.2s ease;
 }
-#font-size-controls,
-#font-size-controls * {
-  font-size: 14px !important;
+
+#settings-toggle:hover {
+  background: rgba(255,255,255,0.7);
+}
+
+#settings-panel {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  padding: 12px 16px;
+  margin-top: 4px;
+  min-width: 140px;
+  text-align: left;
+  backdrop-filter: blur(4px);
+}
+
+#settings-panel strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 20px;
+}
+
+#settings-panel label {
+  font-size: 14px;
+  font-family: monospace;
+}
+
+#settings-panel input[type="range"] {
+  width: 100px;
+  vertical-align: middle;
+}
+
+#settings-panel #font-size-display {
+  font-size: 14px;
+  font-family: monospace;
+  margin-left: 4px;
 }
 
 /* Global Styles */
