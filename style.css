@@ -155,7 +155,7 @@ h1 {
 input[type="text"] {
   flex: 1;
   padding: 8px;
-  border-radius: 4px;
+  border-radius: 999px 0px 0px 999px;
   border: 1px solid #ccc;
   font-family: monospace;
   background: #fff;
@@ -165,7 +165,6 @@ input[type="text"] {
 /* D4.1 - button container: aligns username input and auth buttons on the same line */
 .auth-container {
   display: flex;
-  gap: 8px;
   align-items: center;
   flex-wrap: wrap;
   margin-top: 10px;
@@ -196,7 +195,7 @@ input[type="text"] {
 
 #github-login {
   padding: 8px 15px;
-  border-radius: 0px;
+  border-radius: 0px 999px 999px 0px;
   border: none;
   background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
   color: #000;
@@ -209,7 +208,7 @@ input[type="text"] {
 
 #github-logout {
   padding: 8px 15px;
-  border-radius: 0px;
+  border-radius: 0px 999px 999px 0px;
   border: none;
   background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
   color: #000;
