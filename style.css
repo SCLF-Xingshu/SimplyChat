@@ -41,8 +41,8 @@
   display: block;
   background: rgba(255,255,255,0.25);
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 6px;
+  border-radius: 999px;
+  padding: 2px;
   font-size: 20px;
   line-height: 20px;
   text-align: center;
@@ -54,7 +54,7 @@
 }
 
 #settings-toggle:hover {
-  border: 3px solid #000;
+  border: 2px solid #000;
 }
 
 #settings-panel {
