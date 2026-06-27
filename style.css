@@ -43,7 +43,7 @@
   width: 30px;
   background: rgba(255,255,255,0.25);
   border: 2px solid #ccc;
-  border-radius: 999px;
+  border-radius: 999px 0px 999px 999px;
   padding: 0;
   font-size: 20px;
   line-height: 20px;
@@ -61,8 +61,8 @@
 
 #settings-panel {
   background: rgba(255,255,255,0.25);
-  border: 1px solid #ccc;
-  border-radius: 999px;
+  border: 2px solid #ccc;
+  border-radius: 15px;
   padding: 12px 16px;
   margin-top: 4px;
   min-width: 140px;
