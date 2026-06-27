@@ -43,10 +43,14 @@
     
     <div id="room-results"></div>
     
-    <div id="font-size-controls">
-      <label for="font-slider">Font size:</label>
-      <input type="range" id="font-slider" min="10" max="40" value="20">
-      <span id="font-size-display">20px</span>
+    <div id="settings-container">
+      <button id="settings-toggle" aria-label="Toggle settings">⚙️</button>
+      <div id="settings-panel" style="display: none;">
+        <strong style="font-size: 20px;">Settings</strong><br>
+        <label for="font-slider">Font size:</label>
+        <input type="range" id="font-slider" min="10" max="40" value="20">
+        <span id="font-size-display">20px</span>
+      </div>
     </div>
     
     <div id="follow-container">
