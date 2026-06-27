@@ -251,7 +251,7 @@ input[type="text"] {
 }
 
 #message {
-  min-height: 30px
+  min-height: 30px;
   height: 60px;
   width: 100%;
   resize: vertical;
