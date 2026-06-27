@@ -746,7 +746,7 @@ async function loadMessages() {
     '!simplychat': 'Find here the latest infos about SimplyChat.',
     '!welcome': 'Introduce yourself to SimplyChat!',
     '!explore': 'Explore and discuss about chatrooms!',
-    '!bugs': 'Found a bug ? Report it here !\nBe precise when describing the bug, so we can fix it. Thank you !'
+    '!bugs': 'Found a bug ? Report it here !\nBe precise when describing the bug, so we can more easily fix it. Thank you !'
   };
   const noWelcomeRooms = ['!feedback'/*, '!simplychat', '!welcome'*/];
   
@@ -1034,3 +1034,27 @@ if (githubLogoutBtn) {
   githubLogoutBtn.addEventListener('click', logout);
 }
 // end 46
+
+// 47 - settings toggle
+const settingsToggle = document.getElementById('settings-toggle');
+const settingsPanel = document.getElementById('settings-panel');
+
+if (settingsToggle && settingsPanel) {
+  // 47.1 - toggle panel on gear click
+  settingsToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isVisible = settingsPanel.style.display === 'block';
+    settingsPanel.style.display = isVisible ? 'none' : 'block';
+  });
+  // end 47.1
+
+  // 47.2 - close panel when clicking outside
+  document.addEventListener('click', function(e) {
+    const container = document.getElementById('settings-container');
+    if (container && !container.contains(e.target)) {
+      settingsPanel.style.display = 'none';
+    }
+  });
+  // end 47.2
+}
+// end 47
