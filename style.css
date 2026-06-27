@@ -467,7 +467,7 @@ input[type="text"] {
 /* Blog styles */
 #blog-container {
   max-width: 600px;
-  margin: 20px auto;
+  margin: 0;
 }
 
 .blog-post {
