@@ -30,6 +30,11 @@
   isolation: isolate;
   font-family: monospace;
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0;
+  gap: 0;
 }
 
 #settings-toggle {
@@ -46,6 +51,8 @@
   cursor: pointer;
   font-family: monospace;
   transition: background 0.2s ease;
+  flex-shrink: 0;
+  margin: 0;
 }
 
 #settings-toggle:hover {
@@ -61,24 +68,22 @@
   min-width: 140px;
   text-align: left;
   backdrop-filter: blur(4px);
+  display: none;
+  flex-shrink: 0;
 }
-
 #settings-panel strong {
   display: block;
   margin-bottom: 4px;
   font-size: 20px;
 }
-
 #settings-panel label {
   font-size: 14px;
   font-family: monospace;
 }
-
 #settings-panel input[type="range"] {
   width: 100px;
   vertical-align: middle;
 }
-
 #settings-panel #font-size-display {
   font-size: 14px;
   font-family: monospace;
