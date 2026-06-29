@@ -120,11 +120,11 @@ h1 {
 
 #messages {
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   background: #fff;
   height: 300px;
   overflow-y: scroll;
-  padding: 10px;
+  padding: 8px;
   margin-bottom: 10px;
 }
 
@@ -186,10 +186,10 @@ input[type="text"] {
 
 #send {
   padding: 8px 15px;
-  border-radius: 0px;
+  border-radius: 0px 999px 999px 0px;
   border: none;
   background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
-  color: #fff;
+  color: 1px solid #ccc;
   cursor: pointer;
   font-family: monospace;
 }
@@ -256,6 +256,8 @@ input[type="text"] {
 
 #message {
   min-height: 30px;
+  border-radius: 10px;
+  padding: 8px;
   height: 60px;
   width: 100%;
   resize: vertical;
