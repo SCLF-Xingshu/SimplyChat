@@ -17,6 +17,10 @@
   --font-size: 20px;
 }
 
+button {
+  font-size: 0.8em
+}
+
 /* D15 – Settings container (collapsible gear) */
 #settings-container {
   position: fixed;
@@ -173,6 +177,7 @@ input[type="text"] {
 .auth-container input[type="text"] {
   flex: 2;
   min-width: 150px;
+  border-right: none;
 }
 
 .auth-container button {
