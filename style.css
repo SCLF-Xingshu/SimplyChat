@@ -196,7 +196,7 @@ input[type="text"] {
 #github-login {
   padding: 8px 15px;
   border-radius: 0px 999px 999px 0px;
-  border: none;
+  border: 1px solid #ccc;
   background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
   color: #000;
   cursor: pointer;
