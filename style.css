@@ -714,3 +714,12 @@ body {
   outline: 3px solid #80f5ff;
   outline-offset: 2px;
 }
+
+/* D18 - Green [GH] tag */
+.user-tag-gh {
+  background-color: #0FBF3E;
+  color: #ffffff;
+  padding: 0 4px;
+  border-radius: 999px;
+  font-weight: bold;
+}
