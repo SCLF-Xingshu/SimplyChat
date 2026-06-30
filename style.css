@@ -186,7 +186,7 @@ input[type="text"] {
 
 #send {
   padding: 8px 15px;
-  border-radius: 0px 999px 999px 0px;
+  border-radius: 0px 15px 15px 0px;
   border: 1px solid #ccc;
   background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
   color: #fff;
