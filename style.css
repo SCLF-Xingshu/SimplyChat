@@ -17,8 +17,9 @@
   --font-size: 20px;
 }
 
-button {
-  font-size: 0.666em;
+button,
+input {
+  font-size: 0.7em;
 }
 
 /* D15 – Settings container (collapsible gear) */
@@ -155,7 +156,7 @@ h1 {
   display: flex;
 }
 
-input[type="text"] {
+.auth-container input[type="text"] {
   flex: 1;
   padding: 8px;
   border-radius: 999px 0px 0px 999px;
@@ -163,6 +164,8 @@ input[type="text"] {
   font-family: monospace;
   background: #fff;
   color: #000;
+  min-width: 150px;
+  border-right: none;
 }
 
 /* D4.1 - button container: aligns username input and auth buttons on the same line */
@@ -172,12 +175,6 @@ input[type="text"] {
   flex-wrap: wrap;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.auth-container input[type="text"] {
-  flex: 2;
-  min-width: 150px;
-  border-right: none;
 }
 
 .auth-container button {
