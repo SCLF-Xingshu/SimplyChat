@@ -616,11 +616,22 @@ if (fontSlider && fontSizeDisplay) {
 // 31 - character counter
 if (isChatPage && messageInput && charCount) {
   messageInput.addEventListener('input', () => {
-    charCount.textContent = `${messageInput.value.length} / 1000`;
+    const length = messageInput.value.length;
+    charCount.textContent = `${length} / 1000`;
+    
+    // 31.1 - announce only at thresholds
+    const thresholds = [900, 950, 990, 1000];
+    if (thresholds.includes(length)) {
+      charCount.setAttribute('role', 'status');
+      charCount.setAttribute('aria-live', 'polite');
+    } else {
+      charCount.removeAttribute('role');
+      charCount.removeAttribute('aria-live');
+    }
+    // end 31.1
   });
 }
 // end 31
-
 // 32 - display a message in the chat
 function addMessage(msg) {
   if (!messagesDiv) return;
