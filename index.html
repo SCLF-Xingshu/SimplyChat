@@ -109,7 +109,43 @@
       <div id="char-count">0 / 1000</div>
     </div>
     
-
+    <!-- D18 - Report Modal -->
+    <div id="report-modal" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+      <div id="report-modal-content">
+        <h2 id="report-modal-title">Report Message</h2>
+        <button id="report-modal-close" aria-label="Close report dialog">&times;</button>
+        
+        <form id="report-form">
+          <input type="hidden" id="report-msg-id">
+          <input type="hidden" id="report-msg-username">
+          
+          <div>
+            <label for="report-reason">Reason for reporting</label>
+            <select id="report-reason" required>
+              <option value="">Select a reason...</option>
+              <option value="spam">Spam or promotional content</option>
+              <option value="harassment">Harassment or bullying</option>
+              <option value="inappropriate">Inappropriate or offensive content</option>
+              <option value="misinformation">Misinformation or false content</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="report-details">Additional details (optional)</label>
+            <textarea id="report-details" placeholder="Provide any additional context..." maxlength="500"></textarea>
+          </div>
+          
+          <div id="report-error" role="alert"></div>
+          
+          <div id="report-modal-actions">
+            <button type="button" id="report-cancel">Cancel</button>
+            <button type="submit" id="report-submit">Submit Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- end D18 -->
   </div>
 </body>
 </html>
