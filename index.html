@@ -13,22 +13,22 @@
 
 <body>
   <div id="chat-container" role="main">
-    <div id="title-container">
+    <header id="title-container">
       <picture>
         <source srcset="https://raw.githubusercontent.com/SCLF-Xingshu/SimplyChat/master/logo.svg" type="image/svg+xml">
         <img src="https://raw.githubusercontent.com/SCLF-Xingshu/SimplyChat/master/SimplyChatLogo11May2026.png" alt="SimplyChat logo" class="title-icon">
       </picture>
       <h1><span class="title-highlight">SimplyChat.</span></h1>
-    </div>
+    </header>
 
-    <div id="navbar">
+    <nav id="navbar" aria-label="Main navigation">
       <p>
         <a href="https://sclf-xingshu.github.io/SimplyChat/" class="active" aria-current="page">🏠 Home</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/blog">📝 Blog</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/create">✨ Create</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/explore">🔎 Explore</a>
       </p>
-    </div>
+    </nav>
     
     <div id="search-row">
       <label for="room-mode" class="visually-hidden">Sort chatrooms by:</label>
@@ -43,7 +43,7 @@
     
     <div id="room-results"></div>
     
-    <div id="settings-container">
+    <section id="settings-container" aria-label="Settings">
       <button id="settings-toggle" aria-label="Toggle settings" aria-expanded="false" aria-controls="settings-panel">⚙️</button>
       <div id="settings-panel" style="display: none;">
         <strong style="font-size: 20px;">Settings</strong><br>
@@ -51,7 +51,7 @@
         <input type="range" id="font-slider" min="10" max="40" value="20">
         <span id="font-size-display">20px</span>
       </div>
-    </div>
+    </section>
     
     <div id="follow-container">
       <button id="follow-btn" class="follow-btn">🔔 Follow Room</button>
@@ -59,12 +59,12 @@
     
     <p>Just a chat. Simple.</p>
 
-    <div id="messages" aria-live="polite" aria-atomic="false">
+    <section id="messages" aria-live="polite" aria-atomic="false" aria-label="Chat messages">
       <div id="loading-indicator" role="status" aria-live="polite">
         <div class="spinner"></div>
         <p>Loading messages...</p>
       </div>
-    </div>
+    </section>
 
     <div class="auth-container">
       <label for="username" class="visually-hidden">Username</label>
