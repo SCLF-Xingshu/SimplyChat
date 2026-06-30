@@ -658,7 +658,7 @@ function addMessage(msg) {
     <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)} <span class="msg-id">#${msg.id}</span></div>
     <div class="msg-content">${safeText}</div>
     <div class="msg-actions">
-      <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="Report this message">🚨</button>
+      <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="Report this message">🚨 Report</button>
     </div>
   `;
   // end 32.1
