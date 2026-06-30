@@ -653,7 +653,7 @@ function addMessage(msg) {
   safeText = safeText.replace(/\n/g, '<br>');
 
   div.innerHTML = `
-    <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)}:</div>
+    <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)} <span class="msg-id">#${msg.id}</span></div>
     <div class="msg-content">${safeText}</div>
   `;
   messagesDiv.appendChild(div);
