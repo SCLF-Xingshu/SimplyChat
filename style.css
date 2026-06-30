@@ -694,3 +694,9 @@ body {
   padding: 0;
   margin: -1px;
 }
+
+/* D17.10 - Focus-visible styles for keyboard navigation */
+:focus-visible {
+  outline: 3px solid #80f5ff;
+  outline-offset: 2px;
+}
