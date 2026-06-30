@@ -505,7 +505,7 @@ input[type="text"] {
 }
 
 .follow-btn:not(.following) {
-  background-color: #0a7a3a;
+  background-color: #170;
   color: white;
 }
 
@@ -717,7 +717,7 @@ body {
 
 /* D18 - Green [GH] tag */
 .user-tag-gh {
-  background-color: #0FBF3E;
+  background-color: #170;
   color: #ffffff;
   padding: 0 4px;
   border-radius: 999px;
