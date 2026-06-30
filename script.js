@@ -1045,6 +1045,11 @@ if (settingsToggle && settingsPanel) {
     e.stopPropagation();
     const isVisible = settingsPanel.style.display === 'block';
     settingsPanel.style.display = isVisible ? 'none' : 'block';
+    settingsToggle.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
+    if (!isVisible) {
+      // Focus management: move focus to the panel
+      setTimeout(() => settingsPanel.focus(), 100);
+    }
   });
   // end 47.1
 
