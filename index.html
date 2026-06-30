@@ -23,7 +23,7 @@
 
     <div id="navbar">
       <p>
-        <a href="https://sclf-xingshu.github.io/SimplyChat/" class="active">🏠 Home</a> ·
+        <a href="https://sclf-xingshu.github.io/SimplyChat/" class="active" aria-current="page">🏠 Home</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/blog">📝 Blog</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/create">✨ Create</a> ·
         <a href="https://sclf-xingshu.github.io/SimplyChat/explore">🔎 Explore</a>
@@ -60,7 +60,7 @@
     <p>Just a chat. Simple.</p>
 
     <div id="messages" aria-live="polite" aria-atomic="false">
-      <div id="loading-indicator">
+      <div id="loading-indicator" role="status" aria-live="polite">
         <div class="spinner"></div>
         <p>Loading messages...</p>
       </div>
@@ -97,7 +97,7 @@
     <div id="input-container">
       <label for="message" class="visually-hidden">Write a message</label>
       <textarea id="message" placeholder="Write a message" maxlength="1000"></textarea>
-      <button id="send">Send</button>
+      <button id="send" aria-label="Send message">Send</button>
     </div>
     
     <div id="syntax-link-container">
