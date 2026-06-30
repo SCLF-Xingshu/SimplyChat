@@ -652,10 +652,27 @@ function addMessage(msg) {
   safeText = renderCustomLinks(safeText);
   safeText = safeText.replace(/\n/g, '<br>');
 
+  // 32.1 - build message HTML with report button
+  const escapedUsername = escapeHtml(msg.username);
   div.innerHTML = `
     <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)} <span class="msg-id">#${msg.id}</span></div>
     <div class="msg-content">${safeText}</div>
+    <div class="msg-actions">
+      <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="Report this message">🚨</button>
+    </div>
   `;
+  // end 32.1
+
+  // 32.2 - report button event listener
+  const reportBtn = div.querySelector('.report-btn');
+  if (reportBtn) {
+    reportBtn.addEventListener('click', function() {
+      const msgId = this.getAttribute('data-msg-id');
+      const msgUsername = this.getAttribute('data-msg-username');
+      openReportModal(msgId, msgUsername);
+    });
+  }
+  // end 32.2
   messagesDiv.appendChild(div);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -674,6 +691,45 @@ function scrollToMessageIfNeeded() {
     }
   }
 }
+  // 32.3 - report modal functions
+  function openReportModal(msgId, msgUsername) {
+    const modal = document.getElementById('report-modal');
+    if (!modal) return;
+    
+    // Store message ID and username in the form
+    const msgIdField = document.getElementById('report-msg-id');
+    const msgUsernameField = document.getElementById('report-msg-username');
+    if (msgIdField) msgIdField.value = msgId;
+    if (msgUsernameField) msgUsernameField.value = msgUsername;
+    
+    // Clear previous values
+    const reasonSelect = document.getElementById('report-reason');
+    const detailsTextarea = document.getElementById('report-details');
+    const errorDisplay = document.getElementById('report-error');
+    if (reasonSelect) reasonSelect.value = '';
+    if (detailsTextarea) detailsTextarea.value = '';
+    if (errorDisplay) errorDisplay.textContent = '';
+    
+    // Show modal
+    modal.removeAttribute('hidden');
+    modal.style.display = 'block';
+    
+    // Focus first input
+    setTimeout(() => {
+      if (reasonSelect) reasonSelect.focus();
+    }, 100);
+  }
+  // end 32.3
+  
+  // 32.4 - close report modal
+  function closeReportModal() {
+    const modal = document.getElementById('report-modal');
+    if (modal) {
+      modal.setAttribute('hidden', '');
+      modal.style.display = 'none';
+    }
+  }
+  // end 32.4
 // end 33
 
 // 34 - load existing messages from supabase
@@ -1046,22 +1102,77 @@ if (githubLogoutBtn) {
 }
 // end 46
 
-// 47 - settings toggle
+// 47 - report modal event listeners
+const reportModal = document.getElementById('report-modal');
+const reportClose = document.getElementById('report-modal-close');
+const reportCancel = document.getElementById('report-cancel');
+const reportForm = document.getElementById('report-form');
+const reportError = document.getElementById('report-error');
+
+if (reportModal && reportForm) {
+  // 47.1 - close modal on close button
+  if (reportClose) {
+    reportClose.addEventListener('click', closeReportModal);
+  }
+  // end 47.1
+  
+  // 47.2 - close modal on cancel button
+  if (reportCancel) {
+    reportCancel.addEventListener('click', closeReportModal);
+  }
+  // end 47.2
+  
+  // 47.3 - close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && reportModal && !reportModal.hasAttribute('hidden')) {
+      closeReportModal();
+    }
+  });
+  // end 47.3
+  
+  // 47.4 - close modal on outside click
+  reportModal.addEventListener('click', function(e) {
+    if (e.target === reportModal) {
+      closeReportModal();
+    }
+  });
+  // end 47.4
+  
+  // 47.5 - form submission (Phase 1 placeholder)
+  reportForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const reason = document.getElementById('report-reason');
+    
+    if (!reason || !reason.value) {
+      if (reportError) reportError.textContent = 'Please select a reason.';
+      return;
+    }
+    if (reportError) reportError.textContent = '';
+    
+    // Phase 1: Placeholder alert only
+    alert('Report submitted. Thank you for helping keep SimplyChat safe!');
+    closeReportModal();
+  });
+  // end 47.5
+}
+// end 47
+
+// 48 - settings toggle
 const settingsToggle = document.getElementById('settings-toggle');
 const settingsPanel = document.getElementById('settings-panel');
 
 if (settingsToggle && settingsPanel) {
-  // 47.1 - toggle panel on gear click
+  // 48.1 - toggle panel on gear click
   settingsToggle.addEventListener('click', function(e) {
     e.stopPropagation();
     const isVisible = settingsPanel.style.display === 'block';
     settingsPanel.style.display = isVisible ? 'none' : 'block';
     
-    // 47.1.1 - update aria-expanded
+    // 48.1.1 - update aria-expanded
     settingsToggle.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
-    // end 47.1.1
+    // end 48.1.1
     
-    // 47.1.2 - focus management
+    // 48.1.2 - focus management
     if (!isVisible) {
       // panel is opening - move focus inside
       setTimeout(() => {
@@ -1076,11 +1187,11 @@ if (settingsToggle && settingsPanel) {
       // panel is closing - return focus to toggle
       settingsToggle.focus();
     }
-    // end 47.1.2
+    // end 48.1.2
   });
-  // end 47.1
+  // end 48.1
 
-  // 47.2 - close settings with Escape key
+  // 48.2 - close settings with Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && settingsPanel.style.display === 'block') {
       settingsPanel.style.display = 'none';
@@ -1088,9 +1199,9 @@ if (settingsToggle && settingsPanel) {
       settingsToggle.focus();
     }
   });
-  // end 47.2
+  // end 48.2
 
-  // 47.3 - close panel when clicking outside
+  // 48.3 - close panel when clicking outside
   document.addEventListener('click', function(e) {
     const container = document.getElementById('settings-container');
     if (container && !container.contains(e.target) && settingsPanel.style.display === 'block') {
@@ -1098,6 +1209,6 @@ if (settingsToggle && settingsPanel) {
       settingsToggle.setAttribute('aria-expanded', 'false');
     }
   });
-  // end 47.3
+  // end 48.3
 }
-// end 47
+// end 48
