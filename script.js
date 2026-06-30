@@ -1045,21 +1045,48 @@ if (settingsToggle && settingsPanel) {
     e.stopPropagation();
     const isVisible = settingsPanel.style.display === 'block';
     settingsPanel.style.display = isVisible ? 'none' : 'block';
+    
+    // 47.1.1 - update aria-expanded
     settingsToggle.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
+    // end 47.1.1
+    
+    // 47.1.2 - focus management
     if (!isVisible) {
-      // Focus management: move focus to the panel
-      setTimeout(() => settingsPanel.focus(), 100);
+      // panel is opening - move focus inside
+      setTimeout(() => {
+        const firstFocusable = settingsPanel.querySelector('button, input, select, textarea, a, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) {
+          firstFocusable.focus();
+        } else {
+          settingsPanel.focus();
+        }
+      }, 100);
+    } else {
+      // panel is closing - return focus to toggle
+      settingsToggle.focus();
     }
+    // end 47.1.2
   });
   // end 47.1
 
-  // 47.2 - close panel when clicking outside
-  document.addEventListener('click', function(e) {
-    const container = document.getElementById('settings-container');
-    if (container && !container.contains(e.target)) {
+  // 47.2 - close settings with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && settingsPanel.style.display === 'block') {
       settingsPanel.style.display = 'none';
+      settingsToggle.setAttribute('aria-expanded', 'false');
+      settingsToggle.focus();
     }
   });
   // end 47.2
+
+  // 47.3 - close panel when clicking outside
+  document.addEventListener('click', function(e) {
+    const container = document.getElementById('settings-container');
+    if (container && !container.contains(e.target) && settingsPanel.style.display === 'block') {
+      settingsPanel.style.display = 'none';
+      settingsToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  // end 47.3
 }
 // end 47
