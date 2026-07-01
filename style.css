@@ -896,3 +896,25 @@ body {
   padding: 12px;
   border-radius: 15px 15px 0px 0px;
 }
+
+/* D18 - Submit button loading state */
+#report-submit.loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+#report-submit.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
