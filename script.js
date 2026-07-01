@@ -559,18 +559,16 @@ const roomIdText = document.getElementById('room-id-text');
 if (roomIdText) {
   // 26.1.1 - fetch message count for this room
   (async function() {
-    const { data: messages, error } = await supabase
+    const { count, error } = await supabase
       .from('simplychat_messages')
-      .select('id', { count: 'exact', head: true })
+      .select('*', { count: 'exact', head: true })
       .eq('room_id', roomId);
     
-    let count = 0;
-    if (!error && messages) {
-      count = messages.length;
-    } else {
+    if (error) {
       console.error('Error fetching message count:', error);
+      roomIdText.textContent = `/${roomId}`;
+      return;
     }
-    // end 26.1.1
     
     // 26.1.2 - display room ID with message count
     roomIdText.textContent = `/${roomId} - ${count} message${count !== 1 ? 's' : ''}`;
