@@ -653,6 +653,7 @@ if (isChatPage && messageInput && charCount) {
   });
 }
 // end 31
+
 // 32 - display a message in the chat
 function addMessage(msg) {
   if (!messagesDiv) return;
@@ -712,7 +713,7 @@ function scrollToMessageIfNeeded() {
     }
   }
 }
-  // 32.3 - report modal functions
+  // 33.3 - report modal functions
   function openReportModal(msgId, msgUsername) {
     const modal = document.getElementById('report-modal');
     if (!modal) return;
@@ -730,6 +731,10 @@ function scrollToMessageIfNeeded() {
     if (reasonSelect) reasonSelect.value = '';
     if (detailsTextarea) detailsTextarea.value = '';
     if (errorDisplay) errorDisplay.textContent = '';
+    // 33.3.1 - reset form and success message
+    if (reportForm) reportForm.style.display = 'block';
+    if (reportSuccess) reportSuccess.setAttribute('hidden', '');
+    // end 33.3.1
     
     // Show modal
     modal.removeAttribute('hidden');
@@ -740,9 +745,9 @@ function scrollToMessageIfNeeded() {
       if (reasonSelect) reasonSelect.focus();
     }, 100);
   }
-  // end 32.3
+  // end 33.3
   
-  // 32.4 - close report modal
+  // 33.4 - close report modal
   function closeReportModal() {
     const modal = document.getElementById('report-modal');
     if (modal) {
@@ -750,7 +755,7 @@ function scrollToMessageIfNeeded() {
       modal.style.display = 'none';
     }
   }
-  // end 32.4
+  // end 33.4
 // end 33
 
 // 34 - load existing messages from supabase
@@ -1129,6 +1134,7 @@ const reportClose = document.getElementById('report-modal-close');
 const reportCancel = document.getElementById('report-cancel');
 const reportForm = document.getElementById('report-form');
 const reportError = document.getElementById('report-error');
+const reportSuccess = document.getElementById('report-success');
 
 if (reportModal && reportForm) {
   // 47.1 - close modal on close button
@@ -1158,8 +1164,17 @@ if (reportModal && reportForm) {
     }
   });
   // end 47.4
+
+  // 47.5 - close success message
+  const successClose = document.getElementById('report-success-close');
+  if (successClose) {
+    successClose.addEventListener('click', function() {
+      closeReportModal();
+    });
+  }
+  // end 47.5
   
-  // 47.5 - form submission (Phase 3 - Supabase insert)
+  // 47.6 - form submission (Phase 3 - Supabase insert)
   reportForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     const reason = document.getElementById('report-reason');
@@ -1167,25 +1182,25 @@ if (reportModal && reportForm) {
     const msgIdField = document.getElementById('report-msg-id');
     const msgUsernameField = document.getElementById('report-msg-username');
     
-    // 47.5.1 - validate reason
+    // 47.6.1 - validate reason
     if (!reason || !reason.value) {
       if (reportError) reportError.textContent = 'Please select a reason.';
       return;
     }
     if (reportError) reportError.textContent = '';
-    // end 47.5.1
+    // end 47.6.1
     
-    // 47.5.2 - show loading state on submit button
+    // 47.6.2 - show loading state on submit button
     const submitBtn = document.getElementById('report-submit');
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
       submitBtn.textContent = 'Submitting...';
     }
-    // end 47.5.2
+    // end 47.6.2
     
     try {
-      // 47.5.3 - prepare report data
+      // 47.6.3 - prepare report data
       const reporterUsername = getCurrentUsername();
       const reportData = {
         message_id: parseInt(msgIdField ? msgIdField.value : '0'),
@@ -1195,9 +1210,9 @@ if (reportModal && reportForm) {
         details: details ? details.value : '',
         status: 'pending'
       };
-      // end 47.5.3
+      // end 47.6.3
       
-      // 47.5.4 - insert into Supabase
+      // 47.6.4 - insert into Supabase
       const { data, error } = await supabase
         .from('reports')
         .insert([reportData])
@@ -1208,30 +1223,32 @@ if (reportModal && reportForm) {
         if (reportError) reportError.textContent = 'Failed to submit report. Please try again.';
         return;
       }
-      // end 47.5.4
+      // end 47.6.4
       
-      // 47.5.5 - success
+      // 47.6.5 - success
       console.log('Report submitted successfully:', data);
-      alert('Report submitted. Thank you for helping keep SimplyChat safe!');
-      closeReportModal();
-      // end 47.5.5
+      // Hide form, show success message
+      if (reportForm) reportForm.style.display = 'none';
+      if (reportError) reportError.textContent = '';
+      if (reportSuccess) reportSuccess.removeAttribute('hidden');
+      // end 47.6.5
       
     } catch (err) {
-      // 47.5.6 - error handling
+      // 47.6.6 - error handling
       console.error('Unexpected error:', err);
       if (reportError) reportError.textContent = 'An unexpected error occurred. Please try again.';
-      // end 47.5.6
+      // end 47.6.6
     } finally {
-      // 47.5.7 - re-enable submit button
+      // 47.6.7 - re-enable submit button
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
         submitBtn.textContent = 'Submit Report';
       }
-      // end 47.5.7
+      // end 47.6.7
     }
   });
-  // end 47.5
+  // end 47.6
 }
 // end 47
 
