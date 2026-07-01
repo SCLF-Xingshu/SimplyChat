@@ -121,7 +121,7 @@ h1 {
 
 #messages {
   border: 1px solid #ccc;
-  border-radius: 15px;
+  border-radius: 0px 0px 15px 15px;
   background: #fff;
   height: 300px;
   overflow-y: scroll;
@@ -887,4 +887,12 @@ body {
 
 #report-submit:hover {
   background: #b91c1c;
+}
+
+/* D18 - RoomId dynamic title styles */
+#room-id-display {
+  background: #ddd;
+  color: #000;
+  padding: 12px;
+  border-radius: 15px 15px 0px 0px;
 }
