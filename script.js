@@ -554,15 +554,22 @@ sessionStorage.removeItem('redirect');
 
 console.log('detected roomId:', roomId);
 
-// 26.1 - check if room is an old official room (disabled)
-const oldOfficialRooms = ['feedback', 'simplychat', 'welcome'];
-let isDisabledOldRoom = oldOfficialRooms.includes(roomId);
+// 26.1 - update room ID display
+const roomIdText = document.getElementById('room-id-text');
+if (roomIdText) {
+  roomIdText.textContent = `/${roomId}`;
+}
 // end 26.1
 
-// 26.2 - check if room name exceeds 32 characters
+// 26.2 - check if room is an old official room (disabled)
+const oldOfficialRooms = ['feedback', 'simplychat', 'welcome'];
+let isDisabledOldRoom = oldOfficialRooms.includes(roomId);
+// end 26.2
+
+// 26.3 - check if room name exceeds 32 characters
 const MAX_ROOM_LENGTH = 32;
 let isTooLongRoom = roomId.length > MAX_ROOM_LENGTH;
-// end 26.2
+// end 26.3
 // end 26
 
 // 27 - dynamic page title
