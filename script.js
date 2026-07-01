@@ -601,6 +601,20 @@ const fontSlider = document.getElementById('font-slider');
 const fontSizeDisplay = document.getElementById('font-size-display');
 
 let currentUser = null;
+
+  // 29.1 - helper to get current username
+  function getCurrentUsername() {
+    if (currentUser) {
+      return `[GH]${currentUser.user_metadata.user_name}`;
+    } else {
+      const customName = usernameInput ? usernameInput.value.trim() : '';
+      if (customName !== '') {
+        return customName;
+      }
+      return `anon${currentUserId}`;
+    }
+  }
+  // end 29.1
 // end 29
 
 // 30 - font size persistence
@@ -1145,20 +1159,75 @@ if (reportModal && reportForm) {
   });
   // end 47.4
   
-  // 47.5 - form submission (Phase 1 placeholder)
-  reportForm.addEventListener('submit', function(e) {
+  // 47.5 - form submission (Phase 3 - Supabase insert)
+  reportForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     const reason = document.getElementById('report-reason');
+    const details = document.getElementById('report-details');
+    const msgIdField = document.getElementById('report-msg-id');
+    const msgUsernameField = document.getElementById('report-msg-username');
     
+    // 47.5.1 - validate reason
     if (!reason || !reason.value) {
       if (reportError) reportError.textContent = 'Please select a reason.';
       return;
     }
     if (reportError) reportError.textContent = '';
+    // end 47.5.1
     
-    // Phase 1: Placeholder alert only
-    alert('Report submitted. Thank you for helping keep SimplyChat safe!');
-    closeReportModal();
+    // 47.5.2 - disable submit button to prevent double submission
+    const submitBtn = document.getElementById('report-submit');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    }
+    // end 47.5.2
+    
+    try {
+      // 47.5.3 - prepare report data
+      const reporterUsername = getCurrentUsername();
+      const reportData = {
+        message_id: parseInt(msgIdField ? msgIdField.value : '0'),
+        reporter_username: reporterUsername,
+        reported_username: msgUsernameField ? msgUsernameField.value : '',
+        reason: reason.value,
+        details: details ? details.value : '',
+        status: 'pending'
+      };
+      // end 47.5.3
+      
+      // 47.5.4 - insert into Supabase
+      const { data, error } = await supabase
+        .from('reports')
+        .insert([reportData])
+        .select();
+      
+      if (error) {
+        console.error('Error submitting report:', error);
+        if (reportError) reportError.textContent = 'Failed to submit report. Please try again.';
+        return;
+      }
+      // end 47.5.4
+      
+      // 47.5.5 - success
+      console.log('Report submitted successfully:', data);
+      alert('Report submitted. Thank you for helping keep SimplyChat safe!');
+      closeReportModal();
+      // end 47.5.5
+      
+    } catch (err) {
+      // 47.5.6 - error handling
+      console.error('Unexpected error:', err);
+      if (reportError) reportError.textContent = 'An unexpected error occurred. Please try again.';
+      // end 47.5.6
+    } finally {
+      // 47.5.7 - re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Report';
+      }
+      // end 47.5.7
+    }
   });
   // end 47.5
 }
