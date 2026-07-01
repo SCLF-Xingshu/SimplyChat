@@ -1175,10 +1175,11 @@ if (reportModal && reportForm) {
     if (reportError) reportError.textContent = '';
     // end 47.5.1
     
-    // 47.5.2 - disable submit button to prevent double submission
+    // 47.5.2 - show loading state on submit button
     const submitBtn = document.getElementById('report-submit');
     if (submitBtn) {
       submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
       submitBtn.textContent = 'Submitting...';
     }
     // end 47.5.2
@@ -1224,6 +1225,7 @@ if (reportModal && reportForm) {
       // 47.5.7 - re-enable submit button
       if (submitBtn) {
         submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
         submitBtn.textContent = 'Submit Report';
       }
       // end 47.5.7
