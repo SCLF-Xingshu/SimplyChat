@@ -918,3 +918,40 @@ body {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
+/* D18 - Report success message */
+#report-success {
+  display: none;
+  text-align: center;
+  padding: 20px 0;
+}
+#report-success[hidden] {
+  display: none !important;
+}
+#report-success:not([hidden]) {
+  display: block !important;
+}
+#report-success h1 {
+  color: #0a7a3a;
+  font-size: 2em;
+  margin: 0 0 8px 0;
+}
+#report-success p {
+  color: #374151;
+  font-size: 1em;
+  margin: 0 0 20px 0;
+}
+#report-success-close {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 6px;
+  background: #0a7a3a;
+  color: #fff;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 1em;
+  transition: background 0.2s ease;
+}
+#report-success-close:hover {
+  background: #065f2e;
+}
