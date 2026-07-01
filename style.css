@@ -734,8 +734,9 @@ body {
   background: transparent;
   border: none;
   font-size: 0.7em;
+  font-family: inherit;
   cursor: pointer;
-  color: #999;
+  color: #677;
   padding: 2px 4px;
   border-radius: 4px;
   transition: color 0.2s ease, background-color 0.2s ease;
