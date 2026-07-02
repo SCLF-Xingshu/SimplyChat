@@ -713,6 +713,12 @@ body {
   outline-offset: 2px;
 }
 
+/* D18 - Room results focus indicator */
+#room-results div:focus-visible {
+  outline: 3px solid #80f5ff;
+  outline-offset: 2px;
+}
+
 /* D18 - Green [GH] tag */
 .user-tag-gh {
   background-color: #170;
