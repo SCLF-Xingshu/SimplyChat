@@ -1072,7 +1072,15 @@ function initRoomSearchSystem() {
     finalResults.forEach(room => {
       const div = document.createElement('div');
       div.textContent = room.virtual ? `${room.id} (new room)` : `${room.id} (${room.count})`;
+      div.setAttribute('role', 'button');
+      div.setAttribute('tabindex', '0');
       div.onclick = () => window.location.href = `/SimplyChat/chat/${room.id}`;
+      div.onkeydown = function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.href = `/SimplyChat/chat/${room.id}`;
+        }
+      };
       roomResults.appendChild(div);
     });
   }
