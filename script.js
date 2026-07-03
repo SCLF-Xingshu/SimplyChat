@@ -1059,7 +1059,10 @@ function initRoomSearchSystem() {
 
   function render(results, query, mode) {
     roomResults.innerHTML = '';
-    if (!query) return;
+    if (!query) {
+      roomResults.style.display = 'none';
+      return;
+    }
     let finalResults = [...results];
     const exists = finalResults.some(r => r.id === query);
     if (!exists) {
@@ -1068,7 +1071,7 @@ function initRoomSearchSystem() {
     if (mode === 'match') finalResults.sort((a, b) => scoreMatch(b.id, query) - scoreMatch(a.id, query));
     if (mode === 'popular') finalResults.sort((a, b) => b.count - a.count);
     if (mode === 'trending') finalResults.sort((a, b) => b.lastActivity - a.lastActivity);
-
+  
     finalResults.forEach(room => {
       const div = document.createElement('div');
       div.textContent = room.virtual ? `${room.id} (new room)` : `${room.id} (${room.count})`;
@@ -1081,8 +1084,18 @@ function initRoomSearchSystem() {
           window.location.href = `/SimplyChat/chat/${room.id}`;
         }
       };
+      div.onfocus = function() {
+        this.scrollIntoView({ block: 'nearest' });
+      };
       roomResults.appendChild(div);
     });
+  
+    // Show results container if there are results
+    if (finalResults.length > 0) {
+      roomResults.style.display = 'block';
+    } else {
+      roomResults.style.display = 'none';
+    }
   }
 
   roomSearch.addEventListener('input', () => {
