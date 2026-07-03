@@ -1046,6 +1046,7 @@ function initRoomSearchSystem() {
   const roomResults = document.getElementById('room-results');
   const roomMode = document.getElementById('room-mode');
   if (!roomSearch || !roomResults || !roomMode) return;
+  roomResults.style.display = 'none';
 
   function scoreMatch(text, query) {
     let score = 0;
