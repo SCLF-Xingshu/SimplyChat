@@ -1002,11 +1002,14 @@ if (isChatPage) {
       alert('your message exceeds 1000 characters');
       return;
     }
+    // 37.6 - insert message with is_github_user flag (security)
     const { error } = await supabase.from('simplychat_messages').insert([{
       username,
       content,
       room_id: roomId.toLowerCase(),
+      is_github_user: !!currentUser, // true if authenticated via GitHub, false otherwise
     }]);
+    // end 37.6
     if (error) {
       console.error('error inserting message:', error);
     } else {
