@@ -377,6 +377,7 @@ h1 {
   max-height: 200px;
   overflow-y: auto;
   padding: 6px 0;
+  display: none;
 }
 
 #room-results div {
