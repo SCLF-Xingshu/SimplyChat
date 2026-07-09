@@ -46,17 +46,19 @@
     
     <div id="room-results"></div>
     
-    <div id="settings-container">
-      <button id="settings-toggle" aria-label="Toggle settings">⚙️</button>
+    <section id="settings-container" aria-label="Settings">
+      <button id="settings-toggle" aria-label="Toggle settings" aria-expanded="false" aria-controls="settings-panel">
+        <img src="/SimplyChat/icons/settings.svg" alt="" width="20" height="20">
+      </button>
       <div id="settings-panel" style="display: none;">
         <strong style="font-size: 20px;">Settings</strong><br>
         <label for="font-slider">Font size:</label>
         <input type="range" id="font-slider" min="10" max="40" value="20">
         <span id="font-size-display">20px</span>
       </div>
-    </div>
+    </section>
     
-    <select id="explore-mode">
+    <select id="explore-mode" aria-label="Explore chatrooms by:">
       <option value="trending">Trending</option>
       <option value="popular">Popular</option>
       <option value="alphabetic">Alphabetical</option>
