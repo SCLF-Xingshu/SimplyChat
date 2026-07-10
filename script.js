@@ -668,6 +668,19 @@ if (isChatPage && messageInput && charCount) {
     // end 31.1
   });
 }
+  // 31.2 - Enter to send, Shift+Enter for new line
+  if (messageInput) {
+    messageInput.addEventListener('keydown', function(e) {
+      // 31.2.1 - Enter without Shift = send
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+      }
+      // end 31.2.1
+      // Shift+Enter = new line
+    });
+  }
+  // end 31.2
 // end 31
 
 // 32 - display a message in the chat
