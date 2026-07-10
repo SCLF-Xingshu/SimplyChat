@@ -621,7 +621,7 @@ let currentUser = null;
   // 29.1 - helper to get current username
   function getCurrentUsername() {
     if (currentUser) {
-      return `[GH]${currentUser.user_metadata.user_name}`;
+      return `[GH] ${currentUser.user_metadata.user_name}`;
     } else {
       const customName = usernameInput ? usernameInput.value.trim() : '';
       if (customName !== '') {
@@ -949,7 +949,7 @@ if (isChatPage) {
     // 37.1 - generate username (custom for anonymous, GitHub for logged in)
     let username;
     if (currentUser) {
-      username = `[GH]${currentUser.user_metadata.user_name}`;
+      username = `[GH] ${currentUser.user_metadata.user_name}`;
     } else {
       let customName = usernameInput.value.trim();
       const MAX_CUSTOM_NAME = 24;
