@@ -713,14 +713,9 @@ body {
 
 /* D17.10 - Focus-visible styles for keyboard navigation */
 :focus-visible {
-  outline: 3px solid #80f5ff;
+  outline: 2px solid #fff;
   outline-offset: 2px;
-}
-
-/* D18 - Room results focus indicator */
-#room-results div:focus-visible {
-  outline: 3px solid #80f5ff;
-  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #1671cc;
 }
 
 /* D18 - Green [GH] tag */
