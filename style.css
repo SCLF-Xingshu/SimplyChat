@@ -133,7 +133,7 @@ input {
 
 /* Global Styles */
 body {
-  font-family: 'Inter', sans-serif /*font-family: 'Unik5x520262', monospace;*/
+  font-family: 'Inter', sans-serif; /*font-family: 'Unik5x520262', monospace;*/
   font-size: var(--font-size); /* multiple of 5 */
   line-height: 1;
   padding: 20px;
