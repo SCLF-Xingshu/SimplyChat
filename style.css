@@ -71,7 +71,7 @@ input {
   transform: none !important;
   z-index: 2147483647 !important;
   isolation: isolate;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 14px;
   display: flex;
   flex-direction: column;
@@ -90,7 +90,7 @@ input {
   padding: 3px;
   font-size: 20px;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
   transition: border 0.2s ease;
   flex-shrink: 0;
   margin: 0;
@@ -119,7 +119,7 @@ input {
 }
 #settings-panel label {
   font-size: 14px;
-  font-family: monospace;
+  font-family: 'Inter';
 }
 #settings-panel input[type="range"] {
   width: 100px;
@@ -127,7 +127,7 @@ input {
 }
 #settings-panel #font-size-display {
   font-size: 14px;
-  font-family: monospace;
+  font-family: 'Inter';
   margin-left: 4px;
 }
 
@@ -198,7 +198,7 @@ h1, h2 {
   padding: 8px;
   border-radius: 999px 0px 0px 999px;
   border: 1px solid #ccc;
-  font-family: monospace;
+  font-family: 'Inter';
   background: #fff;
   color: #000;
   min-width: 150px;
@@ -225,7 +225,7 @@ h1, h2 {
   background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
   color: #fff;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
 }
 #send:hover {
   background: linear-gradient(90deg, #00e4ff, #0017ff, #9e00ff);
@@ -238,7 +238,7 @@ h1, h2 {
   background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
   color: #000;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
 }
 #github-login:hover {
   background: linear-gradient(90deg, #dedede, #cccccc, #dedede);
@@ -251,7 +251,7 @@ h1, h2 {
   background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
   color: #000;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
 }
 #github-logout:hover {
   background: linear-gradient(90deg, #dedede, #cccccc, #dedede);
@@ -376,7 +376,7 @@ h1, h2 {
   padding: 8px;
   border: 1px solid #ccc;
   background: #fff;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 0.7em;
   box-sizing: border-box;
   margin: 0;
@@ -533,7 +533,7 @@ h1, h2 {
   padding: 8px 16px;
   border: 2px solid #ffffff;
   border-radius: 999px;
-  font-family: monospace;
+  font-family: 'Inter';
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -572,7 +572,7 @@ h1, h2 {
 
 #explore-mode {
   padding: 8px;
-  font-family: monospace;
+  font-family: 'Inter';
 }
 
 /* Blog styles */
@@ -639,7 +639,7 @@ body {
 }
 
 .create-wrapper h1 {
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 2em;
   color: #fff;
   margin-bottom: 4px;
@@ -662,7 +662,7 @@ body {
 .create-box label {
   display: block;
   color: #fff;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 0.8em;
   margin-bottom: 6px;
 }
@@ -673,7 +673,7 @@ body {
   border-radius: 4px;
   border: 1px solid #ccc;
   background: #fff;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 1em;
   box-sizing: border-box;
   flex: none;
@@ -697,7 +697,7 @@ body {
   border-radius: 0px;
   background: linear-gradient(90deg, #33e3ff, #404fff, #bb4dff);
   color: #fff;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 1em;
   cursor: pointer;
   transition: 0.2s;
@@ -728,7 +728,7 @@ body {
   color: #ffffff;
   text-decoration: none;
   font-size: 0.7em;
-  font-family: monospace;
+  font-family: 'Inter';
   transition: color 0.2s ease;
 }
 
@@ -873,7 +873,7 @@ body {
   padding: 8px 12px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 0.9em;
   box-sizing: border-box;
 }
@@ -910,7 +910,7 @@ body {
   background: #f9fafb;
   color: #374151;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
   transition: background 0.2s ease;
 }
 
@@ -925,7 +925,7 @@ body {
   background: #dc2626;
   color: #fff;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
   transition: background 0.2s ease;
 }
 
@@ -994,7 +994,7 @@ body {
   background: #0a7a3a;
   color: #fff;
   cursor: pointer;
-  font-family: monospace;
+  font-family: 'Inter';
   font-size: 1em;
   transition: background 0.2s ease;
 }
