@@ -17,6 +17,44 @@
   --font-size: 20px;
 }
 
+/* D25 - Custom Fonts: Cal Sans & Inter */
+
+@font-face {
+  font-family: 'Cal Sans';
+  src: url('/SimplyChat/fonts/Cal_Sans/CalSans-Regular.woff2') format('woff2'),
+       url('/SimplyChat/fonts/Cal_Sans/CalSans-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/SimplyChat/fonts/Inter/Inter-VariableFont_opsz,wght.woff2') format('woff2'),
+       url('/SimplyChat/fonts/Inter/Inter-VariableFont_opsz,wght.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/SimplyChat/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.woff2') format('woff2'),
+       url('/SimplyChat/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/SimplyChat/fonts/Inter/Inter-VariableFont_opsz,wght.woff2') format('woff2'),
+       url('/SimplyChat/fonts/Inter/Inter-VariableFont_opsz,wght.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 button,
 input {
   font-size: 0.7em;
