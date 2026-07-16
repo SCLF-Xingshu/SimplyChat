@@ -35,6 +35,7 @@ Link: [https://sclf-xingshu.github.io/SimplyChat/ ↗️](https://sclf-xingshu.g
 - Supabase
 - DOMPurify
 - GitHub Pages
+- Self-hosted Google Fonts (Cal Sans and Inter)
 
 ---
 
@@ -51,6 +52,7 @@ Branding Notice: The SimplyChat name and logo are trademarks of SCLF-Xingshu. Yo
 - Supabase for the backend
 - DOMPurify for XSS sanitization
 - GitHub Pages for hosting
+- Cal Sans and Inter fonts' authors
 
 ---
 
