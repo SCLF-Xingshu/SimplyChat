@@ -52,7 +52,7 @@ Branding Notice: The SimplyChat name and logo are trademarks of SCLF-Xingshu. Yo
 - Supabase for the backend
 - DOMPurify for XSS sanitization
 - GitHub Pages for hosting
-- Cal Sans and Inter fonts' authors
+- Cal Sans and Inter fonts' authors (Folders: [Cal Sans](https://github.com/SCLF-Xingshu/SimplyChat/tree/master/fonts/Cal_Sans) · [Inter](https://github.com/SCLF-Xingshu/SimplyChat/tree/master/fonts/Inter) | OFL License: [Cal Sans](https://github.com/SCLF-Xingshu/SimplyChat/blob/master/fonts/Cal_Sans/OFL.txt) · [Inter](https://github.com/SCLF-Xingshu/SimplyChat/blob/master/fonts/Inter/OFL.txt) | Google Fonts: [Cal Sans](https://fonts.google.com/specimen/Cal+Sans) · [Inter](https://fonts.google.com/specimen/Inter))
 
 ---
 
