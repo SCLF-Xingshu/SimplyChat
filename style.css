@@ -127,7 +127,7 @@ input {
 }
 #settings-panel #font-size-display {
   font-size: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family: monospace;
   margin-left: 4px;
 }
 
