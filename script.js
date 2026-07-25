@@ -41,7 +41,8 @@ Section n°       Name
 27               dynamic page title
 28               clean url (if needed)
 29               dom elements
-╰─ 29.1          helper to get current username
+╰─ 29.1          real-time [GH] validation + send button toggle
+╰─ 29.2          helper to get current username
 30               font size persistence
 31               character counter
 ├─ 31.1          announce only at thresholds
@@ -719,11 +720,31 @@ const isChatPage = messagesDiv && messageInput && charCount && sendBtn;
 const isExplorePage = document.getElementById('explore-results') && document.getElementById('explore-mode');
 const fontSlider = document.getElementById('font-slider');
 const fontSizeDisplay = document.getElementById('font-size-display');
-
 let currentUser = null;
-
-  // 29.1 - helper to get current username
-  function getCurrentUsername() {
+   // 29.1 - real-time [GH] validation + send button toggle
+   if (usernameInput) {
+     const errorElement = document.getElementById('username-error');
+     usernameInput.addEventListener('input', function() {
+       const value = this.value.trim();
+       const hasGhPrefix = value.startsWith('[GH]') || value.startsWith('[GH] ');
+       // Toggle error message
+       if (errorElement) {
+         if (hasGhPrefix) {
+           errorElement.textContent = '⚠️ "[GH]" is reserved for GitHub users. Choose another username.';
+           errorElement.style.display = 'block';
+         } else {
+           errorElement.style.display = 'none';
+         }
+       }
+       // Toggle send button
+       if (sendBtn) {
+         sendBtn.disabled = hasGhPrefix;
+       }
+     });
+   }
+   // end 29.1
+   // 29.2 - helper to get current username
+   function getCurrentUsername() {
     if (currentUser) {
       return `[GH] ${currentUser.user_metadata.user_name}`;
     } else {
@@ -733,8 +754,8 @@ let currentUser = null;
       }
       return `anon${currentUserId}`;
     }
-  }
-  // end 29.1
+   }
+   // end 29.2
 // end 29
 
 // 30 - font size persistence
