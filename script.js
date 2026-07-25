@@ -1073,12 +1073,19 @@ if (isChatPage) {
       const errorElement = document.getElementById('username-error');
       if (customName.startsWith('[GH]') || customName.startsWith('[GH] ')) {
         if (errorElement) {
+          errorElement.textContent = '⚠️ "[GH]" is reserved for GitHub users. Choose another username.';
           errorElement.style.display = 'block';
+        }
+        if (sendBtn) {
+          sendBtn.disabled = true;
         }
         return;
       } else {
         if (errorElement) {
           errorElement.style.display = 'none';
+        }
+        if (sendBtn) {
+          sendBtn.disabled = false;
         }
       }
       // end 37.1.1
