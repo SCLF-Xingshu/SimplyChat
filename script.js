@@ -1,6 +1,6 @@
 /*
 TABLE OF CONTENTS
-
+=================
 Section n°       Name
 1                user identification (local user id, used for anonymous follows)
 2                helper: escape html (xss protection)
