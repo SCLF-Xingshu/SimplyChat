@@ -999,3 +999,13 @@ body {
 #report-success-close:hover {
   background: #065f2e;
 }
+
+/* D21.5 - Username error message */
+.username-error {
+  color: #fff;
+  font-size: 0.8em;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
