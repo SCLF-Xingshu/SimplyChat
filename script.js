@@ -1270,7 +1270,6 @@ if (reportModal && reportForm) {
       const { data, error } = await supabase
         .from('reports')
         .insert([reportData])
-        .select();
       
       if (error) {
         console.error('Error submitting report:', error);
