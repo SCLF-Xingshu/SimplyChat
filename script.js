@@ -1,3 +1,106 @@
+/*
+TABLE OF CONTENTS
+
+Section n°       Name
+1                user identification (local user id, used for anonymous follows)
+2                helper: escape html (xss protection)
+╰─ 2.1           convert custom link syntax to HTML links
+3                format username (green [gh] tag)
+4                generate random 12‑character hex string
+5                create or retrieve local user id (localStorage only, no Supabase)
+6                save follows to localstorage (for anonymous users)
+7                load followed rooms from correct source
+8                follow a room (supabase if logged in, else localstorage)
+9                unfollow a room
+10               request browser notification permission
+11               send a browser notification
+12               rate limiting helper functions
+13               cooldown countdown variables
+╰─ 13.1          cooldown constants
+14               update countdown display
+15               start cooldown countdown timer
+16               check if user is rate limited
+17               record message timestamp in localStorage
+18               update follow button text and style
+├─ 18.1          hide follow button in disabled old rooms
+╰─ 18.2          hide follow button in rooms with name too long
+19               ui updates when user logs in/out
+20               realtime subscription (always connects)
+21               main initialisation (single source of truth)
+├─ 21.1          show/hide login/logout buttons
+├─ 21.2          check if user is in cooldown on page load (only on chat pages)
+╰─ 21.3          only initialize realtime subscription on chat pages
+22               follow button event listener
+23               supabase setup
+24               redirect handling (for 404 fallback)
+25               build room index (for explore / search)
+26               room id detection (supports /chat/room and direct /room)
+├─ 26.1          update room ID display
+├─ 26.2          check if room is an old official room (disabled)
+╰─ 26.3          check if room name exceeds 32 characters
+27               dynamic page title
+28               clean url (if needed)
+29               dom elements
+╰─ 29.1          helper to get current username
+30               font size persistence
+31               character counter
+├─ 31.1          announce only at thresholds
+╰─ 31.2          Enter to send, Shift+Enter for new line
+32               display a message in the chat
+├─ 32.1          build message HTML with report button
+╰─ 32.2          report button event listener
+33               scroll to message if URL has #msg12345 (moved before loadMessages)
+├─ 33.3          report modal functions
+│  ╰─ 33.3.1     reset form and success message
+╰─ 33.4          close report modal
+34               load existing messages from supabase
+├─ 34.1          handle disabled old official rooms
+├─ 34.2          show loading indicator
+├─ 34.3          handle too long room names
+├─ 34.4          hide loading indicator
+├─ 34.5          official room notice for !-prefixed rooms
+├─ 34.6          show lock status for admin-only rooms
+╰─ 34.7          scroll to message if needed
+35               start loading messages
+36               room index for explore page
+37               send message
+├─ 37.1          generate username (custom for anonymous, GitHub for logged in)
+├─ 37.2          block sending in disabled old official rooms
+├─ 37.3          block sending in rooms with name too long
+├─ 37.4          admin-only room restriction for !-prefixed rooms
+├─ 37.5          rate limiting check (5 second cooldown)
+╰─ 37.6          insert message with is_github_user flag (security)
+38               github login
+39               run the main initialisation
+40               simple auth state change (only re‑runs checkuser)
+41               room search system (explore page)
+42               debug: expose supabase for console
+43               check if user is admin
+44               check if admin room has any messages (unlocked)
+45               logout function
+46               logout button event listener
+47               report modal event listeners
+├─ 47.1          close modal on close button
+├─ 47.2          close modal on cancel button
+├─ 47.3          close modal on Escape key
+├─ 47.4          close modal on outside click
+├─ 47.5          close success message
+╰─ 47.6          form submission (Phase 3 - Supabase insert)
+   ├─ 47.6.1     validate reason
+   ├─ 47.6.2     show loading state on submit button
+   ├─ 47.6.3     prepare report data
+   ├─ 47.6.4     insert into Supabase
+   ├─ 47.6.5     success
+   ├─ 47.6.6     error handling
+   ╰─ 47.6.7     re-enable submit button
+48               settings toggle
+├─ 48.1          toggle panel on gear click
+│  ├─ 48.1.1     update aria-expanded
+│  ╰─ 48.1.2     focus management
+├─ 48.2          close settings with Escape key
+╰─ 48.3          close panel when clicking outside
+*/
+
 // 1 - user identification (local user id, used for anonymous follows)
 let currentUserId = null;
 let currentHexId = null;
