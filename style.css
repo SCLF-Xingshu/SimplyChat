@@ -1004,8 +1004,13 @@ body {
 .username-error {
   color: #fff;
   font-size: 0.7em;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin: 4px 0;
   font-family: 'Inter', sans-serif;
   width: 100%;
+}
+
+/* D21.5 - Disabled send button */
+#send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
