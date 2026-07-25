@@ -245,6 +245,10 @@ function getRateLimitKey() {
 // 13 - cooldown countdown variables
 let cooldownInterval = null;
 const cooldownDisplay = document.getElementById('cooldown-countdown');
+  // 13.1 - cooldown constants
+  const COOLDOWN_SECONDS = 3;
+  const COOLDOWN_MS = COOLDOWN_SECONDS * 1000;
+  // end 13.1
 // end 13
 
 // 14 - update countdown display
@@ -275,8 +279,6 @@ function startCooldownTimer() {
     const key = getRateLimitKey();
     const lastMessageTime = localStorage.getItem(key);
     const now = Date.now();
-    const COOLDOWN_SECONDS = 5;
-    const COOLDOWN_MS = COOLDOWN_SECONDS * 1000;
     
     if (lastMessageTime) {
       const timeSinceLastMessage = now - parseInt(lastMessageTime);
@@ -293,13 +295,11 @@ function startCooldownTimer() {
 }
 // end 15
 
-// 16 - check if user is rate limited (5 second cooldown)
+// 16 - check if user is rate limited
 function isRateLimited() {
   const key = getRateLimitKey();
   const lastMessageTime = localStorage.getItem(key);
   const now = Date.now();
-  const COOLDOWN_SECONDS = 5;
-  const COOLDOWN_MS = COOLDOWN_SECONDS * 1000;
   
   if (lastMessageTime) {
     const timeSinceLastMessage = now - parseInt(lastMessageTime);
