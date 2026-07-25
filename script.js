@@ -65,6 +65,7 @@ Section n°       Name
 36               room index for explore page
 37               send message
 ├─ 37.1          generate username (custom for anonymous, GitHub for logged in)
+│  ╰─ 37.1.1     block [GH] prefix for anonymous users
 ├─ 37.2          block sending in disabled old official rooms
 ├─ 37.3          block sending in rooms with name too long
 ├─ 37.4          admin-only room restriction for !-prefixed rooms
@@ -1068,6 +1069,19 @@ if (isChatPage) {
       username = `[GH] ${currentUser.user_metadata.user_name}`;
     } else {
       let customName = usernameInput.value.trim();
+      // 37.1.1 - block [GH] prefix for anonymous users
+      const errorElement = document.getElementById('username-error');
+      if (customName.startsWith('[GH]') || customName.startsWith('[GH] ')) {
+        if (errorElement) {
+          errorElement.style.display = 'block';
+        }
+        return;
+      } else {
+        if (errorElement) {
+          errorElement.style.display = 'none';
+        }
+      }
+      // end 37.1.1
       const MAX_CUSTOM_NAME = 24;
       if (customName !== '') {
         if (customName.length > MAX_CUSTOM_NAME) {
