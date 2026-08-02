@@ -53,7 +53,7 @@ Section n°       Name
 33               scroll to message if URL has #msg12345 (moved before loadMessages)
 ├─ 33.1          report modal functions
 │  ╰─ 33.1.1     reset form and success message
-╰─ 33.4          close report modal
+╰─ 33.2          close report modal
 34               load existing messages from supabase
 ├─ 34.1          handle disabled old official rooms
 ├─ 34.2          show loading indicator
