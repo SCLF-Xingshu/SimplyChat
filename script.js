@@ -51,8 +51,8 @@ Section n°       Name
 ├─ 32.1          build message HTML with report button
 ╰─ 32.2          report button event listener
 33               scroll to message if URL has #msg12345 (moved before loadMessages)
-├─ 33.3          report modal functions
-│  ╰─ 33.3.1     reset form and success message
+├─ 33.1          report modal functions
+│  ╰─ 33.1.1     reset form and success message
 ╰─ 33.4          close report modal
 34               load existing messages from supabase
 ├─ 34.1          handle disabled old official rooms
@@ -867,7 +867,7 @@ function scrollToMessageIfNeeded() {
     }
   }
 }
-  // 33.3 - report modal functions
+  // 33.1 - report modal functions
   function openReportModal(msgId, msgUsername) {
     const modal = document.getElementById('report-modal');
     if (!modal) return;
@@ -885,10 +885,10 @@ function scrollToMessageIfNeeded() {
     if (reasonSelect) reasonSelect.value = '';
     if (detailsTextarea) detailsTextarea.value = '';
     if (errorDisplay) errorDisplay.textContent = '';
-    // 33.3.1 - reset form and success message
+    // 33.1.1 - reset form and success message
     if (reportForm) reportForm.style.display = 'block';
     if (reportSuccess) reportSuccess.setAttribute('hidden', '');
-    // end 33.3.1
+    // end 33.1.1
     
     // Show modal
     modal.removeAttribute('hidden');
@@ -899,9 +899,9 @@ function scrollToMessageIfNeeded() {
       if (reasonSelect) reasonSelect.focus();
     }, 100);
   }
-  // end 33.3
+  // end 33.1
   
-  // 33.4 - close report modal
+  // 33.2 - close report modal
   function closeReportModal() {
     const modal = document.getElementById('report-modal');
     if (modal) {
@@ -909,7 +909,7 @@ function scrollToMessageIfNeeded() {
       modal.style.display = 'none';
     }
   }
-  // end 33.4
+  // end 33.2
 // end 33
 
 // 34 - load existing messages from supabase
