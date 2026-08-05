@@ -133,15 +133,17 @@ input {
 
 /* Global Styles */
 body {
-  font-family: 'Inter', sans-serif; /*font-family: 'Unik5x520262', monospace;*/
+  font-family: 'Inter', sans-serif;
+  /*font-family: 'Unik5x520262', monospace;*/
   font-size: var(--font-size); /* multiple of 5 */
   line-height: 1;
-  padding: 0 20px;
+  padding: 0;
   background: /*#f7f7f7*/#1671cc;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeSpeed;
   transition: font-size 0.4s ease-out;
+  margin: 14px 0 0;
 }
 
 h1, h2 {
