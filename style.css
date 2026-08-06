@@ -1038,30 +1038,30 @@ footer {
 /* Scrollbar Styles */
 /* Firefox specific */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.7) rgba(255, 255, 255, 1);
+  scrollbar-width: auto;
+  scrollbar-color: #677 #fff;
 }
 
 /* WebKit specific */
 *::-webkit-scrollbar {
-  width: 6px;
+  width: 15px;
   height: 6px;
 }
 
 *::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 1);
-  border-radius: 4px;
+  background: #fff;
+  border-radius: 999px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 4px;
+  background: #677;
+  border-radius: 999px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background: #000;
 }
 
 *::-webkit-scrollbar-corner {
-  background: rgba(255, 255, 255, 1);
+  background: #fff;
 }
