@@ -1034,3 +1034,34 @@ footer {
   padding: 15px;
   margin: 0;
 }
+
+/* Scrollbar Styles */
+/* Firefox specific */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.7) rgba(255, 255, 255, 1);
+}
+
+/* WebKit specific */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+*::-webkit-scrollbar-corner {
+  background: rgba(255, 255, 255, 1);
+}
