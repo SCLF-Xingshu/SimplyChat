@@ -154,8 +154,9 @@ h1, h2 {
 
 #chat-container {
   max-width: 600px;
-  margin: 0 auto;
+  margin: auto;
   overflow: hidden; /* D6 - ensures search bar stays within container */
+  padding: 10px 20px;
 }
 
 #messages {
