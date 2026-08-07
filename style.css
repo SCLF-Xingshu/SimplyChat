@@ -538,8 +538,10 @@ footer > p {
   text-align: center;
 }
 
-.follow-btn {
-  padding: 8px 16px;
+#follow-btn {
+  padding: auto;
+  height: 45px;
+  width: 45px;
   border: 2px solid #fff;
   border-radius: 999px;
   font-family: 'Inter', sans-serif;
@@ -549,19 +551,18 @@ footer > p {
   box-sizing: border-box;
 }
 
-.follow-btn.following {
+#follow-btn.following {
   background-color: #c22;
   color: white;
 }
 
-.follow-btn:not(.following) {
+#follow-btn:not(.following) {
   background-color: #170;
   color: white;
 }
 
-.follow-btn:hover {
-  opacity: 0.85;
-  transform: scale(0.98);
+#follow-btn:hover {
+  filter: brightness(1.2);
 }
 
 /* D5 - Explore page styles */
@@ -950,8 +951,30 @@ body {
 #room-id-display {
   background: #ddd;
   color: #000;
-  padding: 12px;
-  border-radius: 15px 15px 0px 0px;
+  padding: 0px 12px;
+  height: 45px;
+  border-radius: 15px 0px 0px 0px;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+}
+
+#chatroom-topbar {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+  width: 100%;
+}
+
+#room-id-display {
+  flex: 1;
+}
+
+#follow-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border-radius: 0px 15px 0px 0px;
   border: 1px solid #ccc;
   border-bottom: none;
 }

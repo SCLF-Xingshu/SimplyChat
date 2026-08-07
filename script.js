@@ -456,11 +456,13 @@ async function updateFollowButton() {
   const following = followingRooms.has(roomId);
   followBtn.style.display = 'inline-block';
   if (following) {
-    followBtn.textContent = `🔕 Unfollow /${roomId}`;
+    /*followBtn.textContent = `🔕Unfollow /${roomId}`;*/
+    followBtn.textContent = '🔕';
     followBtn.classList.add('following');
     followBtn.classList.remove('not-following');
   } else {
-    followBtn.textContent = `🔔 Follow /${roomId}`;
+    /*followBtn.textContent = `🔔 Follow /${roomId}`;*/
+    followBtn.textContent = '🔔';
     followBtn.classList.add('not-following');
     followBtn.classList.remove('following');
   }
