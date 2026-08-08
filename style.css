@@ -505,7 +505,9 @@ footer > p {
 .msg-header,
 .msg-content {
   font-size: 1em;
+  line-height: 1.5;
 }
+
 /* D12.8 - Custom link styles (same as navbar's) */
 .custom-link {
   display: inline-block;
