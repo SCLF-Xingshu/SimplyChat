@@ -1128,16 +1128,16 @@ footer {
 }
 
 .reaction-btn.active {
-  background: rgba(128, 245, 255, 0.15);
-  border-color: #80f5ff;
+  background: rgb(22, 113, 204, 0.06);
+  border-color: #1671cc;
 }
 
 .reaction-count {
   font-size: 0.7em;
   color: #666;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .reaction-btn.active .reaction-count {
-  color: #80f5ff;
+  color: #1671cc;
 }
