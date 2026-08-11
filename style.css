@@ -534,39 +534,6 @@ footer > p {
   width: 100%;
 }
 
-/* D4 - Follow button styles */
-#follow-container {
-  margin: 10px 0;
-  text-align: center;
-}
-
-#follow-btn {
-  padding: auto;
-  height: 45px;
-  width: 45px;
-  border: 2px solid #fff;
-  border-radius: 999px;
-  font-family: 'Inter', sans-serif;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-#follow-btn.following {
-  background-color: #c22;
-  color: white;
-}
-
-#follow-btn:not(.following) {
-  background-color: #170;
-  color: white;
-}
-
-#follow-btn:hover {
-  filter: brightness(1.2);
-}
-
 /* D5 - Explore page styles */
 .explore-room {
   padding: 10px;
@@ -960,6 +927,7 @@ body {
   border-bottom: none;
   display: flex;
   align-items: center;
+  border-right: none;
 }
 
 #chatroom-topbar {
@@ -973,12 +941,41 @@ body {
   flex: 1;
 }
 
+/* D4 - Follow button styles */
+#follow-container {
+  margin: 10px 0;
+  text-align: center;
+}
 #follow-btn {
   flex: 0 0 auto;
   white-space: nowrap;
   border-radius: 0px 15px 0px 0px;
   border: 1px solid #ccc;
   border-bottom: none;
+  padding: 0;
+  height: 46px;
+  width: 46px;
+  /* border: 2px solid #fff; */
+  /* border-radius: 999px; */
+  font-family: 'Inter', sans-serif;
+  /* font-weight: bold; */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+#follow-btn.following {
+  background-color: #c22;
+  color: white;
+}
+
+#follow-btn:not(.following) {
+  background-color: #170;
+  color: white;
+}
+
+#follow-btn:hover {
+  filter: brightness(1.2);
 }
 
 /* D18 - Submit button loading state */

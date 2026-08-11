@@ -58,10 +58,11 @@ Section n°       Name
 ├─ 34.1          handle disabled old official rooms
 ├─ 34.2          show loading indicator
 ├─ 34.3          handle too long room names
-├─ 34.4          hide loading indicator
-├─ 34.5          official room notice for !-prefixed rooms
-├─ 34.6          show lock status for admin-only rooms
-╰─ 34.7          scroll to message if needed
+├─ 34.4          fetch reactions for messages
+├─ 34.5          hide loading indicator
+├─ 34.6          official room notice for !-prefixed rooms
+├─ 34.7          show lock status for admin-only rooms
+╰─ 34.8          scroll to message if needed
 35               start loading messages
 36               room index for explore page
 37               send message
@@ -983,11 +984,33 @@ async function loadMessages() {
     return;
   }
 
-  // 34.4 - hide loading indicator
+  // 34.4 - fetch reactions for messages
+  let reactionsMap = {};
+  if (messages && messages.length > 0) {
+    const messageIds = messages.map(m => m.id);
+    const { data: reactions, error: reactionsError } = await supabase
+      .from('message_reactions')
+      .select('message_id, username, emoji')
+      .in('message_id', messageIds);
+    
+    if (!reactionsError && reactions) {
+      reactionsMap = {};
+      reactions.forEach(r => {
+        if (!reactionsMap[r.message_id]) reactionsMap[r.message_id] = {};
+        if (!reactionsMap[r.message_id][r.emoji]) reactionsMap[r.message_id][r.emoji] = [];
+        reactionsMap[r.message_id][r.emoji].push(r.username);
+      });
+    } else if (reactionsError) {
+      console.error('Error fetching reactions:', reactionsError);
+    }
+  }
+  // end 34.4
+
+  // 34.5 - hide loading indicator
   if (loadingIndicator) {
     loadingIndicator.style.display = 'none';
   }
-  // end 34.4
+  // end 34.5
   
   const customMessages = {
     'global': 'This is the main chatroom. Create your own using the <a href="https://sclf-xingshu.github.io/SimplyChat/create">Create</a> page!',
@@ -1018,28 +1041,28 @@ async function loadMessages() {
   if (customMessages[roomId]) {
     addSystemMessage(customMessages[roomId], false);
   }
-  // 34.5 - official room notice for !-prefixed rooms
+  // 34.6 - official room notice for !-prefixed rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     addSystemMessage(`Note: you are on /${roomId}. Chatrooms starting with "!" are official SimplyChat chatrooms.`, false);
   }
-  // end 34.5
-  // 34.6 - show lock status for admin-only rooms
+  // end 34.6
+  // 34.7 - show lock status for admin-only rooms
   if (roomId.startsWith('!') && !isDisabledOldRoom) {
     const isUnlocked = await isAdminRoomUnlocked(roomId);
     if (!isUnlocked) {
       addSystemMessage('🔒 This chatroom is admin‑only. Only admins can send the first message and unlock this room.', false);
     }
   }
-  // end 34.6
+  // end 34.7
 
   if (messages && messages.length > 0) {
     messages.forEach(addMessage);
   } else {
     addSystemMessage('Server : no messages yet.', false);
   }
-  // 34.7 - scroll to message if needed
+  // 34.8 - scroll to message if needed
   scrollToMessageIfNeeded();
-  // end 34.7
+  // end 34.8
 }
 // end 34
 
