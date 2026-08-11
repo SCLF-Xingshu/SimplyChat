@@ -899,11 +899,17 @@ function addMessage(msg, reactionsMap) {
   const reactionBtns = div.querySelectorAll('.reaction-btn');
   reactionBtns.forEach(btn => {
     btn.addEventListener('click', async function() {
+      console.log('✅ Reaction button clicked!');
+      
       const msgId = this.getAttribute('data-msg-id');
       const emoji = this.getAttribute('data-emoji');
       const username = getCurrentUsername();
       
-      // Check if user already reacted with the same emoji
+      console.log('📦 Message ID:', msgId);
+      console.log('📦 Emoji:', emoji);
+      console.log('👤 Username:', username);
+      
+      // Check if user already reacted with this emoji
       const { data: existing, error: existingError } = await supabase
         .from('message_reactions')
         .select('id')
@@ -912,21 +918,62 @@ function addMessage(msg, reactionsMap) {
         .eq('emoji', emoji)
         .maybeSingle();
       
-      if (existing) {
-        // Remove reaction
-        await supabase
-          .from('message_reactions')
-          .delete()
-          .eq('id', existing.id);
-      } else {
-        // Add reaction
-        await supabase
-          .from('message_reactions')
-          .insert({ message_id: msgId, username, emoji });
+      if (existingError) {
+        console.error('❌ Error checking existing reaction:', existingError);
+        return;
       }
       
-      // Refresh reactions for this message (simple approach: reload messages)
-      loadMessages();
+      console.log('📦 Existing reaction:', existing);
+      
+      if (existing) {
+        console.log('🗑️ Removing reaction:', existing.id);
+        console.log('📦 Reaction data:', { id: existing.id, message_id: msgId, username, emoji });
+        
+        // D27 - Manual delete via RPC (bypassing client issues)
+        const { error: deleteError, data } = await supabase.rpc('delete_reaction', {
+          p_id: existing.id
+        });
+        
+        console.log('📊 Delete response:', { error: deleteError, data });
+        
+        if (deleteError) {
+          console.error('❌ Error removing reaction:', deleteError);
+          console.error('❌ Error details:', deleteError.message, deleteError.details, deleteError.hint);
+        } else {
+          console.log('✅ Delete operation completed');
+          
+          // D27 - Verify the deletion
+          console.log('🔍 Verifying deletion for ID:', existing.id);
+          const { data: verifyData, error: verifyError } = await supabase
+            .from('message_reactions')
+            .select('id')
+            .eq('id', existing.id)
+            .maybeSingle();
+          
+          if (verifyError) {
+            console.error('❌ Verification error:', verifyError);
+          } else if (verifyData) {
+            console.error('❌❌❌ REACTION STILL EXISTS! ID:', verifyData.id);
+          } else {
+            console.log('✅✅✅ REACTION SUCCESSFULLY DELETED!');
+          }
+        }
+      } else {
+        console.log('➕ Adding reaction:', { message_id: msgId, username, emoji });
+        const { error: insertError } = await supabase
+          .from('message_reactions')
+          .insert({ message_id: msgId, username, emoji });
+        
+        if (insertError) {
+          console.error('❌ Error adding reaction:', insertError);
+        } else {
+          console.log('✅ Reaction added');
+        }
+      }
+      
+      console.log('🔄 Refreshing messages...');
+      await loadMessages();
+      console.log('✅ Messages refreshed');
     });
   });
   // end 32.3
