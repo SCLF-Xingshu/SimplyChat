@@ -1091,3 +1091,53 @@ footer {
 *::-webkit-scrollbar-corner {
   background: #fff;
 }
+
+/* D27 - Message Reactions Styles */
+.msg-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  gap: 4px;
+}
+
+.msg-reactions {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.reaction-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: inherit;
+}
+
+.reaction-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.reaction-btn.active {
+  background: rgba(128, 245, 255, 0.15);
+  border-color: #80f5ff;
+}
+
+.reaction-count {
+  font-size: 0.7em;
+  color: #666;
+  font-weight: normal;
+}
+
+.reaction-btn.active .reaction-count {
+  color: #80f5ff;
+}
