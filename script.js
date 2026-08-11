@@ -49,6 +49,7 @@ Section n°       Name
 ╰─ 31.2          Enter to send, Shift+Enter for new line
 32               display a message in the chat
 ├─ 32.1          build message HTML with report button
+│  ╰─32.1.1      build reactions HTML
 ╰─ 32.2          report button event listener
 33               scroll to message if URL has #msg12345 (moved before loadMessages)
 ├─ 33.1          report modal functions
@@ -503,7 +504,7 @@ async function initRealtimeSubscription() {
       filter: `room_id=eq.${roomId.toLowerCase()}`,
     }, async (payload) => {
       console.log('new message received in realtime!');
-      addMessage(payload.new);
+      addMessage(payload.new, null);
 
       const canNotify = Notification.permission === 'granted';
       const isFollowing = followingRooms.has(roomId);
@@ -812,7 +813,7 @@ if (isChatPage && messageInput && charCount) {
 // end 31
 
 // 32 - display a message in the chat
-function addMessage(msg) {
+function addMessage(msg, reactionsMap) {
   if (!messagesDiv) return;
   const div = document.createElement('div');
   div.classList.add('message');
@@ -833,10 +834,29 @@ function addMessage(msg) {
 
   // 32.1 - build message HTML with report button
   const escapedUsername = escapeHtml(msg.username);
+  
+    // 32.1.1 - build reactions HTML
+    const emojis = ['👍', '😍', '🤣', '😮', '😭', '🔥', '🤔'];
+    let reactionsHtml = '';
+    const msgReactions = reactionsMap && reactionsMap[msg.id] ? reactionsMap[msg.id] : {};
+    
+    emojis.forEach(emoji => {
+      const users = msgReactions[emoji] || [];
+      const count = users.length;
+      const isActive = users.includes(getCurrentUsername());
+      reactionsHtml += `
+        <button class="reaction-btn ${isActive ? 'active' : ''}" data-msg-id="${msg.id}" data-emoji="${emoji}">
+          ${emoji} <span class="reaction-count">${count}</span>
+        </button>
+      `;
+    });
+    // end 32.1.1
+  
   div.innerHTML = `
     <div class="msg-header">[${day}/${month}/${year} ${hours}:${minutes} ${tz}] ${formatUsername(msg.username)} <span class="msg-id">#${msg.id}</span></div>
     <div class="msg-content">${safeText}</div>
     <div class="msg-actions">
+      <div class="msg-reactions">${reactionsHtml}</div>
       <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="Report this message">🚨 Report</button>
     </div>
   `;
@@ -1056,7 +1076,7 @@ async function loadMessages() {
   // end 34.7
 
   if (messages && messages.length > 0) {
-    messages.forEach(addMessage);
+    messages.forEach(msg => addMessage(msg, reactionsMap));
   } else {
     addSystemMessage('Server : no messages yet.', false);
   }
