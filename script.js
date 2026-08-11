@@ -1,7 +1,9 @@
 /*
 TABLE OF CONTENTS
 =================
+
 Section n°       Name
+----------       ----
 1                user identification (local user id, used for anonymous follows)
 2                helper: escape html (xss protection)
 ╰─ 2.1           convert custom link syntax to HTML links
@@ -26,6 +28,7 @@ Section n°       Name
 ╰─ 18.2          hide follow button in rooms with name too long
 19               ui updates when user logs in/out
 20               realtime subscription (always connects)
+╰─ 20.1          reactions realtime channel
 21               main initialisation (single source of truth)
 ├─ 21.1          show/hide login/logout buttons
 ├─ 21.2          check if user is in cooldown on page load (only on chat pages)
@@ -50,7 +53,8 @@ Section n°       Name
 32               display a message in the chat
 ├─ 32.1          build message HTML with report button
 │  ╰─32.1.1      build reactions HTML
-╰─ 32.2          report button event listener
+├─ 32.2          report button event listener
+╰─ 32.3          reaction button event listener
 33               scroll to message if URL has #msg12345 (moved before loadMessages)
 ├─ 33.1          report modal functions
 │  ╰─ 33.1.1     reset form and success message
@@ -518,6 +522,25 @@ async function initRealtimeSubscription() {
         console.log('successfully subscribed to room:', roomId);
       }
     });
+
+  // 20.1 - reactions realtime channel
+  const reactionChannel = supabase
+    .channel('reactions')
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'message_reactions'
+    }, async (payload) => {
+      console.log('Reaction change detected:', payload);
+      await loadMessages();
+    })
+    .subscribe((status, err) => {
+      console.log('reaction realtime status:', status, err || '');
+      if (status === 'subscribed') {
+        console.log('successfully subscribed to reactions');
+      }
+    });
+  // end 20.1
 }
 // end 20
 
@@ -872,6 +895,41 @@ function addMessage(msg, reactionsMap) {
     });
   }
   // end 32.2
+  // 32.3 - reaction button event listener
+  const reactionBtns = div.querySelectorAll('.reaction-btn');
+  reactionBtns.forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const msgId = this.getAttribute('data-msg-id');
+      const emoji = this.getAttribute('data-emoji');
+      const username = getCurrentUsername();
+      
+      // Check if user already reacted with the same emoji
+      const { data: existing, error: existingError } = await supabase
+        .from('message_reactions')
+        .select('id')
+        .eq('message_id', msgId)
+        .eq('username', username)
+        .eq('emoji', emoji)
+        .maybeSingle();
+      
+      if (existing) {
+        // Remove reaction
+        await supabase
+          .from('message_reactions')
+          .delete()
+          .eq('id', existing.id);
+      } else {
+        // Add reaction
+        await supabase
+          .from('message_reactions')
+          .insert({ message_id: msgId, username, emoji });
+      }
+      
+      // Refresh reactions for this message (simple approach: reload messages)
+      loadMessages();
+    });
+  });
+  // end 32.3
   messagesDiv.appendChild(div);
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
