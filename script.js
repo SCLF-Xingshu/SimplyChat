@@ -686,26 +686,33 @@ sessionStorage.removeItem('redirect');
 
 console.log('detected roomId:', roomId);
 
-// 26.1 - update room ID display
+// 26.1 - fetch message count for this room (always)
+let count = 0;
+let countError = null;
+
+try {
+  const { count: messageCount, error } = await supabase
+    .from('simplychat_messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('room_id', roomId);
+  
+  count = messageCount || 0;
+  countError = error;
+} catch (err) {
+  countError = err;
+}
+
+// 26.1.1 - update room ID display
 const roomIdText = document.getElementById('room-id-text');
 if (roomIdText) {
-  // 26.1.1 - fetch message count for this room
-  (async function() {
-    const { count, error } = await supabase
-      .from('simplychat_messages')
-      .select('*', { count: 'exact', head: true })
-      .eq('room_id', roomId);
-    
-    if (error) {
-      console.error('Error fetching message count:', error);
-      roomIdText.textContent = `/${roomId}`;
-      return;
-    }
-    
+  if (countError) {
+    console.error('Error fetching message count:', countError);
+    roomIdText.textContent = `/${roomId}`;
+  } else {
     // 26.1.2 - display room ID with message count
     roomIdText.textContent = `/${roomId} - ${count} message${count !== 1 ? 's' : ''}`;
     // end 26.1.2
-  })();
+  }
 }
 // end 26.1
 
@@ -721,12 +728,12 @@ let isTooLongRoom = roomId.length > MAX_ROOM_LENGTH;
 // end 26
 
 // 27 - dynamic page title
-if (parts[2] === 'chat' && parts[3]) {             // On a chatroom (https://sclf-xingshu.github.io/SimplyChat/chat/chatroomname)
-  document.title = 'SimplyChat / ' + roomId;       //                part number  |   ↑[0]             ↑[1]     ↑[2]     ↑[3]   
-} else if (roomId === 'global' && !parts[2]) {     // Not on a chatroom AND on the homepage (https://sclf-xingshu.github.io/SimplyChat/)
-  document.title = 'SimplyChat.';                  //                part number  |                           ↑[0]             ↑[1]
+if (parts[2] === 'chat' && parts[3]) {                        // On a chatroom (https://sclf-xingshu.github.io/SimplyChat/chat/chatroomname)
+  document.title = `SimplyChat / ${roomId} (💬 ${count})`;    // part number           |          ↑0          |    ↑1    | ↑2 |     ↑3   
+} else if (roomId === 'global' && !parts[2]) {                // Not on a chatroom AND on the homepage (https://sclf-xingshu.github.io/SimplyChat/)
+  document.title = 'SimplyChat.';                             // part number                                   |          ↑0          |    ↑1
 }
-// For other pages, keep the title set in the HTML.
+// For other pages, it keeps the title set in the HTML.
 // end 27
 
 // 28 - clean url (if needed)
