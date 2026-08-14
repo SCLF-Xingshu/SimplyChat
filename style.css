@@ -927,7 +927,7 @@ body {
   border-bottom: none;
   display: flex;
   align-items: center;
-  border-right: none;
+  flex: 1;
 }
 
 #chatroom-topbar {
@@ -935,10 +935,6 @@ body {
   gap: 0;
   align-items: stretch;
   width: 100%;
-}
-
-#room-id-display {
-  flex: 1;
 }
 
 /* D4 - Follow button styles */
@@ -952,12 +948,14 @@ body {
   border-radius: 0px 15px 0px 0px;
   border: 1px solid #ccc;
   border-bottom: none;
+  border-left: none;
   padding: 0;
   height: 46px;
   width: 46px;
   /* border: 2px solid #fff; */
   /* border-radius: 999px; */
   font-family: 'Inter', sans-serif;
+  font-size: 0.8em;
   /* font-weight: bold; */
   cursor: pointer;
   transition: all 0.2s ease;
@@ -976,6 +974,34 @@ body {
 
 #follow-btn:hover {
   filter: brightness(1.2);
+}
+
+/* D28 - Share button styles */
+#share-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-bottom: none;
+  padding: 0;
+  height: 46px;
+  width: 46px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  background: transparent;
+  background-color: #999;
+}
+
+#share-btn:hover {
+  filter: brightness(1.2);
+}
+
+#share-btn:active {
+  transform: scale(0.95);
 }
 
 /* D18 - Submit button loading state */
