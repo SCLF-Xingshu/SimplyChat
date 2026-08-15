@@ -87,26 +87,33 @@ Section n°       Name
 44               check if admin room has any messages (unlocked)
 45               logout function
 46               logout button event listener
-47               report modal event listeners
-├─ 47.1          close modal on close button
-├─ 47.2          close modal on cancel button
-├─ 47.3          close modal on Escape key
-├─ 47.4          close modal on outside click
-├─ 47.5          close success message
-╰─ 47.6          form submission (Phase 3 - Supabase insert)
-   ├─ 47.6.1     validate reason
-   ├─ 47.6.2     show loading state on submit button
-   ├─ 47.6.3     prepare report data
-   ├─ 47.6.4     insert into Supabase
-   ├─ 47.6.5     success
-   ├─ 47.6.6     error handling
-   ╰─ 47.6.7     re-enable submit button
-48               settings toggle
-├─ 48.1          toggle panel on gear click
-│  ├─ 48.1.1     update aria-expanded
-│  ╰─ 48.1.2     focus management
-├─ 48.2          close settings with Escape key
-╰─ 48.3          close panel when clicking outside
+47               share button logic
+├─ 47.1          open share modal
+├─ 47.2          close share modal
+├─ 47.3          close on close button
+├─ 47.4          close on Escape key
+├─ 47.5          close on outside click
+╰─ 47.6          copy URL to clipboard
+48               report modal event listeners
+├─ 48.1          close modal on close button
+├─ 48.2          close modal on cancel button
+├─ 48.3          close modal on Escape key
+├─ 48.4          close modal on outside click
+├─ 48.5          close success message
+╰─ 48.6          form submission (Phase 3 - Supabase insert)
+   ├─ 48.6.1     validate reason
+   ├─ 48.6.2     show loading state on submit button
+   ├─ 48.6.3     prepare report data
+   ├─ 48.6.4     insert into Supabase
+   ├─ 48.6.5     success
+   ├─ 48.6.6     error handling
+   ╰─ 48.6.7     re-enable submit button
+49               settings toggle
+├─ 49.1          toggle panel on gear click
+│  ├─ 49.1.1     update aria-expanded
+│  ╰─ 49.1.2     focus management
+├─ 49.2          close settings with Escape key
+╰─ 49.3          close panel when clicking outside
 */
 
 // 1 - user identification (local user id, used for anonymous follows)
@@ -1484,7 +1491,100 @@ if (githubLogoutBtn) {
 }
 // end 46
 
-// 47 - report modal event listeners
+// 47 - share button logic
+const shareBtn = document.getElementById('share-btn');
+const shareModal = document.getElementById('share-modal');
+const shareClose = document.getElementById('share-modal-close');
+const shareUrl = document.getElementById('share-url');
+const shareCopyBtn = document.getElementById('share-copy-btn');
+const shareFeedback = document.getElementById('share-feedback');
+
+// 47.1 - open share modal
+if (shareBtn) {
+  shareBtn.addEventListener('click', function() {
+    const currentUrl = window.location.href;
+    if (shareUrl) shareUrl.value = currentUrl;
+    if (shareFeedback) shareFeedback.textContent = '';
+    if (shareCopyBtn) shareCopyBtn.textContent = 'Copy';
+    
+    if (shareModal) {
+      shareModal.removeAttribute('hidden');
+      shareModal.style.display = 'block';
+      setTimeout(() => {
+        if (shareUrl) {
+          shareUrl.focus();
+          shareUrl.select();
+        }
+      }, 100);
+    }
+  });
+}
+// end 47.1
+
+// 47.2 - close share modal
+function closeShareModal() {
+  if (shareModal) {
+    shareModal.setAttribute('hidden', '');
+    shareModal.style.display = 'none';
+  }
+}
+// end 47.2
+
+// 47.3 - close on close button
+if (shareClose) {
+  shareClose.addEventListener('click', closeShareModal);
+}
+// end 47.3
+
+// 47.4 - close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && shareModal && !shareModal.hasAttribute('hidden')) {
+    closeShareModal();
+  }
+});
+// end 47.4
+
+// 47.5 - close on outside click
+if (shareModal) {
+  shareModal.addEventListener('click', function(e) {
+    if (e.target === shareModal) {
+      closeShareModal();
+    }
+  });
+}
+// end 47.5
+
+// 47.6 - copy URL to clipboard
+if (shareCopyBtn) {
+  shareCopyBtn.addEventListener('click', async function() {
+    const url = shareUrl ? shareUrl.value : '';
+    
+    try {
+      await navigator.clipboard.writeText(url);
+      if (shareFeedback) shareFeedback.textContent = '✅ Copied!';
+      if (shareCopyBtn) {
+        shareCopyBtn.textContent = 'Copied!';
+      }
+      setTimeout(() => {
+        if (shareCopyBtn) shareCopyBtn.textContent = 'Copy';
+        if (shareFeedback) shareFeedback.textContent = '';
+      }, 3000);
+    } catch (err) {
+      if (shareUrl) {
+        shareUrl.select();
+        document.execCommand('copy');
+        if (shareFeedback) shareFeedback.textContent = '✅ Copied!';
+        setTimeout(() => {
+          if (shareFeedback) shareFeedback.textContent = '';
+        }, 3000);
+      }
+    }
+  });
+}
+// end 47.6
+// end 47
+
+// 48 - report modal event listeners
 const reportModal = document.getElementById('report-modal');
 const reportClose = document.getElementById('report-modal-close');
 const reportCancel = document.getElementById('report-cancel');
@@ -1493,44 +1593,44 @@ const reportError = document.getElementById('report-error');
 const reportSuccess = document.getElementById('report-success');
 
 if (reportModal && reportForm) {
-  // 47.1 - close modal on close button
+  // 48.1 - close modal on close button
   if (reportClose) {
     reportClose.addEventListener('click', closeReportModal);
   }
-  // end 47.1
+  // end 48.1
   
-  // 47.2 - close modal on cancel button
+  // 48.2 - close modal on cancel button
   if (reportCancel) {
     reportCancel.addEventListener('click', closeReportModal);
   }
-  // end 47.2
+  // end 48.2
   
-  // 47.3 - close modal on Escape key
+  // 48.3 - close modal on Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && reportModal && !reportModal.hasAttribute('hidden')) {
       closeReportModal();
     }
   });
-  // end 47.3
+  // end 48.3
   
-  // 47.4 - close modal on outside click
+  // 48.4 - close modal on outside click
   reportModal.addEventListener('click', function(e) {
     if (e.target === reportModal) {
       closeReportModal();
     }
   });
-  // end 47.4
+  // end 48.4
 
-  // 47.5 - close success message
+  // 48.5 - close success message
   const successClose = document.getElementById('report-success-close');
   if (successClose) {
     successClose.addEventListener('click', function() {
       closeReportModal();
     });
   }
-  // end 47.5
+  // end 48.5
   
-  // 47.6 - form submission (Phase 3 - Supabase insert)
+  // 48.6 - form submission (Phase 3 - Supabase insert)
   reportForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     const reason = document.getElementById('report-reason');
@@ -1538,25 +1638,25 @@ if (reportModal && reportForm) {
     const msgIdField = document.getElementById('report-msg-id');
     const msgUsernameField = document.getElementById('report-msg-username');
     
-    // 47.6.1 - validate reason
+    // 48.6.1 - validate reason
     if (!reason || !reason.value) {
       if (reportError) reportError.textContent = 'Please select a reason.';
       return;
     }
     if (reportError) reportError.textContent = '';
-    // end 47.6.1
+    // end 48.6.1
     
-    // 47.6.2 - show loading state on submit button
+    // 48.6.2 - show loading state on submit button
     const submitBtn = document.getElementById('report-submit');
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
       submitBtn.textContent = 'Submitting...';
     }
-    // end 47.6.2
+    // end 48.6.2
     
     try {
-      // 47.6.3 - prepare report data
+      // 48.6.3 - prepare report data
       const reporterUsername = getCurrentUsername();
       const reportData = {
         message_id: parseInt(msgIdField ? msgIdField.value : '0'),
@@ -1566,9 +1666,9 @@ if (reportModal && reportForm) {
         details: details ? details.value : '',
         status: 'pending'
       };
-      // end 47.6.3
+      // end 48.6.3
       
-      // 47.6.4 - insert into Supabase
+      // 48.6.4 - insert into Supabase
       const { data, error } = await supabase
         .from('reports')
         .insert([reportData])
@@ -1578,51 +1678,51 @@ if (reportModal && reportForm) {
         if (reportError) reportError.textContent = 'Failed to submit report. Please try again.';
         return;
       }
-      // end 47.6.4
+      // end 48.6.4
       
-      // 47.6.5 - success
+      // 48.6.5 - success
       console.log('Report submitted successfully:', data);
       // Hide form, show success message
       if (reportForm) reportForm.style.display = 'none';
       if (reportError) reportError.textContent = '';
       if (reportSuccess) reportSuccess.removeAttribute('hidden');
-      // end 47.6.5
+      // end 48.6.5
       
     } catch (err) {
-      // 47.6.6 - error handling
+      // 48.6.6 - error handling
       console.error('Unexpected error:', err);
       if (reportError) reportError.textContent = 'An unexpected error occurred. Please try again.';
-      // end 47.6.6
+      // end 48.6.6
     } finally {
-      // 47.6.7 - re-enable submit button
+      // 48.6.7 - re-enable submit button
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
         submitBtn.textContent = 'Submit Report';
       }
-      // end 47.6.7
+      // end 48.6.7
     }
   });
-  // end 47.6
+  // end 48.6
 }
-// end 47
+// end 48
 
-// 48 - settings toggle
+// 49 - settings toggle
 const settingsToggle = document.getElementById('settings-toggle');
 const settingsPanel = document.getElementById('settings-panel');
 
 if (settingsToggle && settingsPanel) {
-  // 48.1 - toggle panel on gear click
+  // 49.1 - toggle panel on gear click
   settingsToggle.addEventListener('click', function(e) {
     e.stopPropagation();
     const isVisible = settingsPanel.style.display === 'block';
     settingsPanel.style.display = isVisible ? 'none' : 'block';
     
-    // 48.1.1 - update aria-expanded
+    // 49.1.1 - update aria-expanded
     settingsToggle.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
-    // end 48.1.1
+    // end 49.1.1
     
-    // 48.1.2 - focus management
+    // 49.1.2 - focus management
     if (!isVisible) {
       // panel is opening - move focus inside
       setTimeout(() => {
@@ -1637,11 +1737,11 @@ if (settingsToggle && settingsPanel) {
       // panel is closing - return focus to toggle
       settingsToggle.focus();
     }
-    // end 48.1.2
+    // end 49.1.2
   });
-  // end 48.1
+  // end 49.1
 
-  // 48.2 - close settings with Escape key
+  // 49.2 - close settings with Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && settingsPanel.style.display === 'block') {
       settingsPanel.style.display = 'none';
@@ -1649,9 +1749,9 @@ if (settingsToggle && settingsPanel) {
       settingsToggle.focus();
     }
   });
-  // end 48.2
+  // end 49.2
 
-  // 48.3 - close panel when clicking outside
+  // 49.3 - close panel when clicking outside
   document.addEventListener('click', function(e) {
     const container = document.getElementById('settings-container');
     if (container && !container.contains(e.target) && settingsPanel.style.display === 'block') {
@@ -1659,6 +1759,6 @@ if (settingsToggle && settingsPanel) {
       settingsToggle.setAttribute('aria-expanded', 'false');
     }
   });
-  // end 48.3
+  // end 49.3
 }
-// end 48
+// end 49

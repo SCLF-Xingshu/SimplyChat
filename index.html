@@ -163,6 +163,25 @@
       </div>
     </div>
     <!-- end D18 -->
+
+    <!-- D28 - Share Modal -->
+    <div id="share-modal" hidden role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+      <div id="share-modal-content">
+        <h2 id="share-modal-title">Share this room</h2>
+        <button id="share-modal-close" aria-label="Close share dialog">&times;</button>
+        
+        <p>Share this link with others to invite them to this room:</p>
+        
+        <div id="share-url-container">
+          <input type="text" id="share-url" readonly value="">
+          <button id="share-copy-btn">Copy</button>
+        </div>
+        
+        <div id="share-feedback" role="status" aria-live="polite"></div>
+        
+      </div>
+    </div>
+    <!-- end D28 -->
   </div>
   <footer>
     <p>
