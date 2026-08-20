@@ -5,6 +5,7 @@ TABLE OF CONTENTS
 Section n°       Name
 ----------       ----
 1                user identification (local user id, used for anonymous follows)
+i                inframe support
 2                helper: escape html (xss protection)
 ╰─ 2.1           convert custom link syntax to HTML links
 3                format username (green [gh] tag)
@@ -124,6 +125,54 @@ let chatChannel = null;
 // end 1
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+// i - inframe support
+const inIframe = window !== window.parent;
+
+if (inIframe) {
+  console.log('SimplyChat: Running in iframe mode');
+  
+  // Auto-resize the iframe to fit content
+  function sendResize() {
+    const height = document.documentElement.scrollHeight;
+    window.parent.postMessage({ 
+      type: 'simplychat-resize', 
+      height: height 
+    }, '*');
+  }
+  
+  // Resize on load (with small delay for content to render)
+  window.addEventListener('load', function() {
+    setTimeout(sendResize, 300);
+  });
+  
+  // Resize on any DOM changes (messages, reactions, etc.)
+  const resizeObserver = new ResizeObserver(() => {
+    sendResize();
+  });
+  
+  // Start observing after page loads
+  window.addEventListener('load', function() {
+    resizeObserver.observe(document.body);
+  });
+  
+  // Also resize on window resize (if user changes browser size)
+  window.addEventListener('resize', sendResize);
+  
+  // Listen for height requests from parent
+  window.addEventListener('message', function(event) {
+    if (event.data.type === 'simplychat-request-height') {
+      sendResize();
+    }
+  });
+  
+  // Notify parent that iframe is ready
+  window.parent.postMessage({ 
+    type: 'simplychat-ready',
+    url: window.location.href 
+  }, '*');
+}
+// end i
 
 // 2 - helper: escape html (xss protection)
 function escapeHtml(text) {
@@ -1197,7 +1246,7 @@ async function loadMessages() {
   if (messages && messages.length > 0) {
     messages.forEach(msg => addMessage(msg, reactionsMap));
   } else {
-    addSystemMessage('Server : no messages yet.', false);
+    addSystemMessage('Server: no messages yet.', false);
   }
   // 34.8 - scroll to message if needed
   scrollToMessageIfNeeded();
