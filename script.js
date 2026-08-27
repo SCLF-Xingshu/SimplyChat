@@ -846,6 +846,237 @@ let currentUser = null;
     }
    }
    // end 29.2
+   // 29.3 - language selector
+    const languageSelect = document.getElementById('language-select');
+    const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
+
+    // translation strings (English & French)
+    const translations = {
+      en: {
+        title: 'SimplyChat.',
+        home: '🏠 Home',
+        blog: '📝 Blog',
+        create: '✨ Create',
+        explore: '🔎 Explore',
+        searchPlaceholder: 'Search for a chatroom...',
+        settings: 'Settings',
+        fontSize: 'Font size:',
+        language: 'Language:',
+        follow: '🔔',
+        unfollow: '🔕',
+        usernamePlaceholder: 'Username (24 characters max)',
+        loginWithGitHub: 'Login with GitHub ',
+        logout: 'Logout',
+        writeMessage: 'Write a message',
+        send: 'Send',
+        syntaxGuide: 'Syntax guide ↗',
+        slogan: 'Just a chat. Period.',
+        loading: 'Loading messages...',
+        report: '🚨 Report',
+        reportTitle: 'Report Message',
+        reportReason: 'Reason for reporting',
+        reportSpam: 'Spam or promotional content',
+        reportHarassment: 'Harassment or bullying',
+        reportInappropriate: 'Inappropriate or offensive content',
+        reportMisinformation: 'Misinformation or false content',
+        reportOther: 'Other',
+        reportDetails: 'Additional details (optional)',
+        reportCancel: 'Cancel',
+        reportSubmit: 'Submit Report',
+        reportSuccess: 'Report submitted. Thank you for helping us keep SimplyChat safe!',
+        close: 'Close',
+        shareTitle: 'Share this room',
+        shareDescription: 'Share this link with others to invite them to this room:',
+        shareCopy: 'Copy',
+        shareCopied: '✅ Copied!',
+        cooldown: 'Cooldown:',
+        seconds: 's',
+        charCount: '/ 1000',
+        noMessages: 'Server: no messages yet.',
+        welcome: 'Welcome to',
+        shareCopyBtn: 'Copy',
+        footer: `Copyright © 2026, SCLF-Xingshu.<br>Licensed under <a class="simple-link" href="https://github.com/SCLF-Xingshu/SimplyChat/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">BSD 3-Clause ↗</a>.`,
+      },
+      fr: {
+        title: 'SimplyChat.',
+        home: '🏠 Accueil',
+        blog: '📝 Blog',
+        create: '✨ Créer',
+        explore: '🔎 Explorer',
+        searchPlaceholder: 'Rechercher un salon...',
+        settings: 'Paramètres',
+        fontSize: 'Taille de la police :',
+        language: 'Langue :',
+        follow: '🔔',
+        unfollow: '🔕',
+        usernamePlaceholder: "Nom d'utilisateur (24 caractères max)",
+        loginWithGitHub: 'Se connecter avec GitHub ',
+        logout: 'Se déconnecter',
+        writeMessage: 'Écrire un message',
+        send: 'Envoyer',
+        syntaxGuide: 'Guide du syntaxe ↗',
+        slogan: 'Just un chat. Point final.',
+        loading: 'Chargement des messages...',
+        report: '🚨 Signaler',
+        reportTitle: 'Signaler un message',
+        reportReason: 'Motif du signalement',
+        reportSpam: 'Spam ou contenu promotionnel',
+        reportHarassment: 'Harcèlement ou intimidation',
+        reportInappropriate: 'Contenu inapproprié ou offensant',
+        reportMisinformation: 'Désinformation ou contenu faux',
+        reportOther: 'Autre',
+        reportDetails: 'Détails supplémentaires (optionnel)',
+        reportCancel: 'Annuler',
+        reportSubmit: 'Envoyer le signalement',
+        reportSuccess: 'Signalement envoyé. Merci de nous aider à garder SimplyChat sûr !',
+        close: 'Fermer',
+        shareTitle: 'Partager ce salon',
+        shareDescription: 'Partagez ce lien pour inviter d\'autres personnes à rejoindre ce salon :',
+        shareCopy: 'Copier',
+        shareCopied: '✅ Copié !',
+        cooldown: 'Attente :',
+        seconds: 's',
+        charCount: '/ 1000',
+        noMessages: 'Serveur : aucun message pour le moment.',
+        welcome: 'Bienvenue sur',
+        shareCopyBtn: 'Copier',
+        footer: `Copyright © 2026, SCLF-Xingshu.<br>Licensé sous <a class="simple-link" href="https://github.com/SCLF-Xingshu/SimplyChat/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">BSD 3-Clause ↗</a>.`,
+      }
+    };
+
+    // Apply language on page load
+    function applyLanguage(lang) {
+      if (!translations[lang]) lang = 'en';
+      const t = translations[lang];
+      
+      // Title
+      document.title = t.title;
+      
+      // Navbar
+      const navLinks = document.querySelectorAll('#navbar a');
+      if (navLinks.length >= 4) {
+        navLinks[0].textContent = t.home;
+        navLinks[1].textContent = t.blog;
+        navLinks[2].textContent = t.create;
+        navLinks[3].textContent = t.explore;
+      }
+      
+      // Search
+      const searchInput = document.getElementById('room-search');
+      if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+      
+      // Settings
+      const settingsStrong = document.querySelector('#settings-panel strong');
+      if (settingsStrong) settingsStrong.textContent = t.settings;
+      const fontSizeLabel = document.querySelector('#settings-panel label[for="font-slider"]');
+      if (fontSizeLabel) fontSizeLabel.textContent = t.fontSize;
+      const langLabel = document.querySelector('#settings-panel .language-row label');
+      if (langLabel) langLabel.textContent = t.language;
+      
+      // Follow button
+      const followBtn = document.getElementById('follow-btn');
+      if (followBtn) {
+        const isFollowing = followBtn.classList.contains('following');
+        followBtn.textContent = isFollowing ? t.unfollow : t.follow;
+      }
+      
+      // Username
+      const usernameInput = document.getElementById('username');
+      if (usernameInput && !currentUser) {
+        usernameInput.placeholder = t.usernamePlaceholder;
+      }
+      
+      // GitHub login/logout
+      const githubLogin = document.getElementById('github-login');
+      if (githubLogin) {
+        const textNode = githubLogin.childNodes[0];
+        if (textNode) textNode.textContent = t.loginWithGitHub;
+      }
+      const githubLogout = document.getElementById('github-logout');
+      if (githubLogout) githubLogout.textContent = t.logout;
+      
+      // Message input
+      const messageInput = document.getElementById('message');
+      if (messageInput) messageInput.placeholder = t.writeMessage;
+      
+      // Send button
+      const sendBtn = document.getElementById('send');
+      if (sendBtn) sendBtn.textContent = t.send;
+      
+      // Syntax guide
+      const syntaxLink = document.querySelector('.syntax-link');
+      if (syntaxLink) syntaxLink.textContent = t.syntaxGuide;
+      
+      // Home slogan text
+      const slogan = document.getElementById('slogan');
+      if (slogan) slogan.textContent = t.slogan;
+
+      // Share button in copy modal
+      const shareCopyBtn = document.getElementById('share-copy-btn');
+      if (shareCopyBtn) shareCopyBtn.textContent = t.shareCopyBtn;
+      
+      // Footer
+      const footer = document.querySelector('footer > p');
+      if (footer) footer.innerHTML = t.footer;
+
+      // Loading indicator
+      const loadingText = document.querySelector('#loading-indicator p');
+      if (loadingText) loadingText.textContent = t.loading;
+      
+      // Report modal
+      const reportTitle = document.getElementById('report-modal-title');
+      if (reportTitle) reportTitle.textContent = t.reportTitle;
+      const reportReasonLabel = document.querySelector('#report-form label[for="report-reason"]');
+      if (reportReasonLabel) reportReasonLabel.textContent = t.reportReason;
+      const reportOptions = document.querySelectorAll('#report-reason option');
+      if (reportOptions.length >= 6) {
+        reportOptions[0].textContent = 'Select a reason...';
+        reportOptions[1].textContent = t.reportSpam;
+        reportOptions[2].textContent = t.reportHarassment;
+        reportOptions[3].textContent = t.reportInappropriate;
+        reportOptions[4].textContent = t.reportMisinformation;
+        reportOptions[5].textContent = t.reportOther;
+      }
+      const reportDetailsLabel = document.querySelector('#report-form label[for="report-details"]');
+      if (reportDetailsLabel) reportDetailsLabel.textContent = t.reportDetails;
+      const reportDetailsTextarea = document.getElementById('report-details');
+      if (reportDetailsTextarea) reportDetailsTextarea.placeholder = t.reportDetails;
+      const reportCancel = document.getElementById('report-cancel');
+      if (reportCancel) reportCancel.textContent = t.reportCancel;
+      const reportSubmit = document.getElementById('report-submit');
+      if (reportSubmit) reportSubmit.textContent = t.reportSubmit;
+      const reportSuccessText = document.querySelector('#report-success p');
+      if (reportSuccessText) reportSuccessText.textContent = t.reportSuccess;
+      const reportSuccessClose = document.getElementById('report-success-close');
+      if (reportSuccessClose) reportSuccessClose.textContent = t.close;
+      
+      // Share modal
+      const shareTitle = document.getElementById('share-modal-title');
+      if (shareTitle) shareTitle.textContent = t.shareTitle;
+      const shareDesc = document.querySelector('#share-modal-content p');
+      if (shareDesc) shareDesc.textContent = t.shareDescription;
+      const shareCopy = document.getElementById('share-copy-btn');
+      if (shareCopy) shareCopy.textContent = t.shareCopy;
+      
+      // Store language
+      localStorage.setItem('preferredLanguage', lang);
+      if (languageSelect) languageSelect.value = lang;
+    }
+
+    // Language selector change
+    if (languageSelect) {
+      languageSelect.addEventListener('change', function() {
+        applyLanguage(this.value);
+        if (isChatPage) loadMessages();
+      });
+    }
+
+    // Apply saved language on page load
+    if (languageSelect) {
+      languageSelect.value = savedLanguage;
+    }
+    applyLanguage(savedLanguage);
+    // end 29.3
 // end 29
 
 // 30 - font size persistence
@@ -943,7 +1174,7 @@ function addMessage(msg, reactionsMap) {
     <div class="msg-content">${safeText}</div>
     <div class="msg-actions">
       <div class="msg-reactions">${reactionsHtml}</div>
-      <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="Report this message">🚨 Report</button>
+            <button class="report-btn" data-msg-id="${msg.id}" data-msg-username="${escapedUsername}" aria-label="${translations[localStorage.getItem('preferredLanguage') || 'en'].report}">${translations[localStorage.getItem('preferredLanguage') || 'en'].report}</button>
     </div>
   `;
   // end 32.1
